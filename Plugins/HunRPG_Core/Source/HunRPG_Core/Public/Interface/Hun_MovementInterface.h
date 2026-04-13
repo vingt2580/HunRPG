@@ -21,13 +21,13 @@ public:
 	void SetMoveSpeed_Interface(float MoveSpeed);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
-	void MovementInput_Interface(FVector2d MoveVector);
+	void MovementInput_Interface(FVector2D MoveVector);
 	
 	/**
 	 * Implementation
 	 */
 	
-	virtual void MovementInput_Implementation(FVector2d MoveVector);
+	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector);
 
-	virtual  void SetMoveSpeed_Implementation(float MoveSpeed);
+	virtual  void SetMoveSpeed_Interface_Implementation(float MoveSpeed);
 };

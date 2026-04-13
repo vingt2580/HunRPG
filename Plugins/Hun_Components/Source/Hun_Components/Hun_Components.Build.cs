@@ -26,6 +26,7 @@ public class Hun_Components : ModuleRules
 			new string[]
 			{
 				"Core",
+				"HunRPG_Core"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -37,7 +38,7 @@ public class Hun_Components : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore",
+				"SlateCore"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

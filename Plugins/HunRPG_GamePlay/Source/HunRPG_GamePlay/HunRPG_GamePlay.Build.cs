@@ -37,7 +37,9 @@ public class HunRPG_GamePlay : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore",
+				"SlateCore", 
+				"EnhancedInput",
+				"HunRPG_Core"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
