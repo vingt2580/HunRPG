@@ -25,8 +25,7 @@ public class Hun_Components : ModuleRules
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
-				"Core",
-				"HunRPG_Core"
+				"Core"
 				// ... add other public dependencies that you statically link with here ...
 			}
 			);
@@ -38,7 +37,8 @@ public class Hun_Components : ModuleRules
 				"CoreUObject",
 				"Engine",
 				"Slate",
-				"SlateCore"
+				"SlateCore",
+				"HunRPG_Core"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
