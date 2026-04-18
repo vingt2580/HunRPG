@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
+#include "HunRPG_GamePlay/Public/PlayerController/Hun_PlayerController.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
-
-#include "HunRPG_GamePlay/Public/PlayerController/Hun_PlayerController.h"
 
 void AHun_PlayerController::BeginPlay()
 {
@@ -37,4 +37,5 @@ void AHun_PlayerController::SetupInputComponent()
 void AHun_PlayerController::Input_Move(const FInputActionValue& ActionValue)
 {
 	FVector2D MovementVector = ActionValue.Get<FVector2D>();
+	HunCharacter->Character_Move(MovementVector);
 }

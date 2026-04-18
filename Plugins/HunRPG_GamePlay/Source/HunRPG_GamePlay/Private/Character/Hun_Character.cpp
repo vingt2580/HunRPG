@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
+#include "Character/Hun_Character.h"
+#include "HunRPG_Core/Public/HunRPG_DebugHelper.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-#include "Character/Hun_Character.h"
 
 #include <ThirdParty/ShaderConductor/ShaderConductor/External/DirectXShaderCompiler/include/dxc/DXIL/DxilConstants.h>
 
@@ -55,25 +55,45 @@ void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetCharacterMovement()->MaxWalkSpeed = CharacterData->WalkSpeed;
+	if (!CharacterData)
+		return;
 
+	UCharacterMovementComponent* MoveComponent = GetCharacterMovement();
+
+	if (!MoveComponent)
+		return;
+	
+	MoveComponent->MaxWalkSpeed = CharacterData->WalkSpeed;
+
+	CachedMovementComponent = nullptr;
+	
 	TArray<UActorComponent*> Component;
 	GetComponents(Component);
 	for (UActorComponent* Comp : Component)
 	{
-		if (Comp->Implements<UHun_MovementInterface>())
+		if (Comp && Comp->Implements<UHun_MovementInterface>())
 		{
 			CachedMovementComponent = Comp;
+			HunDebug::Print("Successfully cached movement component");
 			break;
 		}
+	}
+	if (CachedMovementComponent == nullptr)
+	{
+		HunDebug::Print("Failed to cache movement component");
 	}
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
 {
+	HunDebug::Print("캐릭터 무브 콜링 액션");
+	
+	if (CachedMovementComponent == nullptr)
+		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
 
+	HunDebug::Print("인터페이스 호출중");
 	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 

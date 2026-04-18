@@ -22,14 +22,14 @@ protected:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 
-private:
-	UPROPERTY(EditAnywhere, Category = "HunRPG|Character Data")
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|CharacterData")
 	UHun_CharacterData* CharacterData;
 	
 	void Character_Move(FVector2D ActionValue);
 
 	UPROPERTY()
-	UActorComponent* CachedMovementComponent;
+	TObjectPtr<UActorComponent> CachedMovementComponent;
 
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
