@@ -62,6 +62,11 @@ void AHun_Character::BeginPlay()
 
 	if (!MoveComponent)
 		return;
+
+	bUseControllerRotationYaw = false;
+	
+	MoveComponent->bOrientRotationToMovement = true; 
+	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
 	
 	MoveComponent->MaxWalkSpeed = CharacterData->WalkSpeed;
 

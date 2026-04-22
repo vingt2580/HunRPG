@@ -2,6 +2,8 @@
 
 
 #include "Hun_Components/ActionComponents/Movement/Public/Hun_MoveComponent.h"
+
+#include "HunRPG_DebugHelper.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 
@@ -26,7 +28,7 @@ void UHun_MoveComponent::BeginPlay()
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
-	if (!OwnerCharacter || OwnerCharacter->Controller)
+	if (!OwnerCharacter)
 		return;
 
 	const FRotator MovementRotation(0.f,OwnerCharacter->Controller->GetControlRotation().Yaw,0.f);
@@ -35,12 +37,14 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	{
 		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
 		OwnerCharacter->AddMovementInput(ForwardDirection,MoveVector.Y);
+		HunDebug::Print("Character Moveing Y");
 	}
 
 	if (MoveVector.X != 0.f)
 	{
 		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 		OwnerCharacter->AddMovementInput(RightDirection,MoveVector.X);
+		HunDebug::Print("Character Moveing X");
 	}
 }
 
