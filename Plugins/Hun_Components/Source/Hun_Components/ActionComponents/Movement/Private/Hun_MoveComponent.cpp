@@ -26,7 +26,7 @@ void UHun_MoveComponent::BeginPlay()
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
-	if (!OwnerCharacter && OwnerCharacter->Controller)
+	if (!OwnerCharacter || OwnerCharacter->Controller)
 		return;
 
 	const FRotator MovementRotation(0.f,OwnerCharacter->Controller->GetControlRotation().Yaw,0.f);

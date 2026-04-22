@@ -86,14 +86,11 @@ void AHun_Character::BeginPlay()
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
 {
-	HunDebug::Print("캐릭터 무브 콜링 액션");
-	
 	if (CachedMovementComponent == nullptr)
 		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
-
-	HunDebug::Print("인터페이스 호출중");
+	
 	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 
