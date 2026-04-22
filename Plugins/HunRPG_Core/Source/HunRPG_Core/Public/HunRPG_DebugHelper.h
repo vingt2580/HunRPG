@@ -2,15 +2,11 @@
 
 #pragma once
 
-namespace HunDebug
-{
-	static void Print(const FString& Message, const FColor& Color = FColor::MakeRandomColor(), int32 InKey = -1)
-	{
-		if (GEngine)
-		{
-			GEngine->AddOnScreenDebugMessage(InKey, 7.f, Color, Message);
+#include "CoreMinimal.h"
 
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *Message);
-		}
-	}
+#define HUN_LOG(InColor, InFormat, ...) \
+{ \
+FString Msg = FString::Printf(TEXT(InFormat), ##__VA_ARGS__); \
+if (GEngine) GEngine->AddOnScreenDebugMessage(-1, 5.f, InColor, Msg); \
+UE_LOG(LogTemp, Warning, TEXT("%s"), *Msg); \
 }

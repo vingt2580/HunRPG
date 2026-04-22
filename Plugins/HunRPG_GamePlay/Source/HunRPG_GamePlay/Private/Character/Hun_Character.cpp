@@ -79,13 +79,13 @@ void AHun_Character::BeginPlay()
 		if (Comp && Comp->Implements<UHun_MovementInterface>())
 		{
 			CachedMovementComponent = Comp;
-			HunDebug::Print("Successfully cached movement component");
+			HUN_LOG(FColor::Green,"Successfully cached movement component");
 			break;
 		}
 	}
 	if (CachedMovementComponent == nullptr)
 	{
-		HunDebug::Print("Failed to cache movement component");
+		HUN_LOG(FColor::Red,"Failed to cache movement component");
 	}
 }
 

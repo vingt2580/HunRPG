@@ -37,14 +37,14 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	{
 		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
 		OwnerCharacter->AddMovementInput(ForwardDirection,MoveVector.Y);
-		HunDebug::Print("Character Moveing Y");
+		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
 
 	if (MoveVector.X != 0.f)
 	{
 		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 		OwnerCharacter->AddMovementInput(RightDirection,MoveVector.X);
-		HunDebug::Print("Character Moveing X");
+		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
 }
 
