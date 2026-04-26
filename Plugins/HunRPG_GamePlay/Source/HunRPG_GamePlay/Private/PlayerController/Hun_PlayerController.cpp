@@ -31,6 +31,7 @@ void AHun_PlayerController::SetupInputComponent()
 	if (IsValid(InputActions))
 	{
 		PEI->BindAction(InputActions->Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
+		PEI->BindAction(InputActions->Input_Jump, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
 	}
 }
 
@@ -38,4 +39,9 @@ void AHun_PlayerController::Input_Move(const FInputActionValue& ActionValue)
 {
 	FVector2D MovementVector = ActionValue.Get<FVector2D>();
 	HunCharacter->Character_Move(MovementVector);
+}
+
+void AHun_PlayerController::Input_Jump()
+{
+	HunCharacter->Character_Jump();
 }

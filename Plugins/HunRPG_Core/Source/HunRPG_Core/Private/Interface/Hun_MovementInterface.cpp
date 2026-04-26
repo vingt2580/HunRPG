@@ -12,3 +12,7 @@ void IHun_MovementInterface::MovementInput_Interface_Implementation(FVector2D Mo
 void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(float MoveSpeed)
 {
 }
+
+void IHun_MovementInterface::JumpInput_Interface_Implementation()
+{
+}

@@ -2,8 +2,11 @@
 
 
 #include "Hun_Components/ActionComponents/Movement/Public/Hun_MoveComponent.h"
-
+#include "HunRPG_Core/Public/System/HunRPG_StateTypes.h"
+#include "BlendSpaceAnalysis.h"
 #include "HunRPG_DebugHelper.h"
+#include "Hun_Components/ActionComponents/State/Public/Hun_StateComponent.h"
+
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 
@@ -22,6 +25,7 @@ void UHun_MoveComponent::BeginPlay()
 		return;
 
 	MoveComponent = OwnerCharacter->GetCharacterMovement();
+	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
 	
 }
 
@@ -46,6 +50,10 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 		OwnerCharacter->AddMovementInput(RightDirection,MoveVector.X);
 		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
+
+	if (!StateComponent)
+		return;
+	StateComponent->SetState(EHunRPG_ActionState::Moving);
 }
 
 void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float MoveSpeed)
@@ -54,4 +62,39 @@ void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float MoveSpeed)
 		return;
 
 	MoveComponent->MaxWalkSpeed = MoveSpeed;
+}
+
+void UHun_MoveComponent::JumpInput_interface_Implementation()
+{
+	if (!OwnerCharacter || !MoveComponent || !StateComponent)
+		return;
+	
+	EHunRPG_ActionState CurrentState = StateComponent->GetState();
+
+	if (CurrentState == EHunRPG_ActionState::Jumping || 
+		CurrentState == EHunRPG_ActionState::Falling ||
+		CurrentState == EHunRPG_ActionState::Attacking || 
+		CurrentState == EHunRPG_ActionState::HitReaction || 
+		CurrentState == EHunRPG_ActionState::Dead) // 이거 맞나..? 개선방안 있는지 확인
+	{
+		return; 
+	}
+	
+	if (CurrentState == EHunRPG_ActionState::Running)
+	{
+		MoveComponent->AirControl = 0.8f;
+        
+		HUN_LOG(FColor::Yellow, "Moving Jumping");
+	}
+	else if (CurrentState == EHunRPG_ActionState::Idle || CurrentState == EHunRPG_ActionState::Moving)
+	{
+		FVector CurrentVelocity = MoveComponent->Velocity;
+		MoveComponent->Velocity = FVector(0.f, 0.f, CurrentVelocity.Z);
+
+		MoveComponent->AirControl = 0.2f;
+        
+		HUN_LOG(FColor::Yellow, "Inplace Jumping");
+	}
+	StateComponent->SetState(EHunRPG_ActionState::Jumping);
+	OwnerCharacter->Jump();
 }

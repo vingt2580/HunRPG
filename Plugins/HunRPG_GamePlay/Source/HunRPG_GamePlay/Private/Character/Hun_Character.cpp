@@ -99,3 +99,13 @@ void AHun_Character::Character_Move(FVector2D ActionValue)
 	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 
+void AHun_Character::Character_Jump()
+{
+	if (CachedMovementComponent == nullptr)
+		return;
+	if (!IsValid(CachedMovementComponent))
+		return;
+
+	IHun_MovementInterface::Execute_JumpInput_interface(CachedMovementComponent);
+}
+

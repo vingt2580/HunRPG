@@ -17,6 +17,8 @@ class HUN_COMPONENTS_API UHun_MoveComponent : public UActorComponent, public IHu
 
 	virtual void SetMoveSpeed_Interface_Implementation(float MoveSpeed) override;
 
+	virtual  void JumpInput_interface_Implementation() override;
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -24,4 +26,6 @@ protected:
 	ACharacter* OwnerCharacter;
 	UPROPERTY()
 	class UCharacterMovementComponent* MoveComponent;
+	UPROPERTY()
+	class UHun_StateComponent* StateComponent;
 };

@@ -22,6 +22,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
 	void MovementInput_Interface(FVector2D MoveVector);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
+	void JumpInput_interface();
 	
 	/**
 	 * Implementation
@@ -30,4 +33,6 @@ public:
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector);
 
 	virtual  void SetMoveSpeed_Interface_Implementation(float MoveSpeed);
+
+	virtual  void JumpInput_Interface_Implementation();
 };

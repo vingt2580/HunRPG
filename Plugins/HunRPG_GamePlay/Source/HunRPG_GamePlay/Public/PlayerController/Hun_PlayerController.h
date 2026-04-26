@@ -37,4 +37,5 @@ protected:
 	
 public:
 	void Input_Move(const FInputActionValue& ActionValue);
+	void Input_Jump();
 };
