@@ -19,6 +19,8 @@ class HUN_COMPONENTS_API UHun_MoveComponent : public UActorComponent, public IHu
 
 	virtual  void JumpInput_interface_Implementation() override;
 
+	virtual  void DashInput_Interface_Implementation() override;
+
 protected:
 	virtual void BeginPlay() override;
 

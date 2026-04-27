@@ -25,6 +25,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
 	void JumpInput_interface();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
+	void DashInput_Interface();
 	
 	/**
 	 * Implementation
@@ -35,4 +38,6 @@ public:
 	virtual  void SetMoveSpeed_Interface_Implementation(float MoveSpeed);
 
 	virtual  void JumpInput_Interface_Implementation();
+
+	virtual  void DashInput_Interface_Implementation();
 };

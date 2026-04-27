@@ -109,3 +109,13 @@ void AHun_Character::Character_Jump()
 	IHun_MovementInterface::Execute_JumpInput_interface(CachedMovementComponent);
 }
 
+void AHun_Character::Character_Dash()
+{
+	if (CachedMovementComponent == nullptr)
+		return;
+	if (!IsValid(CachedMovementComponent))
+		return;
+
+	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
+}
+

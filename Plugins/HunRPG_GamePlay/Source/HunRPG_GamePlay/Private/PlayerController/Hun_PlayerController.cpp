@@ -31,7 +31,8 @@ void AHun_PlayerController::SetupInputComponent()
 	if (IsValid(InputActions))
 	{
 		PEI->BindAction(InputActions->Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
-		PEI->BindAction(InputActions->Input_Jump, ETriggerEvent::Triggered, this, &ThisClass::Input_Jump);
+		PEI->BindAction(InputActions->Input_Jump, ETriggerEvent::Started, this, &ThisClass::Input_Jump);
+		PEI->BindAction(InputActions->Input_Dash, ETriggerEvent::Started, this, &ThisClass::Input_Dash);
 	}
 }
 
@@ -44,4 +45,9 @@ void AHun_PlayerController::Input_Move(const FInputActionValue& ActionValue)
 void AHun_PlayerController::Input_Jump()
 {
 	HunCharacter->Character_Jump();
+}
+
+void AHun_PlayerController::Input_Dash()
+{
+	HunCharacter->Character_Dash();
 }

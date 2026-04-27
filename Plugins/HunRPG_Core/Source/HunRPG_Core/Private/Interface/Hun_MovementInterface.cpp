@@ -16,3 +16,7 @@ void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(float MoveSpe
 void IHun_MovementInterface::JumpInput_Interface_Implementation()
 {
 }
+
+void IHun_MovementInterface::DashInput_Interface_Implementation()
+{
+}

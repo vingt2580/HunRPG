@@ -28,6 +28,7 @@ public:
 	
 	void Character_Move(FVector2D ActionValue);
 	void Character_Jump();
+	void Character_Dash();
 
 	UPROPERTY()
 	TObjectPtr<UActorComponent> CachedMovementComponent;

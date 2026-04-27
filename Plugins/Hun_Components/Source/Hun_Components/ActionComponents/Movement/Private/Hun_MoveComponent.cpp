@@ -98,3 +98,20 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 	StateComponent->SetState(EHunRPG_ActionState::Jumping);
 	OwnerCharacter->Jump();
 }
+
+void UHun_MoveComponent::DashInput_Interface_Implementation()
+{
+	if (!OwnerCharacter || !MoveComponent || !StateComponent)
+		return;
+	
+	FVector DashDirection = OwnerCharacter->GetActorForwardVector();
+	float DashStrength = 2000.f;
+	
+	OwnerCharacter->LaunchCharacter(DashDirection * DashStrength, true, false);
+	
+	StateComponent->SetState(EHunRPG_ActionState::Running);
+	
+	MoveComponent->MaxWalkSpeed = 600.f; 
+
+	UE_LOG(LogTemp, Log, TEXT("대시 실행! 현재 상태: Running"));
+}

@@ -23,4 +23,6 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
 	float WalkSpeed = 600.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
+	float DashLength = 2000.f;
 };
