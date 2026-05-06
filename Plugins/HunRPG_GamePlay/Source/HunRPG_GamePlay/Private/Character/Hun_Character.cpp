@@ -26,7 +26,7 @@ AHun_Character::AHun_Character()
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(GetRootComponent());
 	CameraBoom->TargetArmLength = 200.0f;
-	CameraBoom->SocketOffset = FVector(0.0f, 55.0f, 65.0f);
+	CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 65.0f);
 	CameraBoom->bUsePawnControlRotation = true;
 	
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
@@ -99,6 +99,16 @@ void AHun_Character::Character_Move(FVector2D ActionValue)
 	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 
+void AHun_Character::Character_ResetMove()
+{
+	if (CachedMovementComponent == nullptr)
+		return;
+	if (!IsValid(CachedMovementComponent))
+		return;
+
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->WalkSpeed);
+}
+
 void AHun_Character::Character_Jump()
 {
 	if (CachedMovementComponent == nullptr)
@@ -117,5 +127,6 @@ void AHun_Character::Character_Dash()
 		return;
 
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,CharacterData->RunSpeed);
 }
 

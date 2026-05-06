@@ -36,7 +36,7 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 		return;
 
 	const FRotator MovementRotation(0.f,OwnerCharacter->Controller->GetControlRotation().Yaw,0.f);
-
+	
 	if (MoveVector.Y != 0.f)
 	{
 		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
@@ -103,6 +103,17 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 {
 	if (!OwnerCharacter || !MoveComponent || !StateComponent)
 		return;
+
+	EHunRPG_ActionState CurrentState = StateComponent->GetState();
+
+	if (CurrentState == EHunRPG_ActionState::Jumping || 
+		CurrentState == EHunRPG_ActionState::Falling ||
+		CurrentState == EHunRPG_ActionState::Attacking || 
+		CurrentState == EHunRPG_ActionState::HitReaction || 
+		CurrentState == EHunRPG_ActionState::Dead) 
+	{
+		return; 
+	}
 	
 	FVector DashDirection = OwnerCharacter->GetActorForwardVector();
 	float DashStrength = 2000.f;
@@ -110,8 +121,4 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 	OwnerCharacter->LaunchCharacter(DashDirection * DashStrength, true, false);
 	
 	StateComponent->SetState(EHunRPG_ActionState::Running);
-	
-	MoveComponent->MaxWalkSpeed = 600.f; 
-
-	UE_LOG(LogTemp, Log, TEXT("대시 실행! 현재 상태: Running"));
 }

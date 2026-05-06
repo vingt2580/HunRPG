@@ -39,4 +39,5 @@ public:
 	void Input_Move(const FInputActionValue& ActionValue);
 	void Input_Jump();
 	void Input_Dash();
+	void Reset_MoveSpeed();
 };

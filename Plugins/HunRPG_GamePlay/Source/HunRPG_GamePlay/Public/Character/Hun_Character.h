@@ -27,6 +27,7 @@ public:
 	UHun_CharacterData* CharacterData;
 	
 	void Character_Move(FVector2D ActionValue);
+	void Character_ResetMove();
 	void Character_Jump();
 	void Character_Dash();
 
