@@ -18,6 +18,9 @@ class HUNRPG_CORE_API IHun_MovementInterface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
+	void GetCharacterData_Interface();
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
 	void SetMoveSpeed_Interface(float MoveSpeed);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")

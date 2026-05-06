@@ -26,9 +26,13 @@ void UHun_MoveComponent::BeginPlay()
 
 	MoveComponent = OwnerCharacter->GetCharacterMovement();
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
-	
 }
 
+void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
+	FActorComponentTickFunction* ThisTickFunction)
+{
+	if (MoveComponent->MaxWalkSpeed)
+}
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
@@ -50,10 +54,6 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 		OwnerCharacter->AddMovementInput(RightDirection,MoveVector.X);
 		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
-
-	if (!StateComponent)
-		return;
-	StateComponent->SetState(EHunRPG_ActionState::Moving);
 }
 
 void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float MoveSpeed)
@@ -83,14 +83,11 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 	if (CurrentState == EHunRPG_ActionState::Running)
 	{
 		MoveComponent->AirControl = 0.8f;
-        
 		HUN_LOG(FColor::Yellow, "Moving Jumping");
 	}
 	else if (CurrentState == EHunRPG_ActionState::Idle || CurrentState == EHunRPG_ActionState::Moving)
 	{
-		FVector CurrentVelocity = MoveComponent->Velocity;
-		MoveComponent->Velocity = FVector(0.f, 0.f, CurrentVelocity.Z);
-
+		MoveComponent->StopMovementImmediately();
 		MoveComponent->AirControl = 0.2f;
         
 		HUN_LOG(FColor::Yellow, "Inplace Jumping");
@@ -119,6 +116,4 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 	float DashStrength = 2000.f;
 	
 	OwnerCharacter->LaunchCharacter(DashDirection * DashStrength, true, false);
-	
-	StateComponent->SetState(EHunRPG_ActionState::Running);
 }

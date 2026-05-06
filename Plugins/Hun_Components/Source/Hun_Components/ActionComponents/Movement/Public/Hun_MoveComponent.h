@@ -23,6 +23,7 @@ class HUN_COMPONENTS_API UHun_MoveComponent : public UActorComponent, public IHu
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UPROPERTY()
 	ACharacter* OwnerCharacter;
