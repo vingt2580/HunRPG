@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
+#include "HunRPG_Core/Public/System/HunRPG_StateTypes.h"
 #include "Hun_CharacterData.generated.h"
 
 /**
@@ -22,9 +23,5 @@ public:
 	FString Name = "CharacterName";
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
-	float WalkSpeed = 600.f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
-	float RunSpeed = 900.f;
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
-	float DashLength = 2000.f;
+	FHun_ActionValue MovementValue;
 };

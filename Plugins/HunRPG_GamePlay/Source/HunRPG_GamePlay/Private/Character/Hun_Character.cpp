@@ -68,7 +68,7 @@ void AHun_Character::BeginPlay()
 	MoveComponent->bOrientRotationToMovement = true; 
 	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
 	
-	MoveComponent->MaxWalkSpeed = CharacterData->WalkSpeed;
+	MoveComponent->MaxWalkSpeed = CharacterData->MovementValue.WalkSpeed;
 
 	CachedMovementComponent = nullptr;
 	
@@ -106,7 +106,7 @@ void AHun_Character::Character_ResetMove()
 	if (!IsValid(CachedMovementComponent))
 		return;
 
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->WalkSpeed);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->MovementValue, EHunRPG_ActionState::Moving);
 }
 
 void AHun_Character::Character_Jump()
@@ -127,6 +127,6 @@ void AHun_Character::Character_Dash()
 		return;
 
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,CharacterData->RunSpeed);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,CharacterData->MovementValue, EHunRPG_ActionState::Running);
 }
 

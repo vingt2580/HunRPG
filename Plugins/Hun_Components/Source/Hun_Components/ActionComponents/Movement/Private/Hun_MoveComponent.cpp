@@ -31,7 +31,7 @@ void UHun_MoveComponent::BeginPlay()
 void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
-	if (MoveComponent->MaxWalkSpeed)
+	
 }
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
@@ -56,12 +56,19 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	}
 }
 
-void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float MoveSpeed)
+void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue MoveSpeed, EHunRPG_ActionState State)
 {
 	if (!MoveComponent)
 		return;
 
-	MoveComponent->MaxWalkSpeed = MoveSpeed;
+	if (State == EHunRPG_ActionState::Idle && State == EHunRPG_ActionState::Moving)
+	{
+		MoveComponent->MaxWalkSpeed = MoveSpeed.WalkSpeed;
+	}
+	else if (State == EHunRPG_ActionState::Running)
+	{
+		MoveComponent->MaxWalkSpeed = MoveSpeed.RunSpeed;
+	}
 }
 
 void UHun_MoveComponent::JumpInput_interface_Implementation()

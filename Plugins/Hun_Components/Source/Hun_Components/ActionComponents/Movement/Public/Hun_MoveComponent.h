@@ -15,7 +15,7 @@ class HUN_COMPONENTS_API UHun_MoveComponent : public UActorComponent, public IHu
 
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector) override;
 
-	virtual void SetMoveSpeed_Interface_Implementation(float MoveSpeed) override;
+	virtual void SetMoveSpeed_Interface_Implementation(FHun_ActionValue MoveSpeed, EHunRPG_ActionState State) override;
 
 	virtual  void JumpInput_interface_Implementation() override;
 

@@ -18,3 +18,18 @@ enum class EHunRPG_ActionState : uint8
 	HitReaction,
 	Dead
 };
+
+USTRUCT(BlueprintType)
+struct FHun_ActionValue
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float WalkSpeed = 600.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float RunSpeed = 900.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float DashLength = 2000.f;
+};
