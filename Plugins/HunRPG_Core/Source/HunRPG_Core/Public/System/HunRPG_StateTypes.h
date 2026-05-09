@@ -32,4 +32,7 @@ struct FHun_ActionValue
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float DashLength = 2000.f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float LookSensitivity = 0.5;
 };

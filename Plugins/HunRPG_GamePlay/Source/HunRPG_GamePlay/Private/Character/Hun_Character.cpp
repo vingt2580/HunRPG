@@ -1,13 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Character/Hun_Character.h"
+
+#include <rapidjson/document.h>
+
 #include "HunRPG_Core/Public/HunRPG_DebugHelper.h"
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-
-#include <ThirdParty/ShaderConductor/ShaderConductor/External/DirectXShaderCompiler/include/dxc/DXIL/DxilConstants.h>
 
 #include "Interface/Hun_MovementInterface.h"
 
@@ -23,15 +24,18 @@ AHun_Character::AHun_Character()
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
 	
-	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	GetCharacterMovement()->bOrientRotationToMovement =true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f,500.0f,0.0f);
+
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 200.0f;
-	CameraBoom->SocketOffset = FVector(0.0f, 0.0f, 65.0f);
+	CameraBoom->TargetArmLength = 400.0f;
+	CameraBoom->SocketOffset = FVector(0.0f,0.0, 80.0f);
 	CameraBoom->bUsePawnControlRotation = true;
-	
-	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
-	FollowCamera->SetupAttachment(CameraBoom,USpringArmComponent::SocketName); 
-	FollowCamera->bUsePawnControlRotation = false;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
+	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
+	FollowCamera->bUsePawnControlRotation = true;
 }
 
 void AHun_Character::PostInitializeComponents()
@@ -128,5 +132,21 @@ void AHun_Character::Character_Dash()
 
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
 	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,CharacterData->MovementValue, EHunRPG_ActionState::Running);
+}
+
+void AHun_Character::Character_Look(FVector2d LookAxisVector)
+{
+	if (Controller == nullptr)
+		return;
+
+	float Sensitivity = 1.0f;
+
+	if (CharacterData)
+	{
+		Sensitivity = CharacterData->MovementValue.LookSensitivity;
+	}
+	
+	AddControllerYawInput(LookAxisVector.X * Sensitivity);
+	AddControllerPitchInput(LookAxisVector.Y * Sensitivity);
 }
 

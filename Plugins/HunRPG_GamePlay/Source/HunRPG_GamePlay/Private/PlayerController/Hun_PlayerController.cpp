@@ -34,6 +34,7 @@ void AHun_PlayerController::SetupInputComponent()
 		PEI->BindAction(InputActions->Input_Move, ETriggerEvent::Completed, this, &ThisClass::Reset_MoveSpeed);
 		PEI->BindAction(InputActions->Input_Jump, ETriggerEvent::Started, this, &ThisClass::Input_Jump);
 		PEI->BindAction(InputActions->Input_Dash, ETriggerEvent::Started, this, &ThisClass::Input_Dash);
+		PEI->BindAction(InputActions->Input_Look, ETriggerEvent::Triggered ,this, &ThisClass::Input_CameraLook);
 	}
 }
 
@@ -51,6 +52,12 @@ void AHun_PlayerController::Input_Jump()
 void AHun_PlayerController::Input_Dash()
 {
 	HunCharacter->Character_Dash();
+}
+
+void AHun_PlayerController::Input_CameraLook(const FInputActionValue& ActionValue)
+{
+	FVector2D LookAxisValue = ActionValue.Get<FVector2D>();
+	HunCharacter->Character_Look(LookAxisValue);
 }
 
 void AHun_PlayerController::Reset_MoveSpeed()

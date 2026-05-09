@@ -61,7 +61,7 @@ void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue 
 	if (!MoveComponent)
 		return;
 
-	if (State == EHunRPG_ActionState::Idle && State == EHunRPG_ActionState::Moving)
+	if (State == EHunRPG_ActionState::Idle || State == EHunRPG_ActionState::Moving)
 	{
 		MoveComponent->MaxWalkSpeed = MoveSpeed.WalkSpeed;
 	}
