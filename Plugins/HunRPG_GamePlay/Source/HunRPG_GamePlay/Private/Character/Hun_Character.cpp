@@ -150,3 +150,13 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 	AddControllerPitchInput(LookAxisVector.Y * Sensitivity);
 }
 
+void AHun_Character::CHaracter_Attack()
+{
+	if (CachedMovementComponent == nullptr)
+		return;
+	if (!IsValid(CachedMovementComponent))
+		return;
+
+	
+}
+

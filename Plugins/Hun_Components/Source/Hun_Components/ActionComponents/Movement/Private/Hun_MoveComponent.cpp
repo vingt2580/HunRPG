@@ -82,7 +82,7 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 		CurrentState == EHunRPG_ActionState::Falling ||
 		CurrentState == EHunRPG_ActionState::Attacking || 
 		CurrentState == EHunRPG_ActionState::HitReaction || 
-		CurrentState == EHunRPG_ActionState::Dead) // 이거 맞나..? 개선방안 있는지 확인
+		CurrentState == EHunRPG_ActionState::Dead) // 조건문 함수로 변수받아오기
 	{
 		return; 
 	}

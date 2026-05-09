@@ -25,7 +25,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupInputComponent() override;
-
+	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|InputData")
 	class UInputMappingContext* InputMappingContext;
 
@@ -40,5 +40,6 @@ public:
 	void Input_Jump();
 	void Input_Dash();
 	void Input_CameraLook(const FInputActionValue& ActionValue);
+	void Input_Attack();
 	void Reset_MoveSpeed();
 };

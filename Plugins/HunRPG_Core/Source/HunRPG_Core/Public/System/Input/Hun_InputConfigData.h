@@ -26,4 +26,7 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UInputAction* Input_Look;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UInputAction* Input_Attack;
 };
