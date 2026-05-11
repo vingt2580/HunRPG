@@ -35,6 +35,12 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<UActorComponent> CachedMovementComponent;
+	UPROPERTY()
+	TObjectPtr<UActorComponent> CachedCombatComponent;
+
+private:
+	void CachComponent();
+	
 
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

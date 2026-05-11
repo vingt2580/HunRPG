@@ -1,16 +1,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Hun_Interface.h"
 #include "UObject/Interface.h"
 #include "Hun_CombatInterface.generated.h"
 
 UINTERFACE()
-class UHun_CombatInterface : public UInterface
+class UHun_CombatInterface : public UHun_Interface
 {
 	GENERATED_BODY()
 };
 
-class HUNRPG_CORE_API IHun_CombatInterface
+class HUNRPG_CORE_API IHun_CombatInterface : public IHun_Interface
 {
 	GENERATED_BODY()
 

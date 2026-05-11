@@ -9,6 +9,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Interface/Hun_CombatInterface.h"
 
 #include "Interface/Hun_MovementInterface.h"
 
@@ -59,9 +60,6 @@ void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (!CharacterData)
-		return;
-
 	UCharacterMovementComponent* MoveComponent = GetCharacterMovement();
 
 	if (!MoveComponent)
@@ -71,32 +69,13 @@ void AHun_Character::BeginPlay()
 	
 	MoveComponent->bOrientRotationToMovement = true; 
 	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
-	
 	MoveComponent->MaxWalkSpeed = CharacterData->MovementValue.WalkSpeed;
-
-	CachedMovementComponent = nullptr;
 	
-	TArray<UActorComponent*> Component;
-	GetComponents(Component);
-	for (UActorComponent* Comp : Component)
-	{
-		if (Comp && Comp->Implements<UHun_MovementInterface>())
-		{
-			CachedMovementComponent = Comp;
-			HUN_LOG(FColor::Green,"Successfully cached movement component");
-			break;
-		}
-	}
-	if (CachedMovementComponent == nullptr)
-	{
-		HUN_LOG(FColor::Red,"Failed to cache movement component");
-	}
+	CachComponent();
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
 {
-	if (CachedMovementComponent == nullptr)
-		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
 	
@@ -105,18 +84,14 @@ void AHun_Character::Character_Move(FVector2D ActionValue)
 
 void AHun_Character::Character_ResetMove()
 {
-	if (CachedMovementComponent == nullptr)
-		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
 
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->MovementValue, EHunRPG_ActionState::Moving);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->MovementValue, EHunRPG_ActionState::Idle);
 }
 
 void AHun_Character::Character_Jump()
 {
-	if (CachedMovementComponent == nullptr)
-		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
 
@@ -125,8 +100,6 @@ void AHun_Character::Character_Jump()
 
 void AHun_Character::Character_Dash()
 {
-	if (CachedMovementComponent == nullptr)
-		return;
 	if (!IsValid(CachedMovementComponent))
 		return;
 
@@ -136,7 +109,7 @@ void AHun_Character::Character_Dash()
 
 void AHun_Character::Character_Look(FVector2d LookAxisVector)
 {
-	if (Controller == nullptr)
+	if (!IsValid(Controller))
 		return;
 
 	float Sensitivity = 1.0f;
@@ -152,11 +125,45 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 
 void AHun_Character::CHaracter_Attack()
 {
-	if (CachedMovementComponent == nullptr)
-		return;
-	if (!IsValid(CachedMovementComponent))
+	if (!IsValid(CachedCombatComponent))
 		return;
 
-	
+	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent);
 }
+
+void AHun_Character::CachComponent()
+{
+	if (!CharacterData)
+		return;
+
+	CachedMovementComponent = nullptr;
+	
+	TArray<UActorComponent*> Component;
+	GetComponents(Component);
+	for (UActorComponent* Comp : Component)
+	{
+		if (!CachedMovementComponent && Comp->Implements<UHun_MovementInterface>())
+		{
+			CachedMovementComponent = Comp;
+			HUN_LOG(FColor::Green,"Successfully cached movement component");
+		}
+
+		if (!CachedCombatComponent && Comp->Implements<UHun_CombatInterface>())
+		{
+			CachedCombatComponent = Comp;
+			HUN_LOG(FColor::Green, "Successfully cached combat component");
+		}
+
+		if (CachedMovementComponent && CachedCombatComponent)
+		{
+			break;
+		}
+		
+	}
+	if (CachedMovementComponent == nullptr)
+		HUN_LOG(FColor::Red, "Failed to cache movement component");
+	if (CachedCombatComponent == nullptr)
+		HUN_LOG(FColor::Red, "Failed to cache combat component");
+}
+
 

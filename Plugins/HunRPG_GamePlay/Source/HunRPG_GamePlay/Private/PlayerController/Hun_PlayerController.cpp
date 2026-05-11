@@ -35,7 +35,7 @@ void AHun_PlayerController::SetupInputComponent()
 		PEI->BindAction(InputActions->Input_Jump, ETriggerEvent::Started, this, &ThisClass::Input_Jump);
 		PEI->BindAction(InputActions->Input_Dash, ETriggerEvent::Started, this, &ThisClass::Input_Dash);
 		PEI->BindAction(InputActions->Input_Look, ETriggerEvent::Triggered ,this, &ThisClass::Input_CameraLook);
-		PEI->BindAction(InputActions->Input_Attack, ETriggerEvent::Triggered, this, %ThisClass::Input_Attack());
+		PEI->BindAction(InputActions->Input_Attack, ETriggerEvent::Started, this, &ThisClass::Input_Attack);
 	}
 }
 

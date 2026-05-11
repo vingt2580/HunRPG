@@ -3,22 +3,24 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UObject/Interface.h"
+#include "Components/ActorComponent.h"
+#include "HunRPG_Core/Public/Interface/Hun_CombatInterface.h"
 #include "Hun_CombatComponent.generated.h"
 
-// This class does not need to be modified.
-UINTERFACE()
-class UHun_CombatComponent : public UInterface
-{
-	GENERATED_BODY()
-};
 
-/**
- * 
- */
-class HUN_COMPONENTS_API IHun_CombatComponent
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class HUN_COMPONENTS_API UHun_CombatComponent : public UActorComponent, public IHun_CombatInterface
 {
 	GENERATED_BODY()
+
+	virtual void AttackInput_interface_Implementation() override;
+	
+protected:
+	// Called when the game starts
+	virtual void BeginPlay() override;
 
 public:
+	// Called every frame
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 };

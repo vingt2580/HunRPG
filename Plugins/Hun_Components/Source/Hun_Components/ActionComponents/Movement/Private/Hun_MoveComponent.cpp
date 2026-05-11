@@ -31,8 +31,11 @@ void UHun_MoveComponent::BeginPlay()
 void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,
 	FActorComponentTickFunction* ThisTickFunction)
 {
-	
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	HUN_LOG(FColor::Red, "CurrentState: %s",*(StaticEnum<EHunRPG_ActionState>() ? StaticEnum<EHunRPG_ActionState>()->GetValueAsString(StateComponent->GetState()) : TEXT("Invalid")));
 }
+
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
@@ -45,14 +48,12 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	{
 		const FVector ForwardDirection = MovementRotation.RotateVector(FVector::ForwardVector);
 		OwnerCharacter->AddMovementInput(ForwardDirection,MoveVector.Y);
-		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
 
 	if (MoveVector.X != 0.f)
 	{
 		const FVector RightDirection = MovementRotation.RotateVector(FVector::RightVector);
 		OwnerCharacter->AddMovementInput(RightDirection,MoveVector.X);
-		HUN_LOG(FColor::Green, "Moving Character %s", *MoveVector.ToString());
 	}
 }
 
@@ -64,10 +65,12 @@ void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue 
 	if (State == EHunRPG_ActionState::Idle || State == EHunRPG_ActionState::Moving)
 	{
 		MoveComponent->MaxWalkSpeed = MoveSpeed.WalkSpeed;
+		StateComponent->SetState(State);
 	}
 	else if (State == EHunRPG_ActionState::Running)
 	{
 		MoveComponent->MaxWalkSpeed = MoveSpeed.RunSpeed;
+		StateComponent->SetState(State);
 	}
 }
 
@@ -77,12 +80,8 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 		return;
 	
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();
-
-	if (CurrentState == EHunRPG_ActionState::Jumping || 
-		CurrentState == EHunRPG_ActionState::Falling ||
-		CurrentState == EHunRPG_ActionState::Attacking || 
-		CurrentState == EHunRPG_ActionState::HitReaction || 
-		CurrentState == EHunRPG_ActionState::Dead) // 조건문 함수로 변수받아오기
+	
+	if (!CanJump()) 
 	{
 		return; 
 	}
@@ -110,11 +109,7 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();
 
-	if (CurrentState == EHunRPG_ActionState::Jumping || 
-		CurrentState == EHunRPG_ActionState::Falling ||
-		CurrentState == EHunRPG_ActionState::Attacking || 
-		CurrentState == EHunRPG_ActionState::HitReaction || 
-		CurrentState == EHunRPG_ActionState::Dead) 
+	if (!CanJump()) 
 	{
 		return; 
 	}
@@ -123,4 +118,19 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 	float DashStrength = 2000.f;
 	
 	OwnerCharacter->LaunchCharacter(DashDirection * DashStrength, true, false);
+}
+
+bool UHun_MoveComponent::CanJump()
+{
+	EHunRPG_ActionState CurrentState = StateComponent->GetState();
+
+	if (CurrentState == EHunRPG_ActionState::Jumping || 
+		CurrentState == EHunRPG_ActionState::Falling ||
+		CurrentState == EHunRPG_ActionState::Attacking || 
+		CurrentState == EHunRPG_ActionState::HitReaction || 
+		CurrentState == EHunRPG_ActionState::Dead) 
+	{
+		return false; 
+	}
+	return true;
 }
