@@ -72,6 +72,8 @@ void AHun_Character::BeginPlay()
 	MoveComponent->MaxWalkSpeed = CharacterData->MovementValue.WalkSpeed;
 	
 	CachComponent();
+
+	IHun_CombatInterface::Execute_InitializeCombatData_Interface(CachedCombatComponent, CharacterData->CombatValue);
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)

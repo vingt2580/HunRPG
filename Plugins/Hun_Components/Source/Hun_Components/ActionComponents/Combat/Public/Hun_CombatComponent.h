@@ -14,13 +14,39 @@ class HUN_COMPONENTS_API UHun_CombatComponent : public UActorComponent, public I
 	GENERATED_BODY()
 
 	virtual void AttackInput_interface_Implementation() override;
+	virtual void InitializeCombatData_Interface_Implementation(FHun_CombatValue CharacterCombatData) override;
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-public:
-	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
+
+private:
+	int32 CurrentComboCount = 0;  
+	int32 MaxComboCount;
+
+	bool IsComboSaved = false;
+	bool IsAttacking = false;
+	
+	UPROPERTY()
+	ACharacter* OwnerCharacter;
+	UPROPERTY()
+	class UHun_StateComponent* StateComponent;
+	
+	UPROPERTY()
+	class UAnimMontage* ComboMontage;
+
+	bool CanAttack();
+
+public:
+	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
+	void StartComboAttack();
+	
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void OnSaveCombo();
+
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void OnResetCombo();
+	
 };

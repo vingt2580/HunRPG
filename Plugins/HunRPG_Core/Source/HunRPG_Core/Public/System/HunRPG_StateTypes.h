@@ -36,3 +36,18 @@ struct FHun_ActionValue
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float LookSensitivity = 0.5;
 };
+
+USTRUCT(BlueprintType)
+struct FHun_CombatValue
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* ComboMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 MaxComboCount = 1;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BaseDamage = 10.0f;
+};

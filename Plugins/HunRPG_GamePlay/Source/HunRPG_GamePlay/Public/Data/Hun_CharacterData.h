@@ -24,4 +24,7 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
 	FHun_ActionValue MovementValue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Combat")
+	FHun_CombatValue CombatValue;
 };
