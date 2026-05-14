@@ -99,7 +99,7 @@ void UHun_CombatComponent::OnResetCombo()
 	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 	if (AnimInstance && ComboMontage)
 	{
-		AnimInstance->Montage_Stop(0.2f, ComboMontage);
+		AnimInstance->Montage_Stop(0.f, ComboMontage);
 	}
 }
 
