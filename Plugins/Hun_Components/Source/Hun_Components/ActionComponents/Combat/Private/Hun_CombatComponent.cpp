@@ -14,8 +14,7 @@ void UHun_CombatComponent::AttackInput_interface_Implementation()
 
 	if (IsAttacking)
 	{
-		IsComboSaved = true;
-		HUN_LOG(FColor::Green, "Saved Attacking");
+		HUN_LOG(FColor::Green, "Already Attacking");
 		return;
 	}
 
@@ -74,7 +73,6 @@ void UHun_CombatComponent::StartComboAttack()
 	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));
 	
-	IsComboSaved = false;
 	IsAttacking = true;
 	StateComponent->SetState(EHunRPG_ActionState::Attacking);
 	
@@ -84,33 +82,24 @@ void UHun_CombatComponent::StartComboAttack()
 
 void UHun_CombatComponent::OnSaveCombo()
 {
+	IsAttacking = false;
+	HUN_LOG(FColor::Green, "End Attacking");
 }
 
 void UHun_CombatComponent::OnResetCombo()
 {
 	if (!OwnerCharacter)
 		return;
+	
+	IsAttacking = false;
+	CurrentComboCount = 0;
 
-	if (IsComboSaved)
+	StateComponent->SetState(EHunRPG_ActionState::Idle);
+
+	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+	if (AnimInstance && ComboMontage)
 	{
-		IsAttacking = false;
-		StartComboAttack();
-	}
-	else
-	{
-		IsAttacking = false;
-		IsComboSaved = false;
-		CurrentComboCount = 0;
-
-		StateComponent->SetState(EHunRPG_ActionState::Idle);
-
-		UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
-		if (AnimInstance && ComboMontage)
-		{
-			AnimInstance->Montage_Stop(0.2f, ComboMontage);
-		}
-		
-		HUN_LOG(FColor::Yellow, "Combo End and Reset");
+		AnimInstance->Montage_Stop(0.2f, ComboMontage);
 	}
 }
 

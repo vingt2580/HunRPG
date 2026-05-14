@@ -42,6 +42,9 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	if (!OwnerCharacter)
 		return;
 
+	if (!CanMove())
+		return;
+
 	const FRotator MovementRotation(0.f,OwnerCharacter->Controller->GetControlRotation().Yaw,0.f);
 	
 	if (MoveVector.Y != 0.f)
@@ -126,6 +129,20 @@ bool UHun_MoveComponent::CanJump()
 
 	if (CurrentState == EHunRPG_ActionState::Jumping || 
 		CurrentState == EHunRPG_ActionState::Falling ||
+		CurrentState == EHunRPG_ActionState::Attacking || 
+		CurrentState == EHunRPG_ActionState::HitReaction || 
+		CurrentState == EHunRPG_ActionState::Dead) 
+	{
+		return false; 
+	}
+	return true;
+}
+
+bool UHun_MoveComponent::CanMove()
+{
+	EHunRPG_ActionState CurrentState = StateComponent->GetState();
+
+	if (CurrentState == EHunRPG_ActionState::Falling ||
 		CurrentState == EHunRPG_ActionState::Attacking || 
 		CurrentState == EHunRPG_ActionState::HitReaction || 
 		CurrentState == EHunRPG_ActionState::Dead) 

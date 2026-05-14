@@ -26,6 +26,7 @@ protected:
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	bool CanJump();
+	bool CanMove();
 
 	UPROPERTY()
 	ACharacter* OwnerCharacter;

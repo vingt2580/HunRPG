@@ -25,8 +25,7 @@ protected:
 private:
 	int32 CurrentComboCount = 0;  
 	int32 MaxComboCount;
-
-	bool IsComboSaved = false;
+	
 	bool IsAttacking = false;
 	
 	UPROPERTY()
