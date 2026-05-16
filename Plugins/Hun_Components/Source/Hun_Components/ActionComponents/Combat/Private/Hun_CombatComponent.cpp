@@ -4,6 +4,8 @@
 #include "HunRPG_DebugHelper.h"
 #include "Animation/AnimInstance.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Hun_Components/ActionComponents/State/Public/Hun_StateComponent.h"
 
 
@@ -25,6 +27,7 @@ void UHun_CombatComponent::InitializeCombatData_Interface_Implementation(FHun_Co
 {
 	ComboMontage = CharacterCombatData.ComboMontage;
 	MaxComboCount = CharacterCombatData.MaxComboCount;
+	AttackMoveImpuls = CharacterCombatData.AttackMoveImpulse;
 }
 
 void UHun_CombatComponent::BeginPlay()
@@ -43,7 +46,6 @@ void UHun_CombatComponent::BeginPlay()
 	
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
 }
-
 
 void UHun_CombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
@@ -69,7 +71,10 @@ void UHun_CombatComponent::StartComboAttack()
 
 	if (!AnimInstance || !ComboMontage)
 		return;
-
+	
+	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
+	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * AttackMoveImpuls, true);
+	
 	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));
 	
@@ -80,6 +85,13 @@ void UHun_CombatComponent::StartComboAttack()
 	AnimInstance->Montage_JumpToSection(SectionName, ComboMontage);
 }
 
+void UHun_CombatComponent::HitAttack()
+{
+	if (!IsValid(OwnerCharacter))
+		return;
+	
+}
+
 void UHun_CombatComponent::OnSaveCombo()
 {
 	IsAttacking = false;
@@ -88,7 +100,7 @@ void UHun_CombatComponent::OnSaveCombo()
 
 void UHun_CombatComponent::OnResetCombo()
 {
-	if (!OwnerCharacter)
+	if (!IsValid(OwnerCharacter))
 		return;
 	
 	IsAttacking = false;

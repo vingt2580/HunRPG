@@ -50,4 +50,8 @@ struct FHun_CombatValue
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float BaseDamage = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float AttackMoveImpulse = 0.2f;
+	
 };

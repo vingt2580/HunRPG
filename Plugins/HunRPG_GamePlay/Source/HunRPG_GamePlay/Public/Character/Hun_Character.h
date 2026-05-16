@@ -24,7 +24,7 @@ protected:
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|CharacterData")
-	UHun_CharacterData* CharacterData;
+	TObjectPtr<UHun_CharacterData> CharacterData;
 	
 	void Character_Move(FVector2D ActionValue);
 	void Character_ResetMove();

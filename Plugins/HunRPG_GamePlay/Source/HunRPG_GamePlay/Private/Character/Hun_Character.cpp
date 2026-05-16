@@ -129,13 +129,13 @@ void AHun_Character::CHaracter_Attack()
 {
 	if (!IsValid(CachedCombatComponent))
 		return;
-
+	
 	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent);
 }
 
 void AHun_Character::CachComponent()
 {
-	if (!CharacterData)
+	if (!IsValid(CharacterData))
 		return;
 
 	CachedMovementComponent = nullptr;

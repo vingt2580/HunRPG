@@ -10,15 +10,14 @@
 AHun_MobBase::AHun_MobBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	CurrentHealthPoint = MobData->MaxHealthPoint;
 }
 
 // Called when the game starts or when spawned
 void AHun_MobBase::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	CurrentHealthPoint = MobData->MaxHealthPoint;
 }
 
 // Called every frame

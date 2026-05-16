@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "HunRPG_Core/Public/Interface/Hun_CombatInterface.h"
+#include "Hun_Components/ActionComponents/State/Public/Hun_StateComponent.h"
 #include "Hun_CombatComponent.generated.h"
 
 
@@ -21,31 +22,33 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
 	                           FActorComponentTickFunction* ThisTickFunction) override;
-
+	
 private:
 	int32 CurrentComboCount = 0;  
 	int32 MaxComboCount;
+	float AttackMoveImpuls;
 	
 	bool IsAttacking = false;
 	
 	UPROPERTY()
-	ACharacter* OwnerCharacter;
+	TObjectPtr<ACharacter> OwnerCharacter;
 	UPROPERTY()
-	class UHun_StateComponent* StateComponent;
+	TObjectPtr<UHun_StateComponent> StateComponent;
+	UPROPERTY()
+	TObjectPtr<UAnimMontage> ComboMontage;
 	
-	UPROPERTY()
-	class UAnimMontage* ComboMontage;
-
 	bool CanAttack();
 
 public:
 	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
 	void StartComboAttack();
+
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void HitAttack();
 	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnSaveCombo();
 
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnResetCombo();
-	
 };
