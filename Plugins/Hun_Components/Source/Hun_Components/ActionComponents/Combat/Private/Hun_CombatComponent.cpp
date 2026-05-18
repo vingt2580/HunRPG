@@ -7,7 +7,13 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Hun_Components/ActionComponents/State/Public/Hun_StateComponent.h"
+#include "Kismet/GameplayStatics.h"
 
+
+UHun_CombatComponent::UHun_CombatComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+}
 
 void UHun_CombatComponent::AttackInput_interface_Implementation()
 {
@@ -16,7 +22,7 @@ void UHun_CombatComponent::AttackInput_interface_Implementation()
 
 	if (IsAttacking)
 	{
-		HUN_LOG(FColor::Green, "Already Attacking");
+		//HUN_LOG(FColor::Green, "Already Attacking");
 		return;
 	}
 
@@ -51,6 +57,12 @@ void UHun_CombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
                                          FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	if (IsWeaponTrace)
+	{
+		USkeletalMeshComponent* MeshComp = OwnerCharacter->GetMesh();
+		AttackWeaponTracing(MeshComp);
+	}
 }
 
 bool UHun_CombatComponent::CanAttack()
@@ -95,7 +107,7 @@ void UHun_CombatComponent::HitAttack()
 void UHun_CombatComponent::OnSaveCombo()
 {
 	IsAttacking = false;
-	HUN_LOG(FColor::Green, "End Attacking");
+	//HUN_LOG(FColor::Green, "End Attacking");
 }
 
 void UHun_CombatComponent::OnResetCombo()
@@ -113,5 +125,96 @@ void UHun_CombatComponent::OnResetCombo()
 	{
 		AnimInstance->Montage_Stop(0.f, ComboMontage);
 	}
+}
+
+void UHun_CombatComponent::OnTrace_Attack()
+{
+	if (!IsValid(OwnerCharacter))
+		return;
+
+	USkeletalMeshComponent* MeshComponent = OwnerCharacter->GetMesh();
+
+	if (!IsValid(MeshComponent))
+		return;
+
+	IsWeaponTrace = true;
+
+	HUN_LOG(FColor::Green, "IsWeponTrace True");
+
+	WeaponStartPoint = MeshComponent->GetSocketLocation(TEXT("Socket_SwordStart"));
+	WeaponEndPoint = MeshComponent->GetSocketLocation(TEXT("Socket_SwordEnd"));
+}
+
+void UHun_CombatComponent::OffTrace_Attack()
+{
+	IsWeaponTrace = false;
+	HUN_LOG(FColor::Green, "IsWeponTrace false");
+}
+
+void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshComponent)
+{
+	if (!IsWeaponTrace || !MeshComponent || !OwnerCharacter)
+		return;
+
+	FVector CurrentStartLoc = MeshComponent->GetSocketLocation(TEXT("Socket_SwordStart"));
+	FVector CurrentEndLoc = MeshComponent->GetSocketLocation(TEXT("Socket_SwordEnd"));
+
+	TArray<FHun_TraceLine> TraceLines;
+	
+	TraceLines.Emplace(WeaponStartPoint, CurrentStartLoc); 
+	TraceLines.Emplace(WeaponEndPoint, CurrentEndLoc);   
+	TraceLines.Emplace(WeaponStartPoint, CurrentEndLoc);  
+	TraceLines.Emplace(WeaponEndPoint, CurrentStartLoc);  
+	TraceLines.Emplace(CurrentStartLoc, CurrentEndLoc);
+
+	int32 SegmentCount = 3;
+
+	for (int32 i = 1; i < SegmentCount; i++)
+	{
+		float Alpha = static_cast<float>(i) / SegmentCount; //띠용
+
+		const FVector PreviousMid = FMath::Lerp(WeaponStartPoint, WeaponStartPoint, Alpha);
+		const FVector CurrentMid = FMath::Lerp(CurrentStartLoc, CurrentEndLoc, Alpha);
+
+		TraceLines.Emplace(PreviousMid, CurrentMid);
+	}
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(OwnerCharacter);
+
+	FHitResult HitResult;
+	
+	for (const auto& Trace : TraceLines)
+	{
+		bool isHit = GetWorld()->LineTraceSingleByChannel(
+			HitResult,
+			Trace.StartPoint,
+			Trace.EndPoint,
+			ECC_Pawn,
+			Params
+		);
+
+		if (isHit)
+		{
+			TObjectPtr<AActor> HitActor = HitResult.GetActor();
+			if (HitActor && !AlreadyHitActors.Contains(HitActor))
+			{
+				AlreadyHitActors.Add(HitActor);
+
+				UGameplayStatics::ApplyDamage(
+				HitActor,
+				25.0, // 데이터에셋분리
+				OwnerCharacter->GetController(),
+				OwnerCharacter,
+				UDamageType::StaticClass()
+				);
+			}
+		}
+
+		DrawDebugLine(GetWorld(), Trace.StartPoint, Trace.EndPoint, FColor::Red, true, 0.25);
+	}
+
+	WeaponStartPoint = CurrentStartLoc;
+	WeaponEndPoint = CurrentEndLoc;
 }
 

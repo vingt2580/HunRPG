@@ -135,6 +135,7 @@ void AHun_Character::CHaracter_Attack()
 
 void AHun_Character::CachComponent()
 {
+	
 	if (!IsValid(CharacterData))
 		return;
 

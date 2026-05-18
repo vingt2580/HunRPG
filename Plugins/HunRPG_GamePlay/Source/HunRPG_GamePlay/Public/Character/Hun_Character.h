@@ -32,7 +32,7 @@ public:
 	void Character_Dash();
 	void Character_Look(FVector2D LookAxisVector);
 	void CHaracter_Attack();
-
+	
 	UPROPERTY()
 	TObjectPtr<UActorComponent> CachedMovementComponent;
 	UPROPERTY()

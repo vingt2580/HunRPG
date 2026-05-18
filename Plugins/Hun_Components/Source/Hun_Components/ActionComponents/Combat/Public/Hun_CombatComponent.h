@@ -8,12 +8,19 @@
 #include "Hun_Components/ActionComponents/State/Public/Hun_StateComponent.h"
 #include "Hun_CombatComponent.generated.h"
 
+struct FHun_TraceLine
+{
+	FVector StartPoint;
+	FVector EndPoint;
+};
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HUN_COMPONENTS_API UHun_CombatComponent : public UActorComponent, public IHun_CombatInterface
 {
 	GENERATED_BODY()
 
+	UHun_CombatComponent();
+	
 	virtual void AttackInput_interface_Implementation() override;
 	virtual void InitializeCombatData_Interface_Implementation(FHun_CombatValue CharacterCombatData) override;
 	
@@ -29,6 +36,13 @@ private:
 	float AttackMoveImpuls;
 	
 	bool IsAttacking = false;
+	bool IsWeaponTrace =false;
+
+	FVector WeaponStartPoint;
+    FVector WeaponEndPoint;
+	
+	UPROPERTY()
+	TArray<AActor*> AlreadyHitActors;
 	
 	UPROPERTY()
 	TObjectPtr<ACharacter> OwnerCharacter;
@@ -51,4 +65,11 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnResetCombo();
+
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void OnTrace_Attack();
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void OffTrace_Attack();
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void AttackWeaponTracing(USkeletalMeshComponent* MeshComponent);
 };
