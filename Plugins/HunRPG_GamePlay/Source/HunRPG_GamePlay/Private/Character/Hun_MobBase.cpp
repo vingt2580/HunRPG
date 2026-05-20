@@ -32,15 +32,15 @@ float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 {
 	float TakenDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (CurrentHealthPoint <= 0.0f)
+	if (CurrentHealthPoint <= 0.0f || IsDeath)
 	{
-		Die();
+		Die(DamageCauser);
 		return 0.0f;
 	}
 	else
 	{
 		CheckHitAngle(DamageCauser);
-		PlayeHitAnimation();
+		PlayHitAnimation();
 
 		CurrentHealthPoint -= TakenDamage;
 		HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
@@ -49,18 +49,9 @@ float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	}
 }
 
-void AHun_MobBase::Die()
+void AHun_MobBase::Die(AActor* DamageCauser)
 {
-	HUN_LOG(FColor::Red, "MobBase사망");
-
-	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
-	{
-		UAnimMontage* DeathMontage = MobData->DeathMontage;
-		if (DeathMontage)
-		{
-			AnimInstance->Montage_Play(DeathMontage, 1.0f);
-		}
-	}
+	PlayDeathAnimation();
 
 	if (UCapsuleComponent* CapsuleComp = GetCapsuleComponent())
 	{
@@ -92,7 +83,7 @@ void AHun_MobBase::CheckHitAngle(AActor* DamageCauser)
 	}
 }
 
-void AHun_MobBase::PlayeHitAnimation()
+void AHun_MobBase::PlayHitAnimation()
 {
 	if (!IsHit)
 		return;
@@ -118,7 +109,29 @@ void AHun_MobBase::PlayeHitAnimation()
 			AnimInstance->Montage_JumpToSection(SectionName, HitReactionMontage);
 			IsHit = false;
 		}
-		
 	}
 }
+
+void AHun_MobBase::PlayDeathAnimation()
+{
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		FName SectionName = TEXT("Death_Front");
+
+		if (HitAngle >= -180.0f && HitAngle <= 180.0f) 
+			SectionName = TEXT("Death_Front");
+		else
+			SectionName = TEXT("Death_Back");
+		
+		UAnimMontage* DeathMontage = MobData->DeathMontage;
+		
+		if (DeathMontage)
+		{
+			AnimInstance->Montage_Play(DeathMontage, 1.0f);
+			AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+			IsDeath = true;
+		}
+	}
+}
+
 

@@ -19,7 +19,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	virtual void Die();
+	virtual void Die(AActor* DamageCauser);
 
 public:
 
@@ -33,8 +33,12 @@ public:
 	int CurrentHealthPoint;
 
 	void CheckHitAngle(AActor* DamageCauser);
-	void PlayeHitAnimation();
+	void PlayHitAnimation();
+	void PlayDeathAnimation();
+	
 
 	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
 	bool IsHit;
+	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
+	bool IsDeath = false;
 };
