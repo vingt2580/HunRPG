@@ -34,6 +34,7 @@ private:
 	int32 CurrentComboCount = 0;  
 	int32 MaxComboCount;
 	float AttackMoveImpuls;
+	float BaseDamage;
 	
 	bool IsAttacking = false;
 	bool IsWeaponTrace =false;

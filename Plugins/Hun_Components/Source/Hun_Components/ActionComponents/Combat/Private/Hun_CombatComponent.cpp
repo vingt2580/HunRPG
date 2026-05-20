@@ -34,6 +34,7 @@ void UHun_CombatComponent::InitializeCombatData_Interface_Implementation(FHun_Co
 	ComboMontage = CharacterCombatData.ComboMontage;
 	MaxComboCount = CharacterCombatData.MaxComboCount;
 	AttackMoveImpuls = CharacterCombatData.AttackMoveImpulse;
+	BaseDamage = CharacterCombatData.BaseDamage;
 }
 
 void UHun_CombatComponent::BeginPlay()
@@ -201,7 +202,7 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 
 				UGameplayStatics::ApplyDamage(
 				HitActor,
-				25.0, // 데이터에셋분리
+				BaseDamage,
 				OwnerCharacter->GetController(),
 				OwnerCharacter,
 				UDamageType::StaticClass()

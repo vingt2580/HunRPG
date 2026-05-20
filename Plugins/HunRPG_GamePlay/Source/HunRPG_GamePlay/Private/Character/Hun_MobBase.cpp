@@ -31,22 +31,21 @@ float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	class AController* EventInstigator, AActor* DamageCauser)
 {
 	float TakenDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	
+	CheckHitAngle(DamageCauser);
+	PlayHitAnimation();
 
+	CurrentHealthPoint -= TakenDamage;
+	HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
+	
 	if (CurrentHealthPoint <= 0.0f || IsDeath)
 	{
 		Die(DamageCauser);
 		return 0.0f;
 	}
-	else
-	{
-		CheckHitAngle(DamageCauser);
-		PlayHitAnimation();
-
-		CurrentHealthPoint -= TakenDamage;
-		HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
-		
-		return TakenDamage;
-	}
+	
+	return TakenDamage;
+	
 }
 
 void AHun_MobBase::Die(AActor* DamageCauser)
@@ -63,7 +62,7 @@ void AHun_MobBase::Die(AActor* DamageCauser)
 		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	}
 
-	SetLifeSpan(3.0f);
+	SetLifeSpan(1.6f);
 }
 
 void AHun_MobBase::CheckHitAngle(AActor* DamageCauser)
@@ -119,9 +118,9 @@ void AHun_MobBase::PlayDeathAnimation()
 		FName SectionName = TEXT("Death_Front");
 
 		if (HitAngle >= -180.0f && HitAngle <= 180.0f) 
-			SectionName = TEXT("Death_Front");
-		else
 			SectionName = TEXT("Death_Back");
+		else
+			SectionName = TEXT("Death_Front");
 		
 		UAnimMontage* DeathMontage = MobData->DeathMontage;
 		
