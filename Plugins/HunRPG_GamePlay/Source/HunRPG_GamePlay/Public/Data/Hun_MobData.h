@@ -17,4 +17,10 @@ class HUNRPG_GAMEPLAY_API UHun_MobData : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Stat")
 	int MaxHealthPoint = 100;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Animation")
+	class UAnimMontage* HitReactionMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Animation")
+	class UAnimMontage* DeathMontage;
 };

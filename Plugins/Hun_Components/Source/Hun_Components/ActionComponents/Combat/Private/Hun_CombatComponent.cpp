@@ -139,8 +139,6 @@ void UHun_CombatComponent::OnTrace_Attack()
 
 	IsWeaponTrace = true;
 
-	HUN_LOG(FColor::Green, "IsWeponTrace True");
-
 	WeaponStartPoint = MeshComponent->GetSocketLocation(TEXT("Socket_SwordStart"));
 	WeaponEndPoint = MeshComponent->GetSocketLocation(TEXT("Socket_SwordEnd"));
 }
@@ -148,7 +146,7 @@ void UHun_CombatComponent::OnTrace_Attack()
 void UHun_CombatComponent::OffTrace_Attack()
 {
 	IsWeaponTrace = false;
-	HUN_LOG(FColor::Green, "IsWeponTrace false");
+	AlreadyHitActors.Reset();
 }
 
 void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshComponent)
@@ -197,7 +195,7 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 		if (isHit)
 		{
 			TObjectPtr<AActor> HitActor = HitResult.GetActor();
-			if (HitActor && !AlreadyHitActors.Contains(HitActor))
+			if (HitActor&& !AlreadyHitActors.Contains(HitActor))
 			{
 				AlreadyHitActors.Add(HitActor);
 
@@ -211,7 +209,7 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 			}
 		}
 
-		DrawDebugLine(GetWorld(), Trace.StartPoint, Trace.EndPoint, FColor::Red, true, 0.25);
+		DrawDebugLine(GetWorld(), Trace.StartPoint, Trace.EndPoint, FColor::Red, false, 0.25);
 	}
 
 	WeaponStartPoint = CurrentStartLoc;

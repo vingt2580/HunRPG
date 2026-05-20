@@ -26,6 +26,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|MobData")
 	UHun_MobData* MobData;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Combat")
+	float HitAngle;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Stat")
 	int CurrentHealthPoint;
+
+	void CheckHitAngle(AActor* DamageCauser);
+	void PlayeHitAnimation();
+
+	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
+	bool IsHit;
 };

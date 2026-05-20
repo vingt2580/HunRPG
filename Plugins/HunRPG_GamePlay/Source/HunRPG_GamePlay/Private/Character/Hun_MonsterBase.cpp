@@ -4,13 +4,6 @@
 #include "Character/Hun_MonsterBase.h"
 
 
-// Sets default values
-AHun_MonsterBase::AHun_MonsterBase()
-{
-	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-}
-
 // Called when the game starts or when spawned
 void AHun_MonsterBase::BeginPlay()
 {

@@ -3,6 +3,7 @@
 
 #include "Character/Hun_MobBase.h"
 
+#include "Components/CapsuleComponent.h"
 #include "HunRPG_DebugHelper.h"
 
 
@@ -32,16 +33,92 @@ float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	float TakenDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 	if (CurrentHealthPoint <= 0.0f)
+	{
+		Die();
 		return 0.0f;
+	}
+	else
+	{
+		CheckHitAngle(DamageCauser);
+		PlayeHitAnimation();
 
-	CurrentHealthPoint -= TakenDamage;
-	HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
-	
-	return TakenDamage;
+		CurrentHealthPoint -= TakenDamage;
+		HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
+		
+		return TakenDamage;
+	}
 }
 
 void AHun_MobBase::Die()
 {
 	HUN_LOG(FColor::Red, "MobBase사망");
+
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		UAnimMontage* DeathMontage = MobData->DeathMontage;
+		if (DeathMontage)
+		{
+			AnimInstance->Montage_Play(DeathMontage, 1.0f);
+		}
+	}
+
+	if (UCapsuleComponent* CapsuleComp = GetCapsuleComponent())
+	{
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	if (USkeletalMeshComponent* MeshComp = GetMesh())
+	{
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	SetLifeSpan(3.0f);
+}
+
+void AHun_MobBase::CheckHitAngle(AActor* DamageCauser)
+{
+	if (CurrentHealthPoint > 0.0f && DamageCauser)
+	{
+		FVector HitDirection = (DamageCauser->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		
+		float ForwardDot = FVector::DotProduct(GetActorForwardVector(), HitDirection);
+		float RightDot = FVector::DotProduct(GetActorRightVector(), HitDirection);
+		
+		HitAngle = FMath::RadiansToDegrees(FMath::Atan2(RightDot, ForwardDot));
+
+		HUN_LOG(FColor::Red, "HitAngle: %f", HitAngle);
+		
+		IsHit = true;
+	}
+}
+
+void AHun_MobBase::PlayeHitAnimation()
+{
+	if (!IsHit)
+		return;
+	
+	if (UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance())
+	{
+		FName SectionName = TEXT("Front");
+
+		if (HitAngle >= -45.0f && HitAngle <= 45.0f) 
+			SectionName = TEXT("Front");
+		else if (HitAngle > 45.0f && HitAngle <= 135.0f) 
+			SectionName = TEXT("Right");
+		else if (HitAngle >= -135.0f && HitAngle < -45.0f) 
+			SectionName = TEXT("Left");
+		else 
+			SectionName = TEXT("Back");
+		
+		UAnimMontage* HitReactionMontage = MobData->HitReactionMontage;
+		
+		if (HitReactionMontage)
+		{
+			AnimInstance->Montage_Play(HitReactionMontage, 1.0f);
+			AnimInstance->Montage_JumpToSection(SectionName, HitReactionMontage);
+			IsHit = false;
+		}
+		
+	}
 }
 
