@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-#include "HunRPG/Public/PlayerController/Hun_PlayerController.h"
+#include "Controller/PlayerController/Hun_PlayerController.h"
 #include "Character/Hun_Character.h"
 
 #include "GameFramework/CharacterMovementComponent.h"

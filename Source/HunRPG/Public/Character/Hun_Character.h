@@ -24,8 +24,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|CharacterData")
-	TObjectPtr<UHun_CharacterData> CharacterData;
 	
 	void Character_Move(FVector2D ActionValue);
 	void Character_ResetMove();

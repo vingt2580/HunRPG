@@ -43,10 +43,10 @@ void AHun_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (!IsValid(CharacterData))
+	if (!IsValid(MobData))
 		return;
 
-	for (TSubclassOf<UActorComponent> ComponentClass : CharacterData->CharacterComponents)
+	for (TSubclassOf<UActorComponent> ComponentClass : MobData->CharacterComponents)
 	{
 		if (ComponentClass)
 		{
@@ -69,11 +69,11 @@ void AHun_Character::BeginPlay()
 	
 	MoveComponent->bOrientRotationToMovement = true; 
 	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
-	MoveComponent->MaxWalkSpeed = CharacterData->MovementValue.WalkSpeed;
+	MoveComponent->MaxWalkSpeed = MobData->MovementValue.WalkSpeed;
 	
 	CachComponent();
 
-	IHun_CombatInterface::Execute_InitializeCombatData_Interface(CachedCombatComponent, CharacterData->CombatValue);
+	IHun_CombatInterface::Execute_InitializeCombatData_Interface(CachedCombatComponent, MobData->CombatValue);
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
@@ -89,7 +89,7 @@ void AHun_Character::Character_ResetMove()
 	if (!IsValid(CachedMovementComponent))
 		return;
 
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, CharacterData->MovementValue, EHunRPG_ActionState::Idle);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, MobData->MovementValue, EHunRPG_ActionState::Idle);
 }
 
 void AHun_Character::Character_Jump()
@@ -106,7 +106,7 @@ void AHun_Character::Character_Dash()
 		return;
 
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,CharacterData->MovementValue, EHunRPG_ActionState::Running);
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent,MobData->MovementValue, EHunRPG_ActionState::Running);
 }
 
 void AHun_Character::Character_Look(FVector2d LookAxisVector)
@@ -116,9 +116,9 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 
 	float Sensitivity = 1.0f;
 
-	if (CharacterData)
+	if (MobData)
 	{
-		Sensitivity = CharacterData->MovementValue.LookSensitivity;
+		Sensitivity = MobData->MovementValue.LookSensitivity;
 	}
 	
 	AddControllerYawInput(LookAxisVector.X * Sensitivity);
@@ -136,7 +136,7 @@ void AHun_Character::CHaracter_Attack()
 void AHun_Character::CachComponent()
 {
 	
-	if (!IsValid(CharacterData))
+	if (!IsValid(MobData))
 		return;
 
 	CachedMovementComponent = nullptr;
