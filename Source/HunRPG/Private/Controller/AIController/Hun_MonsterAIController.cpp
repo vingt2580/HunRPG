@@ -4,6 +4,7 @@
 #include "Controller/AIController/Hun_MonsterAIController.h"
 
 #include "HunRPG_DebugHelper.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Character/Hun_Character.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -36,20 +37,40 @@ void AHun_MonsterAIController::BeginPlay()
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTarget);
 }
 
+void AHun_MonsterAIController::OnPossess(APawn* InPawn)
+{
+	Super::OnPossess(InPawn);
+
+	if (!BehaviorTree)
+		return;
+	
+	RunBehaviorTree(BehaviorTree);
+
+	if (UBlackboardComponent* BBComponent = GetBlackboardComponent())
+	{
+		BBComponent->SetValueAsVector(TEXT("HomeLocation"), InPawn->GetActorLocation());
+	}
+}
+
 void AHun_MonsterAIController::OnTarget(AActor* Actor, FAIStimulus Stimulus)
 {
 	AHun_Character* TargetCharacter = Cast<AHun_Character>(Actor);
-	
 	if (!TargetCharacter)
+		return;
+
+	UBlackboardComponent* BBComponent = GetBlackboardComponent();
+	if (!BBComponent)
 		return;
 
 	if (Stimulus.WasSuccessfullySensed())
 	{
 		HUN_LOG(FColor::Red, "AIController Found!");
+		BBComponent->SetValueAsObject(TEXT("TargetActor"), TargetCharacter);
 	}
 	else
 	{
 		HUN_LOG(FColor::Red, "AIController Not Found!");
+		BBComponent->SetValueAsObject(TEXT("TargetActor"), nullptr);
 	}
 }
 

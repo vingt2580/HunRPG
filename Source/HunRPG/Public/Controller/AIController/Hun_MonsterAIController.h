@@ -15,8 +15,12 @@ class HUNRPG_API AHun_MonsterAIController : public AAIController
 public:
 	AHun_MonsterAIController();
 
+	UPROPERTY(EditAnywhere,BLueprintReadOnly, Category = "HunRPG|AI")
+	class UBehaviorTree* BehaviorTree;
+	
 protected:
 	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|AI", meta = (AllowPrivateAccess = "true"))
