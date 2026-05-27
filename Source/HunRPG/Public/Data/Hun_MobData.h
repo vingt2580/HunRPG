@@ -15,6 +15,9 @@ class HUNRPG_API UHun_MobData : public UDataAsset
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Name")
+	FString Name = "CharacterName";
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Stat")
 	int MaxHealthPoint = 100;
 

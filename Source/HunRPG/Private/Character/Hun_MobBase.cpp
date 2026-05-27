@@ -4,6 +4,7 @@
 #include "Character/Hun_MobBase.h"
 
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "HunRPG_DebugHelper.h"
 
 
@@ -20,6 +21,17 @@ void AHun_MobBase::BeginPlay()
 
 	if (!MobData)
 		return;
+	
+	UCharacterMovementComponent* MoveComponent = GetCharacterMovement();
+
+	if (!MoveComponent)
+		return;
+
+	bUseControllerRotationYaw = false;
+	
+	MoveComponent->bOrientRotationToMovement = true; 
+	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
+	MoveComponent->MaxWalkSpeed = MobData->MovementValue.WalkSpeed;
 	
 	CurrentHealthPoint = MobData->MaxHealthPoint;
 }

@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Data/Hun_CharacterData.h"
 #include "Perception/AIPerceptionTypes.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "Hun_MonsterAIController.generated.h"
 
 UCLASS()
@@ -17,6 +19,9 @@ public:
 
 	UPROPERTY(EditAnywhere,BLueprintReadOnly, Category = "HunRPG|AI")
 	class UBehaviorTree* BehaviorTree;
+
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "HunRPG|AI")
+	TObjectPtr<UHun_CharacterData> CharacterData;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -24,9 +29,10 @@ protected:
 
 private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|AI", meta = (AllowPrivateAccess = "true"))
-	class UAIPerceptionComponent* AIPerceptionComponent;
+	TObjectPtr<UAIPerceptionComponent> AIPerceptionComponent;
 
-	class UAISenseConfig_Sight* SightConfig;
+	UPROPERTY()
+	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
 	UFUNCTION()
 	void OnTarget(AActor* Actor, FAIStimulus Stimulus);

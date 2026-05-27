@@ -55,3 +55,18 @@ struct FHun_CombatValue
 	float AttackMoveImpulse = 0.2f;
 	
 };
+
+USTRUCT(BlueprintType)
+struct FHun_MobAI
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float SightRadius = 1000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float LoseSightRadius = 2000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	float PeripheralVisionAngleDegrees = 60.0;
+};

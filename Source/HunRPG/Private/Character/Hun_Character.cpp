@@ -24,9 +24,6 @@ AHun_Character::AHun_Character()
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-	
-	GetCharacterMovement()->bOrientRotationToMovement =true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f,500.0f,0.0f);
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(GetRootComponent());
@@ -59,17 +56,6 @@ void AHun_Character::PostInitializeComponents()
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UCharacterMovementComponent* MoveComponent = GetCharacterMovement();
-
-	if (!MoveComponent)
-		return;
-
-	bUseControllerRotationYaw = false;
-	
-	MoveComponent->bOrientRotationToMovement = true; 
-	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
-	MoveComponent->MaxWalkSpeed = MobData->MovementValue.WalkSpeed;
 	
 	CachComponent();
 

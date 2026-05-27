@@ -19,13 +19,13 @@ class HUNRPG_API UHun_CharacterData : public UHun_MobData
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Components")
 	TArray<TSubclassOf<UActorComponent>> CharacterComponents;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Name")
-	FString Name = "CharacterName";
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
 	FHun_ActionValue MovementValue;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Combat")
 	FHun_CombatValue CombatValue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|AI")
+	FHun_MobAI AIValue;
 };

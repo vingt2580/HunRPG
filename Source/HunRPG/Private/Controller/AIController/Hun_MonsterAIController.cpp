@@ -15,26 +15,28 @@ AHun_MonsterAIController::AHun_MonsterAIController()
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
-	SightConfig->SightRadius = 1000.0f;
-	SightConfig->LoseSightRadius = 1200.0f;
-	SightConfig->PeripheralVisionAngleDegrees = 180.0f; //AI 전용 데이터에셋 분리
-
 	SightConfig->DetectionByAffiliation.bDetectEnemies = true;
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	AIPerceptionComponent->ConfigureSense(*SightConfig);
-	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTarget);
 }
 
 void AHun_MonsterAIController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (!AIPerceptionComponent)
+	
+	if (!IsValid(AIPerceptionComponent)||
+		!IsValid(SightConfig)||
+		!IsValid(CharacterData))
 		return;
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTarget);
+	SightConfig->SightRadius = CharacterData->AIValue.SightRadius;
+	SightConfig->LoseSightRadius = CharacterData->AIValue.LoseSightRadius;
+	SightConfig->PeripheralVisionAngleDegrees = CharacterData->AIValue.PeripheralVisionAngleDegrees;
+	
+	AIPerceptionComponent->ConfigureSense(*SightConfig);
+	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
 }
 
 void AHun_MonsterAIController::OnPossess(APawn* InPawn)
