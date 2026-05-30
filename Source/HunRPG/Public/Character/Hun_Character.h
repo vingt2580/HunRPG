@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Hun_MobBase.h"
 #include "Camera/CameraComponent.h"
+#include "Components/Hun_ActorComponent.h"
 #include "Data/Hun_CharacterData.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -33,13 +34,14 @@ public:
 	void CHaracter_Attack();
 	
 	UPROPERTY()
-	TObjectPtr<UActorComponent> CachedMovementComponent;
+	TObjectPtr<UHun_ActorComponent> CachedMovementComponent;
 	UPROPERTY()
-	TObjectPtr<UActorComponent> CachedCombatComponent;
+	TObjectPtr<UHun_ActorComponent> CachedCombatComponent;
+
+	UPROPERTY()
+	TArray<UHun_ActorComponent*> Component;
 
 private:
-	void CachComponent();
-	
 
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

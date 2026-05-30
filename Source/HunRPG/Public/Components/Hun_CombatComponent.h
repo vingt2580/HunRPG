@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Hun_ActorComponent.h"
 #include "Components/ActorComponent.h"
 #include "HunRPG/Public/Interface/Hun_CombatInterface.h"
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
@@ -15,7 +16,7 @@ struct FHun_TraceLine
 };
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class HUNRPG_API UHun_CombatComponent : public UActorComponent, public IHun_CombatInterface
+class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_CombatInterface
 {
 	GENERATED_BODY()
 

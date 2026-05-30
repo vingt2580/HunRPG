@@ -7,6 +7,7 @@
 
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
+#include "Components/Hun_ActorComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/Hun_CombatInterface.h"
@@ -43,21 +44,36 @@ void AHun_Character::PostInitializeComponents()
 	if (!IsValid(MobData))
 		return;
 
-	for (TSubclassOf<UActorComponent> ComponentClass : MobData->CharacterComponents)
+	for (TSubclassOf<UHun_ActorComponent> ComponentClass : MobData->CharacterComponents)
 	{
 		if (ComponentClass)
 		{
-			UActorComponent* NewComponent = NewObject<UActorComponent>(this, ComponentClass);
+			UHun_ActorComponent* NewComponent = NewObject<UHun_ActorComponent>(this, ComponentClass);
 			NewComponent->RegisterComponent();
+
+			if (!IsValid(CachedMovementComponent) && NewComponent->Implements<UHun_MovementInterface>())
+			{
+				CachedMovementComponent = NewComponent;
+				HUN_LOG(FColor::Green,"Successfully cached movement component");
+			}
+
+			if (!IsValid(CachedCombatComponent) && NewComponent->Implements<UHun_CombatInterface>())
+			{
+				CachedCombatComponent = NewComponent;
+				HUN_LOG(FColor::Green, "Successfully cached combat component");
+			}
 		}
 	}
+
+	if (!IsValid(CachedMovementComponent))
+		HUN_LOG(FColor::Red, "Failed to create and cache movement component");
+	if (!IsValid(CachedMovementComponent))
+		HUN_LOG(FColor::Red, "Failed to create and cache combat component");
 }
 
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	CachComponent();
 
 	IHun_CombatInterface::Execute_InitializeCombatData_Interface(CachedCombatComponent, MobData->CombatValue);
 }
@@ -117,42 +133,6 @@ void AHun_Character::CHaracter_Attack()
 		return;
 	
 	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent);
-}
-
-void AHun_Character::CachComponent()
-{
-	
-	if (!IsValid(MobData))
-		return;
-
-	CachedMovementComponent = nullptr;
-	
-	TArray<UActorComponent*> Component;
-	GetComponents(Component);
-	for (UActorComponent* Comp : Component)
-	{
-		if (!CachedMovementComponent && Comp->Implements<UHun_MovementInterface>())
-		{
-			CachedMovementComponent = Comp;
-			HUN_LOG(FColor::Green,"Successfully cached movement component");
-		}
-
-		if (!CachedCombatComponent && Comp->Implements<UHun_CombatInterface>())
-		{
-			CachedCombatComponent = Comp;
-			HUN_LOG(FColor::Green, "Successfully cached combat component");
-		}
-
-		if (CachedMovementComponent && CachedCombatComponent)
-		{
-			break;
-		}
-		
-	}
-	if (CachedMovementComponent == nullptr)
-		HUN_LOG(FColor::Red, "Failed to cache movement component");
-	if (CachedCombatComponent == nullptr)
-		HUN_LOG(FColor::Red, "Failed to cache combat component");
 }
 
 

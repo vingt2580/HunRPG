@@ -12,6 +12,17 @@
 AHun_MobBase::AHun_MobBase()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	UCapsuleComponent* CapsuleComp = GetCapsuleComponent();
+	USkeletalMeshComponent* SkeletalMeshComp = GetMesh();
+	
+	if (!SkeletalMeshComp)
+		return;
+	if (!CapsuleComp)
+		return;
+	
+	CapsuleComp->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
+	SkeletalMeshComp->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 }
 
 // Called when the game starts or when spawned
@@ -26,7 +37,7 @@ void AHun_MobBase::BeginPlay()
 
 	if (!MoveComponent)
 		return;
-
+	
 	bUseControllerRotationYaw = false;
 	
 	MoveComponent->bOrientRotationToMovement = true; 
@@ -45,6 +56,9 @@ void AHun_MobBase::Tick(float DeltaTime)
 float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
+	if (IsDeath)
+		return 0.0f;
+	
 	float TakenDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
 	CheckHitAngle(DamageCauser);
@@ -53,14 +67,13 @@ float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& Da
 	CurrentHealthPoint -= TakenDamage;
 	HUN_LOG(FColor::Magenta, "TakeDamage: %f", TakenDamage);
 	
-	if (CurrentHealthPoint <= 0.0f || IsDeath)
+	if (CurrentHealthPoint <= 0.0f)
 	{
 		Die(DamageCauser);
 		return 0.0f;
 	}
 	
 	return TakenDamage;
-	
 }
 
 void AHun_MobBase::Die(AActor* DamageCauser)
@@ -132,7 +145,7 @@ void AHun_MobBase::PlayDeathAnimation()
 	{
 		FName SectionName = TEXT("Death_Front");
 
-		if (HitAngle >= -180.0f && HitAngle <= 180.0f) 
+		if (HitAngle >= -90.0f && HitAngle <= 90.0f) 
 			SectionName = TEXT("Death_Back");
 		else
 			SectionName = TEXT("Death_Front");

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Hun_MobData.h"
+#include "Components/Hun_ActorComponent.h"
 #include "Engine/DataAsset.h"
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "Hun_CharacterData.generated.h"
@@ -18,7 +19,7 @@ class HUNRPG_API UHun_CharacterData : public UHun_MobData
 
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Components")
-	TArray<TSubclassOf<UActorComponent>> CharacterComponents;
+	TArray<TSubclassOf<UHun_ActorComponent>> CharacterComponents;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Move")
 	FHun_ActionValue MovementValue;

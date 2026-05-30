@@ -174,9 +174,9 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 
 	for (int32 i = 1; i < SegmentCount; i++)
 	{
-		float Alpha = static_cast<float>(i) / SegmentCount; //띠용
+		float Alpha = static_cast<float>(i) / SegmentCount;
 
-		const FVector PreviousMid = FMath::Lerp(WeaponStartPoint, WeaponStartPoint, Alpha);
+		const FVector PreviousMid = FMath::Lerp(WeaponStartPoint, WeaponEndPoint, Alpha);
 		const FVector CurrentMid = FMath::Lerp(CurrentStartLoc, CurrentEndLoc, Alpha);
 
 		TraceLines.Emplace(PreviousMid, CurrentMid);

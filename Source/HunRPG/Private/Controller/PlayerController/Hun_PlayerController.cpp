@@ -22,6 +22,11 @@ void AHun_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
+	HunCharacter = GetPawn<AHun_Character>();
+
+	if (!IsValid(HunCharacter))
+		return;
+
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 
 	Subsystem->ClearAllMappings();
@@ -29,6 +34,9 @@ void AHun_PlayerController::SetupInputComponent()
 
 	UEnhancedInputComponent* PEI = Cast<UEnhancedInputComponent>(InputComponent);
 
+	if (!IsValid(PEI))
+		return;
+	
 	if (IsValid(InputActions))
 	{
 		PEI->BindAction(InputActions->Input_Move, ETriggerEvent::Triggered, this, &ThisClass::Input_Move);
@@ -42,32 +50,50 @@ void AHun_PlayerController::SetupInputComponent()
 
 void AHun_PlayerController::Input_Move(const FInputActionValue& ActionValue)
 {
+	if (!IsValid(HunCharacter))
+		return;
+	
 	FVector2D MovementVector = ActionValue.Get<FVector2D>();
 	HunCharacter->Character_Move(MovementVector);
 }
 
 void AHun_PlayerController::Input_Jump()
 {
+	if (!IsValid(HunCharacter))
+		return;
+	
 	HunCharacter->Character_Jump();
 }
 
 void AHun_PlayerController::Input_Dash()
 {
+	if (!IsValid(HunCharacter))
+		return;
+	
 	HunCharacter->Character_Dash();
 }
 
 void AHun_PlayerController::Input_CameraLook(const FInputActionValue& ActionValue)
 {
+	if (!IsValid(HunCharacter))
+		return;
+	
 	FVector2D LookAxisValue = ActionValue.Get<FVector2D>();
 	HunCharacter->Character_Look(LookAxisValue);
 }
 
 void AHun_PlayerController::Input_Attack()
 {
+	if (!IsValid(HunCharacter))
+		return;
+	
 	HunCharacter->CHaracter_Attack();
 }
 
 void AHun_PlayerController::Reset_MoveSpeed()
 {
+	if (!IsValid(HunCharacter))
+		
+		return;
 	HunCharacter->Character_ResetMove();
 }

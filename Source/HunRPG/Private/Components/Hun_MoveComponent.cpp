@@ -16,12 +16,12 @@ void UHun_MoveComponent::BeginPlay()
 
 	AActor* OwnerActor = GetOwner();
 
-	if (!OwnerActor)
+	if (!IsValid(OwnerActor))
 		return;
 
 	OwnerCharacter = Cast<ACharacter>(OwnerActor);
 
-	if (!OwnerCharacter)
+	if (!IsValid(OwnerCharacter))
 		return;
 
 	MoveComponent = OwnerCharacter->GetCharacterMovement();
@@ -32,14 +32,12 @@ void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	HUN_LOG(FColor::Red, "CurrentState: %s",*(StaticEnum<EHunRPG_ActionState>() ? StaticEnum<EHunRPG_ActionState>()->GetValueAsString(StateComponent->GetState()) : TEXT("Invalid")));
 }
 
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
-	if (!OwnerCharacter)
+	if (!IsValid(OwnerCharacter))
 		return;
 
 	if (!CanMove())
@@ -62,7 +60,7 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 
 void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue MoveSpeed, EHunRPG_ActionState State)
 {
-	if (!MoveComponent)
+	if (!IsValid(MoveComponent))
 		return;
 
 	if (State == EHunRPG_ActionState::Idle || State == EHunRPG_ActionState::Moving)
@@ -79,7 +77,7 @@ void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue 
 
 void UHun_MoveComponent::JumpInput_interface_Implementation()
 {
-	if (!OwnerCharacter || !MoveComponent || !StateComponent)
+	if (!IsValid(OwnerCharacter) || !IsValid(MoveComponent) || !IsValid(StateComponent))
 		return;
 	
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();
@@ -107,7 +105,7 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 
 void UHun_MoveComponent::DashInput_Interface_Implementation()
 {
-	if (!OwnerCharacter || !MoveComponent || !StateComponent)
+	if (!IsValid(OwnerCharacter) || !IsValid(MoveComponent) || !IsValid(StateComponent))
 		return;
 
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();

@@ -9,7 +9,7 @@
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class HUNRPG_API UHun_StateComponent : public UActorComponent
+class HUNRPG_API UHun_StateComponent : public UHun_ActorComponent
 {
 	GENERATED_BODY()
 

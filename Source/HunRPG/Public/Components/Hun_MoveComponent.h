@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Hun_ActorComponent.h"
 #include "Components/ActorComponent.h"
 #include "HunRPG/Public/Interface/Hun_MovementInterface.h"
 #include "Hun_MoveComponent.generated.h"
 
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class HUNRPG_API UHun_MoveComponent : public UActorComponent, public IHun_MovementInterface
+class HUNRPG_API UHun_MoveComponent : public UHun_ActorComponent, public IHun_MovementInterface
 {
 	GENERATED_BODY()
 
@@ -29,9 +30,9 @@ protected:
 	bool CanMove();
 
 	UPROPERTY()
-	ACharacter* OwnerCharacter;
+	TObjectPtr<ACharacter> OwnerCharacter;
 	UPROPERTY()
-	class UCharacterMovementComponent* MoveComponent;
+	TObjectPtr<UCharacterMovementComponent> MoveComponent;
 	UPROPERTY()
-	class UHun_StateComponent* StateComponent;
+	TObjectPtr<UHun_StateComponent> StateComponent;
 };

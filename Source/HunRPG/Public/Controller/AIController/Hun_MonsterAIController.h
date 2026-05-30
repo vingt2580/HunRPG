@@ -17,7 +17,7 @@ class HUNRPG_API AHun_MonsterAIController : public AAIController
 public:
 	AHun_MonsterAIController();
 
-	UPROPERTY(EditAnywhere,BLueprintReadOnly, Category = "HunRPG|AI")
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "HunRPG|AI")
 	class UBehaviorTree* BehaviorTree;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "HunRPG|AI")
