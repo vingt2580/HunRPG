@@ -1,36 +1,37 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "Components/Hun_ActorComponent.h"
+#include "GameFramework/Character.h"
+#include "Character/Hun_MobBase.h"
+#include "Data/Hun_CharacterData.h"
 
-
-// Sets default values for this component's properties
 UHun_ActorComponent::UHun_ActorComponent()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
+	PrimaryComponentTick.bCanEverTick = false;
 }
 
-
-// Called when the game starts
 void UHun_ActorComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// ...
 	
+	OwnerCharacter = Cast<AHun_MobBase>(GetOwner());
+	
+	if (!MobData)
+		return;
+	
+	InitializeMobData();
 }
 
-
-// Called every frame
-void UHun_ActorComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                        FActorComponentTickFunction* ThisTickFunction)
+void UHun_ActorComponent::SetData(UHun_CharacterData* NewHunData)
 {
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (!IsValid(MobData))
+		return;
+	if (!NewHunData)
+		return;
 
-	// ...
+	MobData = NewHunData;
+	InitializeMobData();
+}
+
+void UHun_ActorComponent::InitializeMobData()
+{
 }
 

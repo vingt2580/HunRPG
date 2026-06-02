@@ -14,13 +14,6 @@ void UHun_MoveComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor* OwnerActor = GetOwner();
-
-	if (!IsValid(OwnerActor))
-		return;
-
-	OwnerCharacter = Cast<ACharacter>(OwnerActor);
-
 	if (!IsValid(OwnerCharacter))
 		return;
 
@@ -58,19 +51,19 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	}
 }
 
-void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(FHun_ActionValue MoveSpeed, EHunRPG_ActionState State)
+void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State)
 {
 	if (!IsValid(MoveComponent))
 		return;
 
 	if (State == EHunRPG_ActionState::Idle || State == EHunRPG_ActionState::Moving)
 	{
-		MoveComponent->MaxWalkSpeed = MoveSpeed.WalkSpeed;
+		MoveComponent->MaxWalkSpeed = GetMobData()->MovementValue.WalkSpeed;
 		StateComponent->SetState(State);
 	}
 	else if (State == EHunRPG_ActionState::Running)
 	{
-		MoveComponent->MaxWalkSpeed = MoveSpeed.RunSpeed;
+		MoveComponent->MaxWalkSpeed = GetMobData()->MovementValue.RunSpeed;
 		StateComponent->SetState(State);
 	}
 }
@@ -111,14 +104,16 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();
 
 	if (!CanJump()) 
-	{
 		return; 
-	}
 	
 	FVector DashDirection = OwnerCharacter->GetActorForwardVector();
-	float DashStrength = 2000.f;
 	
-	OwnerCharacter->LaunchCharacter(DashDirection * DashStrength, true, false);
+	OwnerCharacter->LaunchCharacter(DashDirection * GetMobData()->MovementValue.DashLength, true, false);
+}
+
+void UHun_MoveComponent::InitializeMobData()
+{
+	Super::InitializeMobData();
 }
 
 bool UHun_MoveComponent::CanJump()

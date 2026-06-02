@@ -23,7 +23,6 @@ class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_
 	UHun_CombatComponent();
 	
 	virtual void AttackInput_interface_Implementation() override;
-	virtual void InitializeCombatData_Interface_Implementation(FHun_CombatValue CharacterCombatData) override;
 	
 protected:
 	// Called when the game starts
@@ -46,8 +45,6 @@ private:
 	UPROPERTY()
 	TArray<AActor*> AlreadyHitActors;
 	
-	UPROPERTY()
-	TObjectPtr<ACharacter> OwnerCharacter;
 	UPROPERTY()
 	TObjectPtr<UHun_StateComponent> StateComponent;
 	UPROPERTY()

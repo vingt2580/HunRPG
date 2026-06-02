@@ -9,7 +9,7 @@ void IHun_MovementInterface::MovementInput_Interface_Implementation(FVector2D Mo
 {
 }
 
-void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(FHun_ActionValue MoveSpeed, EHunRPG_ActionState State)
+void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State)
 {
 }
 

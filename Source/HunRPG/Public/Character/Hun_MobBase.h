@@ -3,11 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Data/Hun_CharacterData.h"
-#include "Data/Hun_MobData.h"
 #include "GameFramework/Character.h"
 #include "Hun_MobBase.generated.h"
 
+class UHun_CharacterData;
 UCLASS()
 class HUNRPG_API AHun_MobBase : public ACharacter
 {

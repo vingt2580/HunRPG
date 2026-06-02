@@ -42,7 +42,7 @@ void AHun_MobBase::BeginPlay()
 	
 	MoveComponent->bOrientRotationToMovement = true; 
 	MoveComponent->RotationRate = FRotator(0.f, 540.0f, 0.f);
-	MoveComponent->MaxWalkSpeed = MobData->MovementValue.WalkSpeed;
+	MoveComponent->MaxWalkSpeed = GetMobda->MovementValue.WalkSpeed;
 	
 	CurrentHealthPoint = MobData->MaxHealthPoint;
 }

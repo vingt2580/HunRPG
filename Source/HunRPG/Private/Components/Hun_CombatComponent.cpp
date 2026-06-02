@@ -3,6 +3,7 @@
 #include "HunRPG/Public/Components/Hun_CombatComponent.h"
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
+#include "HunRPG/Public/Data/Hun_CharacterData.h"
 #include "HunRPG_DebugHelper.h"
 
 #include "Animation/AnimInstance.h"
@@ -33,26 +34,11 @@ void UHun_CombatComponent::AttackInput_interface_Implementation()
 	StartComboAttack();
 }
 
-void UHun_CombatComponent::InitializeCombatData_Interface_Implementation(FHun_CombatValue CharacterCombatData)
-{
-	ComboMontage = CharacterCombatData.ComboMontage;
-	MaxComboCount = CharacterCombatData.MaxComboCount;
-	AttackMoveImpuls = CharacterCombatData.AttackMoveImpulse;
-	BaseDamage = CharacterCombatData.BaseDamage;
-}
-
 void UHun_CombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AActor* OwnerActor = GetOwner();
-
-	if (!OwnerActor)
-		return;
-
-	OwnerCharacter = Cast<ACharacter>(OwnerActor);
-
-	if (!OwnerCharacter)
+	if (!IsValid(OwnerCharacter))
 		return;
 	
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
@@ -86,20 +72,20 @@ void UHun_CombatComponent::StartComboAttack()
 {
 	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 
-	if (!AnimInstance || !ComboMontage)
+	if (!AnimInstance || !GetMobData()->CombatValue.ComboMontage)
 		return;
 	
 	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
-	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * AttackMoveImpuls, true);
+	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * GetMobData()->CombatValue.AttackMoveImpulse, true);
 	
-	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, MaxComboCount);
+	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, GetMobData()->CombatValue.MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));
 	
 	IsAttacking = true;
 	StateComponent->SetState(EHunRPG_ActionState::Attacking);
 	
-	AnimInstance->Montage_Play(ComboMontage, 1.0f);
-	AnimInstance->Montage_JumpToSection(SectionName, ComboMontage);
+	AnimInstance->Montage_Play(GetMobData()->CombatValue.ComboMontage, 1.0f);
+	AnimInstance->Montage_JumpToSection(SectionName, GetMobData()->CombatValue.ComboMontage);
 }
 
 void UHun_CombatComponent::HitAttack()
@@ -206,7 +192,7 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 
 				UGameplayStatics::ApplyDamage(
 				HitActor,
-				BaseDamage,
+				GetMobData()->CombatValue.BaseDamage,
 				OwnerCharacter->GetController(),
 				OwnerCharacter,
 				UDamageType::StaticClass()
