@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/Hun_ActorComponent.h"
 #include "Engine/DataAsset.h"
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "Hun_CharacterData.generated.h"
@@ -17,9 +16,6 @@ class HUNRPG_API UHun_CharacterData : public UDataAsset
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Components")
-	TArray<TSubclassOf<UHun_ActorComponent>> CharacterComponents;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Name")
 	FString Name = "CharacterName";
 	

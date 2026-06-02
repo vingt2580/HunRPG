@@ -23,6 +23,7 @@ class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_
 	UHun_CombatComponent();
 	
 	virtual void AttackInput_interface_Implementation() override;
+	virtual float HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 protected:
 	// Called when the game starts
@@ -41,6 +42,9 @@ private:
 
 	FVector WeaponStartPoint;
     FVector WeaponEndPoint;
+
+	UPROPERTY()
+	float CurrentHealthPoint;
 	
 	UPROPERTY()
 	TArray<AActor*> AlreadyHitActors;
@@ -53,22 +57,33 @@ private:
 	bool CanAttack();
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Combat")
+	float HitAngle;
+	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
+	bool IsHit;
+	
+	
 	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
 	void StartComboAttack();
 
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void HitAttack();
-	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnSaveCombo();
-
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnResetCombo();
-
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnTrace_Attack();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OffTrace_Attack();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void AttackWeaponTracing(USkeletalMeshComponent* MeshComponent);
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	bool IsAlive() const { return CurrentHealthPoint > 0.0f; }
+	
+	void PlayHitAnimation();
+	void PlayDeathAnimation();
+	void CheckHitAngle(AActor* DamageCauser);
+	float ApplyDamage(float TakenDamage);
+	void CharacterDie();
 };

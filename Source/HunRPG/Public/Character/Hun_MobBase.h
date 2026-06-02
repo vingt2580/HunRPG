@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Interface/Hun_CombatInterface.h"
 #include "Hun_MobBase.generated.h"
 
 class UHun_CharacterData;
@@ -19,23 +20,18 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-	virtual void Die(AActor* DamageCauser);
 
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|MobData")
-	UHun_CharacterData* MobData;
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Combat")
 	float HitAngle;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Stat")
 	int CurrentHealthPoint;
-
-	void CheckHitAngle(AActor* DamageCauser);
-	void PlayHitAnimation();
-	void PlayDeathAnimation();
 	
+	void PlayDeathAnimation();
+
+	TScriptInterface<IHun_CombatInterface> CombatInterface = this;
 
 	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
 	bool IsHit;

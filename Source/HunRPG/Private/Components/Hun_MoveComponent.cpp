@@ -7,6 +7,7 @@
 #include "HunRPG_DebugHelper.h"
 
 #include "BlendSpaceAnalysis.h"
+#include "Data/Hun_CharacterData.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Character.h"
 
@@ -19,6 +20,8 @@ void UHun_MoveComponent::BeginPlay()
 
 	MoveComponent = OwnerCharacter->GetCharacterMovement();
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
+
+	MoveComponent->MaxWalkSpeed = GetMobData()->MovementValue.WalkSpeed;
 }
 
 void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType,

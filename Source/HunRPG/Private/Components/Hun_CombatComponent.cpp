@@ -4,15 +4,16 @@
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
 #include "HunRPG/Public/Data/Hun_CharacterData.h"
+#include "Components/Hun_StateComponent.h"
+#include "System/HunRPG_StateTypes.h"
 #include "HunRPG_DebugHelper.h"
 
 #include "Animation/AnimInstance.h"
-#include "Components/Hun_StateComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "System/HunRPG_StateTypes.h"
 
 
 UHun_CombatComponent::UHun_CombatComponent()
@@ -34,12 +35,34 @@ void UHun_CombatComponent::AttackInput_interface_Implementation()
 	StartComboAttack();
 }
 
+float UHun_CombatComponent::HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	class AController* EventInstigator, AActor* DamageCauser)
+{
+	if (!IsValid(OwnerCharacter))
+		return 0.0f;
+
+	float TakeDamage = ApplyDamage(DamageAmount);
+	
+	PlayHitAnimation();
+	CheckHitAngle(DamageCauser);
+	
+	if (!IsAlive())
+	{
+		CharacterDie();
+		return 0.0f;	
+	}
+	
+	return TakeDamage;
+}
+
 void UHun_CombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
 	if (!IsValid(OwnerCharacter))
 		return;
+
+	CurrentHealthPoint = GetMobData()->MaxHealthPoint;
 	
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
 }
@@ -206,4 +229,99 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 	WeaponStartPoint = CurrentStartLoc;
 	WeaponEndPoint = CurrentEndLoc;
 }
+
+void UHun_CombatComponent::PlayHitAnimation()
+{
+	if (!IsHit)
+		return;
+	
+	if (UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance())
+	{
+		FName SectionName = TEXT("Front");
+
+		if (HitAngle >= -45.0f && HitAngle <= 45.0f) 
+			SectionName = TEXT("Front");
+		else if (HitAngle > 45.0f && HitAngle <= 135.0f) 
+			SectionName = TEXT("Right");
+		else if (HitAngle >= -135.0f && HitAngle < -45.0f) 
+			SectionName = TEXT("Left");
+		else 
+			SectionName = TEXT("Back");
+
+		UAnimMontage* HitReactionMontage = GetMobData()->HitReactionMontage;
+		if (HitReactionMontage)
+		{
+			AnimInstance->Montage_Play(HitReactionMontage, 1.0f);
+			AnimInstance->Montage_JumpToSection(SectionName, HitReactionMontage);
+			IsHit = false;
+		}
+	}
+}
+
+void UHun_CombatComponent::PlayDeathAnimation()
+{
+	if (UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance())
+	{
+		FName SectionName = TEXT("Death_Front");
+
+		if (HitAngle >= -90.0f && HitAngle <= 90.0f) 
+			SectionName = TEXT("Death_Back");
+		else
+			SectionName = TEXT("Death_Front");
+		
+		UAnimMontage* DeathMontage = GetMobData()->DeathMontage;
+		
+		if (DeathMontage)
+		{
+			AnimInstance->Montage_Play(DeathMontage, 1.0f);
+			AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+		}
+	}
+}
+
+void UHun_CombatComponent::CheckHitAngle(AActor* DamageCauser)
+{
+	if (CurrentHealthPoint > 0.0f && DamageCauser)
+	{
+		FVector HitDirection = (DamageCauser->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+		
+		float ForwardDot = FVector::DotProduct(OwnerCharacter->GetActorLocation(), HitDirection);
+		float RightDot = FVector::DotProduct(OwnerCharacter->GetActorLocation(), HitDirection);
+		
+		HitAngle = FMath::RadiansToDegrees(FMath::Atan2(RightDot, ForwardDot));
+
+		HUN_LOG(FColor::Red, "HitAngle: %f", HitAngle);
+		
+		IsHit = true;
+	}
+}
+
+float UHun_CombatComponent::ApplyDamage(float TakenDamage)
+{
+	if (CurrentHealthPoint <= 0.0f)
+		return 0.0f;
+
+	float ActualDamage = TakenDamage; //여기서 방어도 스탯 공식 적용하면 될듯
+
+	CurrentHealthPoint -= ActualDamage;
+
+	return ActualDamage;
+}
+
+void UHun_CombatComponent::CharacterDie()
+{
+	PlayHitAnimation();
+	if (UCapsuleComponent* CapsuleComp = OwnerCharacter->GetCapsuleComponent())
+	{
+		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+	if (USkeletalMeshComponent* MeshComp = OwnerCharacter->GetMesh())
+	{
+		MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
+
+	OwnerCharacter->SetLifeSpan(1.6f);
+}
+
+
 

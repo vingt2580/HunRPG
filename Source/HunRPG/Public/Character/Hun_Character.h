@@ -2,11 +2,12 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Hun_MobBase.h"
-#include "Camera/CameraComponent.h"
 #include "Components/Hun_ActorComponent.h"
-#include "Data/Hun_CharacterData.h"
+#include "Data/Hun_ComponentsData.h"
+
+#include "CoreMinimal.h"
+#include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/Character.h"
@@ -23,6 +24,9 @@ class HUNRPG_API AHun_Character : public AHun_MobBase
 protected:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG | Components")
+	TObjectPtr<UHun_ComponentsData> ComponentsData;
 
 public:
 	

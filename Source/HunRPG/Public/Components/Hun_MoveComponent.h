@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Hun_ActorComponent.h"
 #include "Components/ActorComponent.h"
+#include "HunRPG/Public/Components/Hun_StateComponent.h"
 #include "HunRPG/Public/Interface/Hun_MovementInterface.h"
 #include "Hun_MoveComponent.generated.h"
 

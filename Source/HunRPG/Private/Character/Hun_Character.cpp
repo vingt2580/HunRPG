@@ -41,10 +41,10 @@ void AHun_Character::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	if (!IsValid(MobData))
+	if (!IsValid(ComponentsData))
 		return;
 
-	for (TSubclassOf<UHun_ActorComponent> ComponentClass : MobData->CharacterComponents)
+	for (TSubclassOf<UHun_ActorComponent> ComponentClass : ComponentsData->CharacterComponents)
 	{
 		if (ComponentClass)
 		{
@@ -74,8 +74,6 @@ void AHun_Character::PostInitializeComponents()
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
-
-	IHun_CombatInterface::Execute_InitializeCombatData_Interface(CachedCombatComponent, MobData->CombatValue);
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
@@ -122,9 +120,10 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 
 	float Sensitivity = 1.0f;
 
-	if (MobData)
+	if (ComponentsData)
 	{
-		Sensitivity = MobData->MovementValue.LookSensitivity;
+		//Sensitivity = MobData->MovementValue.LookSensitivity;
+		//이걸 어디에 넣을지 고민
 	}
 	
 	AddControllerYawInput(LookAxisVector.X * Sensitivity);
