@@ -8,6 +8,8 @@
 #include "Hun_MobBase.generated.h"
 
 class UHun_CharacterData;
+class UHun_ComponentsData;
+class UHun_ActorComponent;
 UCLASS()
 class HUNRPG_API AHun_MobBase : public ACharacter
 {
@@ -18,23 +20,22 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void PostInitializeComponents() override;
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG | Components")
+	TObjectPtr<UHun_ComponentsData> ComponentsData;
+	UPROPERTY()
+	TObjectPtr<UHun_ActorComponent> CachedMovementComponent;
+	UPROPERTY()
+	TObjectPtr<UHun_ActorComponent> CachedCombatComponent;
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Combat")
-	float HitAngle;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Stat")
-	int CurrentHealthPoint;
-	
-	void PlayDeathAnimation();
-
 	TScriptInterface<IHun_CombatInterface> CombatInterface = this;
 
-	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
-	bool IsHit;
-	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
-	bool IsDeath = false;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | CharacterData")
+	UHun_CharacterData* CharacterData;
+
+	UPROPERTY()
+	TArray<UHun_ActorComponent*> Component;
 };

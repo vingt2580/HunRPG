@@ -22,11 +22,7 @@ class HUNRPG_API AHun_Character : public AHun_MobBase
 	AHun_Character();
 
 protected:
-	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG | Components")
-	TObjectPtr<UHun_ComponentsData> ComponentsData;
 
 public:
 	
@@ -36,14 +32,6 @@ public:
 	void Character_Dash();
 	void Character_Look(FVector2D LookAxisVector);
 	void CHaracter_Attack();
-	
-	UPROPERTY()
-	TObjectPtr<UHun_ActorComponent> CachedMovementComponent;
-	UPROPERTY()
-	TObjectPtr<UHun_ActorComponent> CachedCombatComponent;
-
-	UPROPERTY()
-	TArray<UHun_ActorComponent*> Component;
 
 private:
 

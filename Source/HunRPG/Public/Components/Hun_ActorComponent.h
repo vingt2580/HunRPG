@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Character/Hun_MobBase.h"
 #include "Components/ActorComponent.h"
+#include "HunRPG/Public/Character/Hun_MobBase.h"
 #include "Hun_ActorComponent.generated.h"
 
 class UHun_CharacterData;
@@ -19,14 +19,11 @@ public:
 
 	UPROPERTY()
 	TObjectPtr<AHun_MobBase> OwnerCharacter;
-	
-	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | Data")
-	TObjectPtr<UHun_CharacterData> MobData;
 
 	UFUNCTION()
 	AHun_MobBase* GetOwnerCharacter() const { return OwnerCharacter; }
 	UFUNCTION()
-	UHun_CharacterData* GetMobData() const { return MobData; }
+	UHun_CharacterData* GetMobData() const { return OwnerCharacter->CharacterData; }
 	void SetData(UHun_CharacterData* NewHunData);
 
 protected:

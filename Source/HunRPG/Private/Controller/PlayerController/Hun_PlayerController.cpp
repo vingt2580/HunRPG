@@ -22,10 +22,10 @@ void AHun_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	HunCharacter = GetPawn<AHun_Character>();
+	//HunCharacter = GetPawn<AHun_Character>();
 
-	if (!IsValid(HunCharacter))
-		return;
+	//if (!IsValid(HunCharacter))
+		//return;
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 

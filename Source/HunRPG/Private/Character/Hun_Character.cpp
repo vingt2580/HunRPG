@@ -37,40 +37,6 @@ AHun_Character::AHun_Character()
 	FollowCamera->bUsePawnControlRotation = true;
 }
 
-void AHun_Character::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-
-	if (!IsValid(ComponentsData))
-		return;
-
-	for (TSubclassOf<UHun_ActorComponent> ComponentClass : ComponentsData->CharacterComponents)
-	{
-		if (ComponentClass)
-		{
-			UHun_ActorComponent* NewComponent = NewObject<UHun_ActorComponent>(this, ComponentClass);
-			NewComponent->RegisterComponent();
-
-			if (!IsValid(CachedMovementComponent) && NewComponent->Implements<UHun_MovementInterface>())
-			{
-				CachedMovementComponent = NewComponent;
-				HUN_LOG(FColor::Green,"Successfully cached movement component");
-			}
-
-			if (!IsValid(CachedCombatComponent) && NewComponent->Implements<UHun_CombatInterface>())
-			{
-				CachedCombatComponent = NewComponent;
-				HUN_LOG(FColor::Green, "Successfully cached combat component");
-			}
-		}
-	}
-
-	if (!IsValid(CachedMovementComponent))
-		HUN_LOG(FColor::Red, "Failed to create and cache movement component");
-	if (!IsValid(CachedMovementComponent))
-		HUN_LOG(FColor::Red, "Failed to create and cache combat component");
-}
-
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
@@ -84,8 +50,8 @@ void AHun_Character::Character_Move(FVector2D ActionValue)
 	if (!IsValid(Interface.GetObject()))
 		return;
 
-	Interface->MovementInput_Interface(ActionValue);
-	//IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
+	//Interface->MovementInput_Interface(ActionValue);
+	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 
 void AHun_Character::Character_ResetMove()

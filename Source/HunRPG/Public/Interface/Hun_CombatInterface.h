@@ -19,7 +19,7 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void AttackInput_interface();
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
-	float TakeDamage_interface(float DamageAmount, struct FDamageEvent const& DamageEvent,
+	float HunTakeDamage_interface(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser);
 
 	/**

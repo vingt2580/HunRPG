@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Components/Hun_ActorComponent.h"
 #include "Engine/DataAsset.h"
 #include "Hun_ComponentsData.generated.h"
 
 /**
  * 
  */
+class UHun_ActorComponent;
+
 UCLASS()
 class HUNRPG_API UHun_ComponentsData : public UDataAsset
 {

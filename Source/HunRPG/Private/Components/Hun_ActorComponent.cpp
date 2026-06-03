@@ -14,7 +14,7 @@ void UHun_ActorComponent::BeginPlay()
 	
 	OwnerCharacter = Cast<AHun_MobBase>(GetOwner());
 	
-	if (!MobData)
+	if (!GetMobData())
 		return;
 	
 	InitializeMobData();
@@ -22,12 +22,12 @@ void UHun_ActorComponent::BeginPlay()
 
 void UHun_ActorComponent::SetData(UHun_CharacterData* NewHunData)
 {
-	if (!IsValid(MobData))
+	if (!GetMobData())
 		return;
 	if (!NewHunData)
 		return;
 
-	MobData = NewHunData;
+	OwnerCharacter->CharacterData = NewHunData;
 	InitializeMobData();
 }
 
