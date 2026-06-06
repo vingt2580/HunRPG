@@ -27,10 +27,7 @@ void UHun_CombatComponent::AttackInput_interface_Implementation()
 		return;
 
 	if (IsAttacking)
-	{
-		//HUN_LOG(FColor::Green, "Already Attacking");
 		return;
-	}
 
 	StartComboAttack();
 }
@@ -42,7 +39,8 @@ float UHun_CombatComponent::HunTakeDamage_interface_Implementation(float DamageA
 		return 0.0f;
 
 	float TakeDamage = ApplyDamage(DamageAmount);
-	
+
+	IsHit = true;
 	PlayHitAnimation();
 	CheckHitAngle(DamageCauser);
 	
@@ -291,8 +289,6 @@ void UHun_CombatComponent::CheckHitAngle(AActor* DamageCauser)
 		HitAngle = FMath::RadiansToDegrees(FMath::Atan2(RightDot, ForwardDot));
 
 		HUN_LOG(FColor::Red, "HitAngle: %f", HitAngle);
-		
-		IsHit = true;
 	}
 }
 
@@ -310,7 +306,7 @@ float UHun_CombatComponent::ApplyDamage(float TakenDamage)
 
 void UHun_CombatComponent::CharacterDie()
 {
-	PlayHitAnimation();
+	PlayDeathAnimation();
 	if (UCapsuleComponent* CapsuleComp = OwnerCharacter->GetCapsuleComponent())
 	{
 		CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
