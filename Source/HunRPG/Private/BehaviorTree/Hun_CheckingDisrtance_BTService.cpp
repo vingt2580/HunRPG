@@ -26,10 +26,21 @@ void UHun_CheckingDisrtance_BTService::TickNode(UBehaviorTreeComponent& OwnerCom
 
 	AActor* TargetActor = Cast<AActor>(BlackboardComponent->GetValueAsObject(TargetKey.SelectedKeyName));
 
+	if (!TargetActor)
+	{
+		BlackboardComponent->SetValueAsBool(IsFoundTarget.SelectedKeyName, false);
+		return;
+	}
+
 	if (TargetActor)
 	{
 		float Distance = FVector::Dist(AIController->GetPawn()->GetActorLocation(), TargetActor->GetActorLocation());
 
+		if (Distance <= 100.0f)
+		{
+			HUN_LOG(FColor::Red,"Distance is %f",Distance);
+		}
+		BlackboardComponent->SetValueAsBool(IsFoundTarget.SelectedKeyName, true);
 		BlackboardComponent->SetValueAsFloat(DistanceKey.SelectedKeyName, Distance);
 	}
 }

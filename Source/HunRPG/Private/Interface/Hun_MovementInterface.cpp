@@ -9,7 +9,7 @@ void IHun_MovementInterface::MovementInput_Interface_Implementation(FVector2D Mo
 {
 }
 
-void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State)
+void IHun_MovementInterface::ApplyStateSpeed_Interface_Implementation(EHunRPG_ActionState State)
 {
 }
 
@@ -18,5 +18,9 @@ void IHun_MovementInterface::JumpInput_Interface_Implementation()
 }
 
 void IHun_MovementInterface::DashInput_Interface_Implementation()
+{
+}
+
+void IHun_MovementInterface::SetMoveSpeed_Interface_Implementation(float Speed)
 {
 }

@@ -26,4 +26,7 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
 	FBlackboardKeySelector DistanceKey;
+
+	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
+	FBlackboardKeySelector IsFoundTarget;
 };

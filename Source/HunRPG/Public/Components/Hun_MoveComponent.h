@@ -17,12 +17,14 @@ class HUNRPG_API UHun_MoveComponent : public UHun_ActorComponent, public IHun_Mo
 
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector) override;
 
-	virtual void SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State) override;
+	virtual void ApplyStateSpeed_Interface_Implementation(EHunRPG_ActionState State) override;
 
 	virtual void JumpInput_interface_Implementation() override;
 
 	virtual void DashInput_Interface_Implementation() override;
 
+	virtual void SetMoveSpeed_Interface_Implementation(float Speed) override;
+	
 	virtual void InitializeMobData() override;
 
 protected:

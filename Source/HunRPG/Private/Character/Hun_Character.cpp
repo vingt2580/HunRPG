@@ -59,7 +59,7 @@ void AHun_Character::Character_ResetMove()
 	if (!IsValid(CachedMovementComponent))
 		return;
 
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, EHunRPG_ActionState::Idle);
+	IHun_MovementInterface::Execute_ApplyStateSpeed_Interface(CachedMovementComponent, EHunRPG_ActionState::Idle);
 }
 
 void AHun_Character::Character_Jump()
@@ -76,7 +76,7 @@ void AHun_Character::Character_Dash()
 		return;
 
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
-	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, EHunRPG_ActionState::Running);
+	IHun_MovementInterface::Execute_ApplyStateSpeed_Interface(CachedMovementComponent, EHunRPG_ActionState::Running);
 }
 
 void AHun_Character::Character_Look(FVector2d LookAxisVector)

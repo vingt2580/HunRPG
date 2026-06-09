@@ -54,7 +54,7 @@ void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVe
 	}
 }
 
-void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State)
+void UHun_MoveComponent::ApplyStateSpeed_Interface_Implementation(EHunRPG_ActionState State)
 {
 	if (!IsValid(MoveComponent))
 		return;
@@ -112,6 +112,14 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 	FVector DashDirection = OwnerCharacter->GetActorForwardVector();
 	
 	OwnerCharacter->LaunchCharacter(DashDirection * GetMobData()->MovementValue.DashLength, true, false);
+}
+
+void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float Speed)
+{
+	if (!IsValid(OwnerCharacter) || !IsValid(MoveComponent))
+		return;
+
+	MoveComponent->MaxWalkSpeed = Speed;
 }
 
 void UHun_MoveComponent::InitializeMobData()

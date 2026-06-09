@@ -20,7 +20,7 @@ class HUNRPG_API IHun_MovementInterface : public IHun_Interface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
-	void SetMoveSpeed_Interface(EHunRPG_ActionState State);
+	void ApplyStateSpeed_Interface(EHunRPG_ActionState State);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
 	void MovementInput_Interface(FVector2D MoveVector);
@@ -30,6 +30,9 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
 	void DashInput_Interface();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Movement")
+	void SetMoveSpeed_Interface(float Speed);
 	
 	/**
 	 * Implementation
@@ -37,9 +40,11 @@ public:
 	
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector);
 
-	virtual  void SetMoveSpeed_Interface_Implementation(EHunRPG_ActionState State);
+	virtual  void ApplyStateSpeed_Interface_Implementation(EHunRPG_ActionState State);
 
 	virtual  void JumpInput_Interface_Implementation();
 
 	virtual  void DashInput_Interface_Implementation();
+
+	virtual void SetMoveSpeed_Interface_Implementation(float Speed);
 };
