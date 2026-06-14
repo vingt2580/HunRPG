@@ -38,9 +38,20 @@ void UHun_CheckingDisrtance_BTService::TickNode(UBehaviorTreeComponent& OwnerCom
 
 		if (Distance <= 100.0f)
 		{
-			HUN_LOG(FColor::Red,"Distance is %f",Distance);
+			//HUN_LOG(FColor::Red,"Distance is %f",Distance);
 		}
 		BlackboardComponent->SetValueAsBool(IsFoundTarget.SelectedKeyName, true);
 		BlackboardComponent->SetValueAsFloat(DistanceKey.SelectedKeyName, Distance);
+		
+		if (!BlackboardComponent->GetValueAsBool(IsSkillReady.SelectedKeyName) && Distance < 100.0f)
+		{
+			float Remaining = BlackboardComponent->GetValueAsFloat(SkillCooldown.SelectedKeyName) - DeltaSeconds;
+			if (Remaining <= 0.f)
+			{
+				Remaining = 0.f;
+				BlackboardComponent->SetValueAsBool(IsSkillReady.SelectedKeyName, true);
+			}
+			BlackboardComponent->SetValueAsFloat(SkillCooldown.SelectedKeyName, Remaining);
+		}
 	}
 }

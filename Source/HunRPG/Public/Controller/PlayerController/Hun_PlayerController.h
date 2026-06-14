@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GenericTeamAgentInterface.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
 
@@ -16,9 +17,13 @@ class FinputActionValue;
 class AHun_Character;
 
 UCLASS()
-class HUNRPG_API AHun_PlayerController : public APlayerController
+class HUNRPG_API AHun_PlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
+
+public:
+	AHun_PlayerController();
+	virtual FGenericTeamId GetGenericTeamId() const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -41,4 +46,7 @@ public:
 	void Input_CameraLook(const FInputActionValue& ActionValue);
 	void Input_Attack();
 	void Reset_MoveSpeed();
+
+private:
+	FGenericTeamId TeamId;
 };

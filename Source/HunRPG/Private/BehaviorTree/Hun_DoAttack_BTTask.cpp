@@ -24,7 +24,8 @@ EBTNodeResult::Type UHun_DoAttack_BTTask::ExecuteTask(UBehaviorTreeComponent& Ow
 	AHun_MobBase* Mob = Cast<AHun_MobBase>(AIController->GetPawn());
 	UHun_CombatComponent* CombatComponent = Cast<UHun_CombatComponent>(Mob->GetComponentByClass(UHun_CombatComponent::StaticClass()));
 	CombatComponent->StartComboAttack();
+
+	HUN_LOG(FColor::Red,"AI 공격 시작");
 	
 	return EBTNodeResult::Succeeded;
-	
 }

@@ -8,6 +8,16 @@
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
 
+AHun_PlayerController::AHun_PlayerController()
+{
+	TeamId = FGenericTeamId(0);
+}
+
+FGenericTeamId AHun_PlayerController::GetGenericTeamId() const
+{
+	return TeamId;
+}
+
 void AHun_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();

@@ -15,7 +15,9 @@ class HUNRPG_API AHun_MonsterAIController : public AAIController
 	GENERATED_BODY()
 
 public:
-	AHun_MonsterAIController();
+	AHun_MonsterAIController(const FObjectInitializer& ObjectInitializer);
+
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "HunRPG|AI")
 	class UBehaviorTree* BehaviorTree;
@@ -34,6 +36,13 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAISenseConfig_Sight> SightConfig;
 
+	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|AI")
+	bool bEnableDetourCrowdAvoidance;
+	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|AI", meta = (EditCondition = "bEnableDetourCrowdAvoidance", UImin = "1", UMax = "4"))
+	int32 DetourCrowdAvoidance = 4;
+	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|AI", meta = (EditCondition = "bEnableDetourCrowdAvoidance"))
+	float CollisionQueryRange = 600.0f;
+	
 	UFUNCTION()
-	void OnTarget(AActor* Actor, FAIStimulus Stimulus);
+	virtual void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 };

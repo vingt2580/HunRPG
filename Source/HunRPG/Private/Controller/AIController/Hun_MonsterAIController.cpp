@@ -6,12 +6,16 @@
 #include "HunRPG_DebugHelper.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/Hun_Character.h"
+#include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
 
-AHun_MonsterAIController::AHun_MonsterAIController()
+AHun_MonsterAIController::AHun_MonsterAIController(const FObjectInitializer& ObjectInitializer)
+	:Super(ObjectInitializer.SetDefaultSubobjectClass<UCrowdFollowingComponent>("PathFollowingComponent"))
 {
+	UCrowdFollowingComponent* CrowdComp =Cast<UCrowdFollowingComponent>(GetPathFollowingComponent());
+	
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerception"));
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 
@@ -19,7 +23,23 @@ AHun_MonsterAIController::AHun_MonsterAIController()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTarget);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTargetPerceptionUpdated);
+
+	SetGenericTeamId(FGenericTeamId(1));
+}
+
+ETeamAttitude::Type AHun_MonsterAIController::GetTeamAttitudeTowards(const AActor& Other) const
+{
+	const APawn* PawnToCheck = Cast<const APawn>(&Other);
+
+	const IGenericTeamAgentInterface* OtherTeamAgent = Cast<const IGenericTeamAgentInterface>(PawnToCheck->GetController());
+
+	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() != GetGenericTeamId())
+	{
+		return  ETeamAttitude::Hostile;
+	}
+
+	return ETeamAttitude::Friendly;
 }
 
 void AHun_MonsterAIController::BeginPlay()
@@ -37,6 +57,25 @@ void AHun_MonsterAIController::BeginPlay()
 	
 	AIPerceptionComponent->ConfigureSense(*SightConfig);
 	AIPerceptionComponent->SetDominantSense(SightConfig->GetSenseImplementation());
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddUniqueDynamic(this, &ThisClass::AHun_MonsterAIController::OnTargetPerceptionUpdated);
+
+	if (UCrowdFollowingComponent* CrowdComp =Cast<UCrowdFollowingComponent>(GetPathFollowingComponent()))
+	{
+		CrowdComp->SetCrowdSimulationState(bEnableDetourCrowdAvoidance? ECrowdSimulationState::Enabled: ECrowdSimulationState::Disabled);
+		switch (DetourCrowdAvoidance)
+		{
+		case 1: CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Low); break;
+		case 2: CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Medium); break;
+		case 3: CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::Good); break;
+		case 4: CrowdComp->SetCrowdAvoidanceQuality(ECrowdAvoidanceQuality::High); break;
+		default:
+			break;
+		}
+
+		CrowdComp->SetAvoidanceGroup(1);
+		CrowdComp->SetGroupsToAvoid(1);
+		CrowdComp->SetCrowdCollisionQueryRange(CollisionQueryRange);
+	}
 }
 
 void AHun_MonsterAIController::OnPossess(APawn* InPawn)
@@ -54,7 +93,7 @@ void AHun_MonsterAIController::OnPossess(APawn* InPawn)
 	}
 }
 
-void AHun_MonsterAIController::OnTarget(AActor* Actor, FAIStimulus Stimulus)
+void AHun_MonsterAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
 {
 	AHun_Character* TargetCharacter = Cast<AHun_Character>(Actor);
 	if (!TargetCharacter)
@@ -63,8 +102,8 @@ void AHun_MonsterAIController::OnTarget(AActor* Actor, FAIStimulus Stimulus)
 	UBlackboardComponent* BBComponent = GetBlackboardComponent();
 	if (!BBComponent)
 		return;
-
-	if (Stimulus.WasSuccessfullySensed())
+	
+	if (Stimulus.WasSuccessfullySensed() && Actor)
 	{
 		HUN_LOG(FColor::Red, "AIController Found!");
 		BBComponent->SetValueAsObject(TEXT("TargetActor"), TargetCharacter);

@@ -29,4 +29,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
 	FBlackboardKeySelector IsFoundTarget;
+	
+	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
+	FBlackboardKeySelector IsSkillReady;
+
+	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
+	FBlackboardKeySelector SkillCooldown;
 };
