@@ -34,7 +34,7 @@ ETeamAttitude::Type AHun_MonsterAIController::GetTeamAttitudeTowards(const AActo
 
 	const IGenericTeamAgentInterface* OtherTeamAgent = Cast<const IGenericTeamAgentInterface>(PawnToCheck->GetController());
 
-	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() != GetGenericTeamId())
+	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() < GetGenericTeamId())
 	{
 		return  ETeamAttitude::Hostile;
 	}
