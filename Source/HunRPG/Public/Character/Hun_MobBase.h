@@ -16,6 +16,8 @@ class HUNRPG_API AHun_MobBase : public ACharacter
 
 public:
 	AHun_MobBase();
+
+	void SetMobSpeed(float speed);
 	
 protected:
 	virtual void BeginPlay() override;

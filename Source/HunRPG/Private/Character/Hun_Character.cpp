@@ -93,10 +93,10 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 	}
 	
 	AddControllerYawInput(LookAxisVector.X * Sensitivity);
-	AddControllerPitchInput(LookAxisVector.Y * Sensitivity);
+	AddControllerPitchInput(LookAxisVector.Y * -Sensitivity);
 }
 
-void AHun_Character::CHaracter_Attack()
+void AHun_Character::Character_Attack()
 {
 	if (!IsValid(CachedCombatComponent))
 		return;

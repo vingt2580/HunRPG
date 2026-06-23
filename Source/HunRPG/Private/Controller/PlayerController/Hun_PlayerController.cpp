@@ -97,7 +97,7 @@ void AHun_PlayerController::Input_Attack()
 	if (!IsValid(HunCharacter))
 		return;
 	
-	HunCharacter->CHaracter_Attack();
+	HunCharacter->Character_Attack();
 }
 
 void AHun_PlayerController::Reset_MoveSpeed()

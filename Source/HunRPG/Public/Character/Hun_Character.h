@@ -31,7 +31,7 @@ public:
 	void Character_Jump();
 	void Character_Dash();
 	void Character_Look(FVector2D LookAxisVector);
-	void CHaracter_Attack();
+	void Character_Attack();
 
 private:
 

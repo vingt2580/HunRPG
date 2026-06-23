@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Character/Hun_MobBase.h"
+
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HunRPG_DebugHelper.h"
 #include "HunRPG/Public/Data/Hun_ComponentsData.h"
 #include "Components/Hun_ActorComponent.h"
-#include "Components/Hun_CombatComponent.h"
 #include "Interface/Hun_CombatInterface.h"
 #include "Interface/Hun_MovementInterface.h"
 
@@ -25,6 +25,14 @@ AHun_MobBase::AHun_MobBase()
 	
 	CapsuleComp->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
 	SkeletalMeshComp->SetCollisionResponseToChannel(ECC_Camera,ECR_Ignore);
+}
+
+void AHun_MobBase::SetMobSpeed(float speed)
+{
+	if (!IsValid(CachedMovementComponent))
+		return;
+	
+	IHun_MovementInterface::Execute_SetMoveSpeed_Interface(CachedMovementComponent, speed);
 }
 
 // Called when the game starts or when spawned
