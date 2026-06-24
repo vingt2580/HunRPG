@@ -21,6 +21,8 @@ FGenericTeamId AHun_PlayerController::GetGenericTeamId() const
 void AHun_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	AddtoViewportHUD();
 }
 
 void AHun_PlayerController::Tick(float DeltaTime)
@@ -106,4 +108,17 @@ void AHun_PlayerController::Reset_MoveSpeed()
 		
 		return;
 	HunCharacter->Character_ResetMove();
+}
+
+void AHun_PlayerController::AddtoViewportHUD()
+{
+	if (MainHUDWidget)
+	{
+		UWidget_HunHUD* MainHUD = CreateWidget<UWidget_HunHUD>(GetWorld(), MainHUDWidget);
+		
+		if (IsValid(MainHUD))
+		{
+			MainHUD->AddToViewport();
+		}
+	}
 }

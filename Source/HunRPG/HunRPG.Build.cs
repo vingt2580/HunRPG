@@ -16,6 +16,9 @@ public class HunRPG : ModuleRules
 			"InputCore",
 			"EnhancedInput",
 			"AIModule",
+			"UMG",       
+			"Slate",     
+			"SlateCore"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

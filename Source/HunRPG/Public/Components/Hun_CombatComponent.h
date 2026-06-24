@@ -15,6 +15,8 @@ struct FHun_TraceLine
 	FVector EndPoint;
 };
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHPChangeDelegate, float, CurrentHP, float, MaxHP);
+
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_CombatInterface
 {
@@ -25,6 +27,14 @@ class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_
 public:
 	virtual void AttackInput_interface_Implementation() override;
 	virtual float HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+	UPROPERTY(BlueprintAssignable)
+	FOnHPChangeDelegate OnHPChange;
+
+	UPROPERTY()
+	float CurrentHealthPoint;
+	
+	float MaxHealthPoint;
 	
 protected:
 	// Called when the game starts
@@ -43,9 +53,6 @@ private:
 
 	FVector WeaponStartPoint;
     FVector WeaponEndPoint;
-
-	UPROPERTY()
-	float CurrentHealthPoint;
 	
 	UPROPERTY()
 	TArray<AActor*> AlreadyHitActors;

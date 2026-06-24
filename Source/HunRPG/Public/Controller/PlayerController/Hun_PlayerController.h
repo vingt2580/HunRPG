@@ -8,6 +8,7 @@
 #include "InputActionValue.h"
 
 #include "System/Input/Hun_InputConfigData.h"
+#include "Widget/Widget_HunHUD.h"
 #include "Hun_PlayerController.generated.h"
 
 /**
@@ -49,4 +50,9 @@ public:
 
 private:
 	FGenericTeamId TeamId;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|UI")
+	TSubclassOf<UWidget_HunHUD> MainHUDWidget;
+
+	void AddtoViewportHUD();
 };

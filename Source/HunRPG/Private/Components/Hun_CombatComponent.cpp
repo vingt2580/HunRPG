@@ -60,6 +60,7 @@ void UHun_CombatComponent::BeginPlay()
 	if (!IsValid(OwnerCharacter))
 		return;
 
+	MaxHealthPoint = GetMobData()->MaxHealthPoint;
 	CurrentHealthPoint = GetMobData()->MaxHealthPoint;
 	
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
@@ -294,12 +295,24 @@ void UHun_CombatComponent::CheckHitAngle(AActor* DamageCauser)
 
 float UHun_CombatComponent::ApplyDamage(float TakenDamage)
 {
-	if (CurrentHealthPoint <= 0.0f)
+	AActor* OwnerActor = GetOwner();
+	
+	if (CurrentHealthPoint <= 0.0f && !IsValid(OwnerActor))
 		return 0.0f;
 
 	float ActualDamage = TakenDamage; //여기서 방어도 스탯 공식 적용하면 될듯
 
 	CurrentHealthPoint -= ActualDamage;
+
+	APawn* OwnerPawn = Cast<APawn>(OwnerActor);
+	
+	if (APlayerController* PC = Cast<APlayerController>(OwnerPawn->GetController()))
+	{
+		if (OnHPChange.IsBound())
+		{
+			OnHPChange.Broadcast(CurrentHealthPoint, MaxHealthPoint);
+		}
+	}
 
 	return ActualDamage;
 }
