@@ -11,6 +11,7 @@
  */
 
 class UProgressBar;
+class UTextBlock;
 class UHun_CombatComponent;
 
 UCLASS()
@@ -23,6 +24,12 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HPProgressBar;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* CurrentHPTextBlock;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* MaxHPTextBlock;
 
 public:
 	UFUNCTION()

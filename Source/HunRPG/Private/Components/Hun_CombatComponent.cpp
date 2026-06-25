@@ -272,6 +272,10 @@ void UHun_CombatComponent::PlayDeathAnimation()
 		
 		if (DeathMontage)
 		{
+			if (!DeathMontage->IsValidSectionName(SectionName))
+			{
+				SectionName = TEXT("Death");
+			}
 			AnimInstance->Montage_Play(DeathMontage, 1.0f);
 			AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 		}

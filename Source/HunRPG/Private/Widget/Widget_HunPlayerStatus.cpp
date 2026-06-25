@@ -5,6 +5,7 @@
 
 #include "Components/Hun_CombatComponent.h"
 #include "Components/ProgressBar.h"
+#include "Components/TextBlock.h"
 
 void UWidget_HunPlayerStatus::NativeConstruct()
 {
@@ -17,6 +18,15 @@ void UWidget_HunPlayerStatus::UpdateHPBar(float CurrentHP, float MaxHP)
 	{
 		float HPPercentage = CurrentHP / MaxHP;
 		HPProgressBar->SetPercent(HPPercentage);
+	}
+
+	if (CurrentHPTextBlock && MaxHPTextBlock)
+	{
+		FText CurrentHPText = FText::AsNumber(CurrentHP);
+		FText MaxHPText = FText::AsNumber(MaxHP);
+		
+		CurrentHPTextBlock->SetText(CurrentHPText);
+		MaxHPTextBlock->SetText(MaxHPText);
 	}
 }
 
