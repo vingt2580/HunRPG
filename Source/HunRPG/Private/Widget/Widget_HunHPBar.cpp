@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Widget/Widget_HunPlayerStatus.h"
+#include "Widget/Widget_HunHPBar.h"
 
 #include "Components/Hun_CombatComponent.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
 
-void UWidget_HunPlayerStatus::NativeConstruct()
+void UWidget_HunHPBar::NativeConstruct()
 {
 	Super::NativeConstruct();
 }
 
-void UWidget_HunPlayerStatus::UpdateHPBar(float CurrentHP, float MaxHP)
+void UWidget_HunHPBar::UpdateHPBar(float CurrentHP, float MaxHP)
 {
 	if (HPProgressBar && MaxHP > 0.0f)
 	{
@@ -30,11 +30,11 @@ void UWidget_HunPlayerStatus::UpdateHPBar(float CurrentHP, float MaxHP)
 	}
 }
 
-void UWidget_HunPlayerStatus::BindCombatComponent(UHun_CombatComponent* CombatComponent)
+void UWidget_HunHPBar::BindCombatComponent(UHun_CombatComponent* CombatComponent)
 {
 	if (CombatComponent)
 	{
-		CombatComponent->OnHPChange.AddDynamic(this, &UWidget_HunPlayerStatus::UpdateHPBar);
+		CombatComponent->OnHPChange.AddDynamic(this, &UWidget_HunHPBar::UpdateHPBar);
 		UpdateHPBar(CombatComponent->CurrentHealthPoint, CombatComponent->MaxHealthPoint);
 	}
 }

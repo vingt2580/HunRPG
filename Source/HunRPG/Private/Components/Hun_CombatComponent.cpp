@@ -307,17 +307,12 @@ float UHun_CombatComponent::ApplyDamage(float TakenDamage)
 	float ActualDamage = TakenDamage; //여기서 방어도 스탯 공식 적용하면 될듯
 
 	CurrentHealthPoint -= ActualDamage;
-
-	APawn* OwnerPawn = Cast<APawn>(OwnerActor);
 	
-	if (APlayerController* PC = Cast<APlayerController>(OwnerPawn->GetController()))
+	if (OnHPChange.IsBound())
 	{
-		if (OnHPChange.IsBound())
-		{
-			OnHPChange.Broadcast(CurrentHealthPoint, MaxHealthPoint);
-		}
+		OnHPChange.Broadcast(CurrentHealthPoint, MaxHealthPoint);
 	}
-
+	
 	return ActualDamage;
 }
 

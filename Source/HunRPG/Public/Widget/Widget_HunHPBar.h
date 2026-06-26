@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Widget_HunPlayerStatus.generated.h"
+#include "Widget_HunHPBar.generated.h"
 
 /**
  * 
@@ -15,7 +15,7 @@ class UTextBlock;
 class UHun_CombatComponent;
 
 UCLASS()
-class HUNRPG_API UWidget_HunPlayerStatus : public UUserWidget
+class HUNRPG_API UWidget_HunHPBar : public UUserWidget
 {
 	GENERATED_BODY()
 

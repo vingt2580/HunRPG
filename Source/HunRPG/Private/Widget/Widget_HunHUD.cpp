@@ -4,7 +4,7 @@
 #include "Widget/Widget_HunHUD.h"
 
 #include "Components/Hun_CombatComponent.h"
-#include "Widget/Widget_HunPlayerStatus.h"
+#include "Widget/Widget_HunPlayerHPBar.h"
 
 void UWidget_HunHUD::NativeConstruct()
 {

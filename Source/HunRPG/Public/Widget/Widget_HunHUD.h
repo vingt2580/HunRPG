@@ -9,7 +9,7 @@
 /**
  * 
  */
-class UWidget_HunPlayerStatus;
+class UWidget_HunPlayerHPBar;
 
 UCLASS()
 class HUNRPG_API UWidget_HunHUD : public UUserWidget
@@ -21,5 +21,5 @@ protected:
 
 public:
 	UPROPERTY(meta=(BindWidget))
-	UWidget_HunPlayerStatus* PlayerStatusWidget;
+	UWidget_HunPlayerHPBar* PlayerStatusWidget;
 };
