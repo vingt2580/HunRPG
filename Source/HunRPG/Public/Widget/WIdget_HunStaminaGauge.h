@@ -43,6 +43,8 @@ public:
 private:
 	void SetStaminaGauge();
 
+	void SetStaminaGaugeVisibility(float CurrentPercent);
+
 	UPROPERTY()
 	class AActor* TargetCharacter;
 	

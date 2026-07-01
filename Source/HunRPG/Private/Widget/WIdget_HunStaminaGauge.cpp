@@ -54,6 +54,7 @@ void UWIdget_HunStaminaGauge::OnStaminaUpdated(float CurrentStamina, float MaxSt
 	{
 		float Percentage = CurrentStamina / MaxStamina;
 		UpdateRoundGauge(Percentage);
+		SetStaminaGaugeVisibility(Percentage);
 	}
 }
 
@@ -78,5 +79,18 @@ void UWIdget_HunStaminaGauge::SetStaminaGauge()
 		RoundGauge->SetBrush(RoundGaugeBrush);
 		
 		DynamicRoundGaugeMaterial->SetScalarParameterValue(FName("Percent"), 1);
+		SetStaminaGaugeVisibility(1);
+	}
+}
+
+void UWIdget_HunStaminaGauge::SetStaminaGaugeVisibility(float CurrentPercent)
+{
+	if (CurrentPercent >= 1.0f)
+	{
+		SetVisibility(ESlateVisibility::Hidden);
+	}
+	else
+	{
+		SetVisibility(ESlateVisibility::Visible);
 	}
 }
