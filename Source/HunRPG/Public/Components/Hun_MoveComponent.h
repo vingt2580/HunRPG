@@ -44,6 +44,9 @@ public:
 	TObjectPtr<UHun_StateComponent> StateComponent;
 
 	UPROPERTY()
+	float MaxSpeed;
+
+	UPROPERTY()
 	float MaxStamina;
 	UPROPERTY()
 	float CurrentStamina;

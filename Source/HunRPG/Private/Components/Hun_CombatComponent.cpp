@@ -70,6 +70,8 @@ void UHun_CombatComponent::ActiveAbility_Interface_Implementation(EHun_AbilityTy
 		case EHun_AbilityType::Ultimate: AbilitySection = TEXT("Ultimate"); break;
 	}
 
+	StateComponent->SetState(EHunRPG_ActionState::Attacking);
+	
 	AnimInstance->Montage_Play(GetMobData()->CombatValue.AbilityMontage, 1.0f);
 	AnimInstance->Montage_JumpToSection(AbilitySection, GetMobData()->CombatValue.AbilityMontage);
 }
@@ -350,6 +352,12 @@ void UHun_CombatComponent::CharacterDie()
 	}
 
 	OwnerCharacter->SetLifeSpan(1.6f);
+}
+
+void UHun_CombatComponent::PreventingMoveDuringActivity()
+{
+	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
+	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * 0, true);
 }
 
 

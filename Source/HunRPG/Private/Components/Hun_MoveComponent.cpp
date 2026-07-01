@@ -21,6 +21,7 @@ void UHun_MoveComponent::BeginPlay()
 	MoveComponent = OwnerCharacter->GetCharacterMovement();
 	StateComponent = OwnerCharacter->FindComponentByClass<UHun_StateComponent>();
 
+	MaxSpeed = GetMobData()->MovementValue.WalkSpeed;
 	MoveComponent->MaxWalkSpeed = GetMobData()->MovementValue.WalkSpeed;
 }
 

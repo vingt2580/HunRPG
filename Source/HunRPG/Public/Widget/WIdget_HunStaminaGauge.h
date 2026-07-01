@@ -18,6 +18,7 @@ class HUNRPG_API UWIdget_HunStaminaGauge : public UUserWidget
 	GENERATED_BODY()
 
 	virtual void NativeConstruct() override;
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
 public:
 	UPROPERTY(meta = (BindWidget))
@@ -41,5 +42,8 @@ public:
 
 private:
 	void SetStaminaGauge();
+
+	UPROPERTY()
+	class AActor* TargetCharacter;
 	
 };

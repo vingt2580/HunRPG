@@ -95,4 +95,6 @@ public:
 	void CheckHitAngle(AActor* DamageCauser);
 	float ApplyDamage(float TakenDamage);
 	void CharacterDie();
+
+	void PreventingMoveDuringActivity();
 };

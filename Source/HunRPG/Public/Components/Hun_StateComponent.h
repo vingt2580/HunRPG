@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
+#include "HunRPG/Public/Components/Hun_ActorComponent.h"
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "Hun_StateComponent.generated.h"
 
