@@ -49,8 +49,7 @@ void AHun_Character::Character_Move(FVector2D ActionValue)
 	TScriptInterface<IHun_MovementInterface> Interface = this;
 	if (!IsValid(Interface.GetObject()))
 		return;
-
-	//Interface->MovementInput_Interface(ActionValue);
+	
 	IHun_MovementInterface::Execute_MovementInput_Interface(CachedMovementComponent, ActionValue);
 }
 

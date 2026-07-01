@@ -9,11 +9,14 @@
 #include "HunRPG/Public/Interface/Hun_MovementInterface.h"
 #include "Hun_MoveComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FonStaminaDelegate, float, CurrentStatmina, float, MaxStamina);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HUNRPG_API UHun_MoveComponent : public UHun_ActorComponent, public IHun_MovementInterface
 {
 	GENERATED_BODY()
+
+	UHun_MoveComponent();
 
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector) override;
 
@@ -33,9 +36,29 @@ protected:
 
 	bool CanJump();
 	bool CanMove();
-	
+
+public:
 	UPROPERTY()
 	TObjectPtr<UCharacterMovementComponent> MoveComponent;
 	UPROPERTY()
 	TObjectPtr<UHun_StateComponent> StateComponent;
+
+	UPROPERTY()
+	float MaxStamina;
+	UPROPERTY()
+	float CurrentStamina;
+	UPROPERTY()
+	float StaminaReganFigure;
+	UPROPERTY()
+	float StaminaReganDelay;
+
+	float TimeSinceLastStaminaUse;
+	bool bIsRunning;
+
+	bool ConsumeStamina(float Value);
+
+	void SetRunningState(bool bRunning);
+
+	UPROPERTY(BlueprintAssignable)
+	FonStaminaDelegate OnStaminaUpdate;
 };

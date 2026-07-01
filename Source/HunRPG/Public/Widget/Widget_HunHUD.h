@@ -6,9 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Widget_HunHUD.generated.h"
 
-/**
- * 
- */
+class UWIdget_HunStaminaGauge;
 class UWidget_HunPlayerHPBar;
 
 UCLASS()
@@ -22,4 +20,6 @@ protected:
 public:
 	UPROPERTY(meta=(BindWidget))
 	UWidget_HunPlayerHPBar* PlayerStatusWidget;
+	UPROPERTY(meta=(BindWidget))
+	UWIdget_HunStaminaGauge* StaminaGauge;
 };

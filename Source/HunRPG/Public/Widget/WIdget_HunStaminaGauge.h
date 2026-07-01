@@ -9,6 +9,7 @@
 /**
  * 
  */
+class UHun_MoveComponent;
 class UImage;
 
 UCLASS()
@@ -30,8 +31,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG | Material")
 	class UMaterialInstanceDynamic* DynamicRoundGaugeMaterial;
 
-private:
+	UFUNCTION(BlueprintCallable, Category = "HunRPG | Stamina")
 	void UpdateRoundGauge(float GaugeValue);
+
+	UFUNCTION()
+	void OnStaminaUpdated(float CurrentStamina, float MaxStamina);
+
+	void BindMoveComponent(UHun_MoveComponent* MovementComponent);
+
+private:
 	void SetStaminaGauge();
 	
 };

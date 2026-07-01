@@ -28,8 +28,55 @@ void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 	FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	EHunRPG_ActionState CurrentState = StateComponent->GetState();
+	
+	if (bIsRunning)
+	{
+		if (CurrentStamina > 0.0f)
+		{
+			CurrentStamina = FMath::Max(0.0f, CurrentStamina - (10.0f * DeltaTime));
+			TimeSinceLastStaminaUse = 0.0f;
+
+			if (OnStaminaUpdate.IsBound())
+			{
+				OnStaminaUpdate.Broadcast(CurrentStamina, MaxStamina);
+			}
+		}
+		else
+		{
+			bIsRunning = false;
+			HUN_LOG(FColor::Red, "Stamina Not Enough!!!");
+		}
+	}
+	else if (CurrentState == EHunRPG_ActionState::Idle && CurrentStamina < MaxStamina)
+	{
+		TimeSinceLastStaminaUse += DeltaTime;
+
+		if (TimeSinceLastStaminaUse >= StaminaReganDelay)
+		{
+			CurrentStamina = FMath::Min(MaxStamina, CurrentStamina + (StaminaReganDelay * DeltaTime));
+			
+			if (OnStaminaUpdate.IsBound())
+			{
+				OnStaminaUpdate.Broadcast(CurrentStamina, MaxStamina);
+			}
+		}
+	}
 }
 
+
+UHun_MoveComponent::UHun_MoveComponent()
+{
+	PrimaryComponentTick.bCanEverTick = true;
+
+	MaxStamina = 100.0f;
+	CurrentStamina = MaxStamina;
+	StaminaReganFigure = 15.0f; 
+	StaminaReganDelay = 1.5f; 
+	TimeSinceLastStaminaUse = 0.0f;
+	bIsRunning = false;
+}
 
 void UHun_MoveComponent::MovementInput_Interface_Implementation(FVector2D MoveVector)
 {
@@ -82,21 +129,25 @@ void UHun_MoveComponent::JumpInput_interface_Implementation()
 	{
 		return; 
 	}
-	
-	if (CurrentState == EHunRPG_ActionState::Running)
+
+	if (ConsumeStamina(20.0f))
 	{
-		MoveComponent->AirControl = 0.8f;
-		HUN_LOG(FColor::Yellow, "Moving Jumping");
-	}
-	else if (CurrentState == EHunRPG_ActionState::Idle || CurrentState == EHunRPG_ActionState::Moving)
-	{
-		MoveComponent->StopMovementImmediately();
-		MoveComponent->AirControl = 0.2f;
+		if (CurrentState == EHunRPG_ActionState::Running)
+		{
+			MoveComponent->AirControl = 0.8f;
+			HUN_LOG(FColor::Yellow, "Moving Jumping");
+		}
+		else if (CurrentState == EHunRPG_ActionState::Idle || CurrentState == EHunRPG_ActionState::Moving)
+		{
+			MoveComponent->StopMovementImmediately();
+			MoveComponent->AirControl = 0.2f;
         
-		HUN_LOG(FColor::Yellow, "Inplace Jumping");
+			HUN_LOG(FColor::Yellow, "Inplace Jumping");
+		}
+	
+		StateComponent->SetState(EHunRPG_ActionState::Jumping);
+		OwnerCharacter->Jump();
 	}
-	StateComponent->SetState(EHunRPG_ActionState::Jumping);
-	OwnerCharacter->Jump();
 }
 
 void UHun_MoveComponent::DashInput_Interface_Implementation()
@@ -108,10 +159,13 @@ void UHun_MoveComponent::DashInput_Interface_Implementation()
 
 	if (!CanJump()) 
 		return; 
+
+	if (ConsumeStamina(10.0f))
+	{
+		FVector DashDirection = OwnerCharacter->GetActorForwardVector();
 	
-	FVector DashDirection = OwnerCharacter->GetActorForwardVector();
-	
-	OwnerCharacter->LaunchCharacter(DashDirection * GetMobData()->MovementValue.DashLength, true, false);
+		OwnerCharacter->LaunchCharacter(DashDirection * GetMobData()->MovementValue.DashLength, true, false);	
+	}
 }
 
 void UHun_MoveComponent::SetMoveSpeed_Interface_Implementation(float Speed)
@@ -154,4 +208,30 @@ bool UHun_MoveComponent::CanMove()
 		return false; 
 	}
 	return true;
+}
+
+bool UHun_MoveComponent::ConsumeStamina(float Value)
+{
+	if (CurrentStamina >= Value)
+	{
+		CurrentStamina -= Value;
+		TimeSinceLastStaminaUse = 0.0f;
+
+		if (OnStaminaUpdate.IsBound())
+		{
+			OnStaminaUpdate.Broadcast(CurrentStamina, MaxStamina);
+		}
+		HUN_LOG(FColor::Red, "CurrentStamina: %f", CurrentStamina);
+		return true;
+	}
+	return false;
+}
+
+void UHun_MoveComponent::SetRunningState(bool bRunning)
+{
+	bIsRunning = bRunning;
+	if (bIsRunning)
+	{
+		TimeSinceLastStaminaUse = 0.0f;
+	}
 }
