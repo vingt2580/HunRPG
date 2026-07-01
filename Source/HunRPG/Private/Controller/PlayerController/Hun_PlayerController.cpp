@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "InputAction.h"
+#include "Interface/Hun_CombatInterface.h"
 
 AHun_PlayerController::AHun_PlayerController()
 {
@@ -57,6 +58,9 @@ void AHun_PlayerController::SetupInputComponent()
 		PEI->BindAction(InputActions->Input_Dash, ETriggerEvent::Started, this, &ThisClass::Input_Dash);
 		PEI->BindAction(InputActions->Input_Look, ETriggerEvent::Triggered ,this, &ThisClass::Input_CameraLook);
 		PEI->BindAction(InputActions->Input_Attack, ETriggerEvent::Started, this, &ThisClass::Input_Attack);
+		PEI->BindAction(InputActions->Input_Ablity_A, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_A);
+		PEI->BindAction(InputActions->Input_Ablity_B, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_B);
+		PEI->BindAction(InputActions->Input_Ultimate, ETriggerEvent::Started, this, &ThisClass::Input_Ultimate);
 	}
 }
 
@@ -105,9 +109,33 @@ void AHun_PlayerController::Input_Attack()
 void AHun_PlayerController::Reset_MoveSpeed()
 {
 	if (!IsValid(HunCharacter))
-		
 		return;
+	
 	HunCharacter->Character_ResetMove();
+}
+
+void AHun_PlayerController::Input_Ablity_A()
+{
+	if (!IsValid(HunCharacter))
+		return;
+	
+	HunCharacter->Character_Ability(EHun_AbilityType::Ability_A);
+}
+
+void AHun_PlayerController::Input_Ablity_B()
+{
+	if (!IsValid(HunCharacter))
+		return;
+	
+	HunCharacter->Character_Ability(EHun_AbilityType::Ability_B);
+}
+
+void AHun_PlayerController::Input_Ultimate()
+{
+	if (!IsValid(HunCharacter))
+		return;
+	
+	HunCharacter->Character_Ability(EHun_AbilityType::Ultimate);
 }
 
 void AHun_PlayerController::AddtoViewportHUD()

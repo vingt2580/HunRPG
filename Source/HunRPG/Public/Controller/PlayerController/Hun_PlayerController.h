@@ -48,6 +48,10 @@ public:
 	void Input_Attack();
 	void Reset_MoveSpeed();
 
+	void Input_Ablity_A();
+	void Input_Ablity_B();
+	void Input_Ultimate();
+
 private:
 	FGenericTeamId TeamId;
 

@@ -14,6 +14,8 @@
 
 #include "Hun_Character.generated.h"
 
+enum class EHun_AbilityType : uint8;
+
 UCLASS()
 class HUNRPG_API AHun_Character : public AHun_MobBase
 {
@@ -32,6 +34,7 @@ public:
 	void Character_Dash();
 	void Character_Look(FVector2D LookAxisVector);
 	void Character_Attack();
+	void Character_Ability(EHun_AbilityType AbilityType);
 
 private:
 

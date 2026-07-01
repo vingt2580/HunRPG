@@ -7,8 +7,12 @@ void IHun_CombatInterface::AttackInput_interface_Implementation()
 {
 }
 
+void IHun_CombatInterface::ActiveAbility_Interface_Implementation(EHun_AbilityType AbilityType)
+{
+}
+
 float IHun_CombatInterface::HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent,
-	class AController* EventInstigator, AActor* DamageCauser)
+                                                                   class AController* EventInstigator, AActor* DamageCauser)
 {
 	return 0.f;
 }

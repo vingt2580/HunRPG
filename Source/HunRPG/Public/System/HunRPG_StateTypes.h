@@ -46,6 +46,9 @@ struct FHun_CombatValue
 	class UAnimMontage* ComboMontage = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	class UAnimMontage* AbilityMontage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 MaxComboCount = 1;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

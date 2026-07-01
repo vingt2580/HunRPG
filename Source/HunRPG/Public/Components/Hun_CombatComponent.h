@@ -27,6 +27,7 @@ class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_
 public:
 	virtual void AttackInput_interface_Implementation() override;
 	virtual float HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void ActiveAbility_Interface_Implementation(EHun_AbilityType AbilityType) override;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnHPChangeDelegate OnHPChange;

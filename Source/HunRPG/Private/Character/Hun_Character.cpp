@@ -103,4 +103,12 @@ void AHun_Character::Character_Attack()
 	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent);
 }
 
+void AHun_Character::Character_Ability(EHun_AbilityType AbilityType)
+{
+	if (!IsValid(CachedCombatComponent))
+		return;
+
+	IHun_CombatInterface::Execute_ActiveAbility_Interface(CachedCombatComponent, AbilityType);
+}
+
 

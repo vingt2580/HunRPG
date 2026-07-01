@@ -53,6 +53,27 @@ float UHun_CombatComponent::HunTakeDamage_interface_Implementation(float DamageA
 	return TakeDamage;
 }
 
+void UHun_CombatComponent::ActiveAbility_Interface_Implementation(EHun_AbilityType AbilityType)
+{
+	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+
+	if (!AnimInstance || !GetMobData()->CombatValue.ComboMontage)
+		return;
+
+	FName AbilitySection;
+
+	switch (AbilityType)
+	{
+		case EHun_AbilityType::None: return;
+		case EHun_AbilityType::Ability_A: AbilitySection = TEXT("Ability_A"); break;
+		case EHun_AbilityType::Ability_B: AbilitySection = TEXT("Ability_B"); break;
+		case EHun_AbilityType::Ultimate: AbilitySection = TEXT("Ultimate"); break;
+	}
+
+	AnimInstance->Montage_Play(GetMobData()->CombatValue.AbilityMontage, 1.0f);
+	AnimInstance->Montage_JumpToSection(AbilitySection, GetMobData()->CombatValue.AbilityMontage);
+}
+
 void UHun_CombatComponent::BeginPlay()
 {
 	Super::BeginPlay();
