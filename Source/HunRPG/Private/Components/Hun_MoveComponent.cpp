@@ -55,7 +55,7 @@ void UHun_MoveComponent::TickComponent(float DeltaTime, enum ELevelTick TickType
 
 		if (TimeSinceLastStaminaUse >= StaminaReganDelay)
 		{
-			CurrentStamina = FMath::Min(MaxStamina, CurrentStamina + (StaminaReganDelay * DeltaTime));
+			CurrentStamina = FMath::Min(MaxStamina, CurrentStamina + (StaminaReganFigure * DeltaTime));
 			
 			if (OnStaminaUpdate.IsBound())
 			{
@@ -72,7 +72,7 @@ UHun_MoveComponent::UHun_MoveComponent()
 
 	MaxStamina = 100.0f;
 	CurrentStamina = MaxStamina;
-	StaminaReganFigure = 15.0f; 
+	StaminaReganFigure = 10.0f; 
 	StaminaReganDelay = 1.5f; 
 	TimeSinceLastStaminaUse = 0.0f;
 	bIsRunning = false;
