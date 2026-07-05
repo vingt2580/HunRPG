@@ -17,6 +17,15 @@
 enum class EHun_AbilityType : uint8;
 
 UCLASS()
+class HUNRPG_API UHunTestClass : public UObject
+{
+	GENERATED_BODY()
+
+public:
+	int A = 10;
+};
+
+UCLASS()
 class HUNRPG_API AHun_Character : public AHun_MobBase
 {
 	GENERATED_BODY()
@@ -35,8 +44,6 @@ public:
 	void Character_Look(FVector2D LookAxisVector);
 	void Character_Attack();
 	void Character_Ability(EHun_AbilityType AbilityType);
-
-private:
 
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

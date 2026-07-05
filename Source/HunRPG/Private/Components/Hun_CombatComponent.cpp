@@ -1,20 +1,23 @@
 #include "Components/Hun_CombatComponent.h"
 
-#include "HunRPG/Public/Components/Hun_CombatComponent.h"
 #include "HunRPG/Public/System/HunRPG_StateTypes.h"
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
 #include "HunRPG/Public/Data/Hun_CharacterData.h"
-#include "Components/Hun_StateComponent.h"
-#include "System/HunRPG_StateTypes.h"
 #include "HunRPG_DebugHelper.h"
 
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
+#include "Data/Hun_AbilityData.h"
+#include "Engine/OverlapResult.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "GameFramework/PawnMovementComponent.h"
+#include "Engine/DamageEvents.h"
+#include "DrawDebugHelpers.h"
 #include "Kismet/GameplayStatics.h"
 
+#define COLLISIONCHANNEL_MONSTER ECC_EngineTraceChannel1
+
+struct FDamageEvent;
 
 UHun_CombatComponent::UHun_CombatComponent()
 {
@@ -65,7 +68,7 @@ void UHun_CombatComponent::ActiveAbility_Interface_Implementation(EHun_AbilityTy
 	switch (AbilityType)
 	{
 		case EHun_AbilityType::None: return;
-		case EHun_AbilityType::Ability_A: AbilitySection = TEXT("Ability_A"); break;
+		case EHun_AbilityType::Ability_A: AbilitySection = TEXT("Ability_A");  break;
 		case EHun_AbilityType::Ability_B: AbilitySection = TEXT("Ability_B"); break;
 		case EHun_AbilityType::Ultimate: AbilitySection = TEXT("Ultimate"); break;
 	}
@@ -252,6 +255,92 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 	WeaponEndPoint = CurrentEndLoc;
 }
 
+void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, const FVector& ActivePoint, const FRotator& ActiveRot)
+{
+	AActor* OwnerActor = GetOwnerCharacter();
+	if (!IsValid(OwnerActor))
+	return;
+
+	FVector OriginForward = ActiveRot.Vector();
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionObjectQueryParams ObjectQueryParams;
+	ObjectQueryParams.AddObjectTypesToQuery(COLLISIONCHANNEL_MONSTER);
+
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(OwnerActor);
+
+	bool bHit = false;
+
+	if (AbilityInfo.Shape == EHun_AbilityShape::Circle || AbilityInfo.Shape == EHun_AbilityShape::Cone)
+	{
+		bHit = GetWorld()->OverlapMultiByObjectType(
+			OverlapResults, ActivePoint, FQuat::Identity, 
+			ObjectQueryParams, FCollisionShape::MakeSphere(AbilityInfo.Radius), CollisionParams);
+
+		if (AbilityInfo.Shape == EHun_AbilityShape::Circle)
+		{
+			DrawDebugSphere(GetWorld(), ActivePoint, AbilityInfo.Radius, 20, FColor::Red, true, 1.5f);
+		}
+	}
+	else if (AbilityInfo.Shape == EHun_AbilityShape::Box)
+	{
+		FVector BoxCenter = ActivePoint + (OriginForward * AbilityInfo.BoxExtend.X);
+		bHit = GetWorld()->OverlapMultiByObjectType(
+			OverlapResults, BoxCenter, ActiveRot.Quaternion(),
+			ObjectQueryParams, FCollisionShape::MakeBox(AbilityInfo.BoxExtend), CollisionParams);
+	}
+
+	if (bHit)
+	{
+		int32 HitCount = 0;
+		
+		for (const FOverlapResult& OverlapResult : OverlapResults)
+		{
+			AActor* HitActor = OverlapResult.GetActor();
+			if (AbilityInfo.Shape == EHun_AbilityShape::Cone)
+			{
+				FVector DirectionToTarget = (HitActor->GetActorLocation() - ActivePoint).GetSafeNormal(); //적 방향구하기 (적 위치 - 내 위치 = 적의 방향(벡터)) + 정규화
+				float DotProduct = FVector::DotProduct(OriginForward, DirectionToTarget); //적이 정면대비 얼마나 벗어났는지 확인 (정면 = 1, 옆 = 0, 뒤 = -1)
+				float AngleToTarget = FMath::RadiansToDegrees(FMath::Acos(DotProduct)); //DotProduct로 얻은 코사인값을 각도Degress로 변환
+
+				if (AngleToTarget > (AbilityInfo.ConeAngle / 2.0f))
+					continue;
+			}
+
+			AHun_MobBase* HitMob = Cast<AHun_MobBase>(HitActor);
+			
+			if (!IsValid(HitMob))
+				return;
+
+			FDamageEvent DamageEvent(AbilityInfo.DamageType);
+
+			HitMob->TakeDamage(
+				AbilityInfo.AbilityBaseDamage,
+				DamageEvent,
+				OwnerActor->GetInstigatorController(),
+				OwnerActor);
+
+			for (EHun_AbilityEffect Effect : AbilityInfo.Effects)
+			{
+				switch (Effect)
+				{
+					case EHun_AbilityEffect::None: break;
+					case EHun_AbilityEffect::Brun: break;
+					case EHun_AbilityEffect::Stun: break;
+				}
+			}
+
+			HitCount++;
+			if (AbilityInfo.MaxTargets > 0 && HitCount >= AbilityInfo.MaxTargets)
+			{
+				break;
+			}
+		}
+	}
+	
+}
+
 void UHun_CombatComponent::PlayHitAnimation()
 {
 	if (!IsHit)
@@ -352,12 +441,6 @@ void UHun_CombatComponent::CharacterDie()
 	}
 
 	OwnerCharacter->SetLifeSpan(1.6f);
-}
-
-void UHun_CombatComponent::PreventingMoveDuringActivity()
-{
-	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
-	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * 0, true);
 }
 
 

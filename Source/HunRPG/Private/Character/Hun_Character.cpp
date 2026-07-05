@@ -40,6 +40,7 @@ AHun_Character::AHun_Character()
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
+
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)

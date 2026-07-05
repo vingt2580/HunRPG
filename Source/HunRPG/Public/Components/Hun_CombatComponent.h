@@ -7,6 +7,7 @@
 #include "Components/ActorComponent.h"
 #include "HunRPG/Public/Interface/Hun_CombatInterface.h"
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
+#include "System/HunRPG_AbilityTypes.h"
 #include "Hun_CombatComponent.generated.h"
 
 struct FHun_TraceLine
@@ -70,11 +71,10 @@ public:
 	float HitAngle;
 	UPROPERTY(BlueprintReadWrite, Category = "HunRPG|Combat")
 	bool IsHit;
-	
-	
+
 	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
 	void StartComboAttack();
-
+	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void HitAttack();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
@@ -90,11 +90,12 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	bool IsAlive() const { return CurrentHealthPoint > 0.0f; }
 	
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, const FVector& ActivePoint, const FRotator& ActiveRot);
+	
 	void PlayHitAnimation();
 	void PlayDeathAnimation();
 	void CheckHitAngle(AActor* DamageCauser);
 	float ApplyDamage(float TakenDamage);
 	void CharacterDie();
-
-	void PreventingMoveDuringActivity();
 };

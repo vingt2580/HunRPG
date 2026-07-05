@@ -7,6 +7,7 @@
 #include "HunRPG/Public/Character/Hun_MobBase.h"
 #include "Hun_ActorComponent.generated.h"
 
+class UHun_AbilityData;
 class UHun_CharacterData;
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
@@ -24,6 +25,12 @@ public:
 	AHun_MobBase* GetOwnerCharacter() const { return OwnerCharacter; }
 	UFUNCTION()
 	UHun_CharacterData* GetMobData() const { return OwnerCharacter->CharacterData; }
+	UFUNCTION()
+	UHun_AbilityData* GetAbility_A_Data() const { return  OwnerCharacter->Ability_A_Data; }
+	UFUNCTION()
+	UHun_AbilityData* GetAbility_B_Data() const { return  OwnerCharacter->Ability_B_Data; }
+	UFUNCTION()
+	UHun_AbilityData* GetUltimate_Data() const { return  OwnerCharacter->Ultimate_Data; }
 	void SetData(UHun_CharacterData* NewHunData);
 
 protected:

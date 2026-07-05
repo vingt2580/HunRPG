@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "Hun_MobBase.generated.h"
 
+class UHun_AbilityData;
 class UHun_CharacterData;
 class UHun_ComponentsData;
 class UHun_ActorComponent;
@@ -18,10 +19,11 @@ public:
 	AHun_MobBase();
 
 	void SetMobSpeed(float speed);
+
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	
 protected:
 	virtual void BeginPlay() override;
-	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void PostInitializeComponents() override;
 
 public:
@@ -34,6 +36,13 @@ public:
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | CharacterData")
 	UHun_CharacterData* CharacterData;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | AbilityData")
+	UHun_AbilityData* Ability_A_Data;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | AbilityData")
+	UHun_AbilityData* Ability_B_Data;
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="HunRPG | AbilityData")
+	UHun_AbilityData* Ultimate_Data;
 
 	UPROPERTY()
 	TArray<UHun_ActorComponent*> Component;
