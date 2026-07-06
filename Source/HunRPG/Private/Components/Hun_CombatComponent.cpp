@@ -264,8 +264,10 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 	FVector OriginForward = ActiveRot.Vector();
 	TArray<FOverlapResult> OverlapResults;
 
+	TSet<AActor*> HitResults;
+
 	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(COLLISIONCHANNEL_MONSTER);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(OwnerActor);
@@ -289,6 +291,8 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 		bHit = GetWorld()->OverlapMultiByObjectType(
 			OverlapResults, BoxCenter, ActiveRot.Quaternion(),
 			ObjectQueryParams, FCollisionShape::MakeBox(AbilityInfo.BoxExtend), CollisionParams);
+
+		DrawDebugBox(GetWorld(), ActivePoint, AbilityInfo.BoxExtend, FColor::Red, false, 1.5f);
 	}
 
 	if (bHit)
@@ -298,6 +302,10 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 		for (const FOverlapResult& OverlapResult : OverlapResults)
 		{
 			AActor* HitActor = OverlapResult.GetActor();
+
+			if (!HitActor || HitResults.Contains(HitActor))
+				continue;
+			
 			if (AbilityInfo.Shape == EHun_AbilityShape::Cone)
 			{
 				FVector DirectionToTarget = (HitActor->GetActorLocation() - ActivePoint).GetSafeNormal(); //적 방향구하기 (적 위치 - 내 위치 = 적의 방향(벡터)) + 정규화
@@ -311,7 +319,9 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 			AHun_MobBase* HitMob = Cast<AHun_MobBase>(HitActor);
 			
 			if (!IsValid(HitMob))
-				return;
+				continue;
+
+			HitResults.Add(HitMob);
 
 			FDamageEvent DamageEvent(AbilityInfo.DamageType);
 
@@ -320,6 +330,8 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 				DamageEvent,
 				OwnerActor->GetInstigatorController(),
 				OwnerActor);
+
+			HUN_LOG(FColor::Red, "HitMob Take Damage, Damage:%f, HitOwner: %s", AbilityInfo.AbilityBaseDamage, *HitMob->GetName());
 
 			for (EHun_AbilityEffect Effect : AbilityInfo.Effects)
 			{
@@ -338,7 +350,6 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 			}
 		}
 	}
-	
 }
 
 void UHun_CombatComponent::PlayHitAnimation()
