@@ -12,17 +12,17 @@ void UWidget_HunHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	APlayerController* PC = GetOwningPlayer();
-
-	UHun_CombatComponent* CombatComp = PC->GetPawn()->FindComponentByClass<UHun_CombatComponent>();
-	UHun_MoveComponent* MoveComp = PC->GetPawn()->FindComponentByClass<UHun_MoveComponent>();
-
-	if (CombatComp)
-	{
-		PlayerStatusWidget->BindCombatComponent(CombatComp);
-	}
-	if (MoveComp)
-	{
-		StaminaGauge->BindMoveComponent(MoveComp);
-	}
+	//APlayerController* PC = GetOwningPlayer();
+	//
+	// UHun_CombatComponent* CombatComp = PC->GetPawn()->FindComponentByClass<UHun_CombatComponent>();
+	// UHun_MoveComponent* MoveComp = PC->GetPawn()->FindComponentByClass<UHun_MoveComponent>();
+	//
+	// if (CombatComp)
+	// {
+	// 	PlayerStatusWidget->BindCombatComponent(CombatComp);
+	// }
+	// if (MoveComp)
+	// {
+	// 	StaminaGauge->BindMoveComponent(MoveComp);
+	// }
 }

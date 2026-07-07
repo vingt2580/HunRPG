@@ -26,6 +26,17 @@ public:
 	AHun_PlayerController();
 	virtual FGenericTeamId GetGenericTeamId() const;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunParty|Party")
+	TArray<TSubclassOf<AHun_Character>> HunCaracterPartyClasses;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunParty|Party")
+	TArray<AHun_Character*> HunCharacterPartyMembers;
+
+	int32 CurrentPartyMemberSlot = 0;
+
+	UFUNCTION(BlueprintCallable, Category = "HunParty|Party")
+	void SwapCharacter(int32 SlotIndex);
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -52,6 +63,10 @@ public:
 	void Input_Ablity_B();
 	void Input_Ultimate();
 
+	void Input_SwapCharacter1();
+	void Input_SwapCharacter2();
+	void Input_SwapCharacter3();
+
 private:
 	FGenericTeamId TeamId;
 
@@ -59,4 +74,6 @@ private:
 	TSubclassOf<UWidget_HunHUD> MainHUDWidget;
 
 	void AddtoViewportHUD();
+	void SetupPartyMember();
+	static void EjectionCharacter(AHun_Character* HunCharacter, bool Ejection);
 };

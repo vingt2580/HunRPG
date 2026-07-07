@@ -38,4 +38,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UInputAction* Input_Ultimate;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HunRPG|SwapCharacter")
+	class UInputAction* Input_Swap1;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HunRPG|SwapCharacter")
+	class UInputAction* Input_Swap2;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HunRPG|SwapCharacter")
+	class UInputAction* Input_Swap3;
 };

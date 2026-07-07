@@ -6,8 +6,11 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "HunRPG_DebugHelper.h"
 #include "InputAction.h"
+#include "GameFramework/PlayerStart.h"
 #include "Interface/Hun_CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 AHun_PlayerController::AHun_PlayerController()
 {
@@ -19,11 +22,38 @@ FGenericTeamId AHun_PlayerController::GetGenericTeamId() const
 	return TeamId;
 }
 
+void AHun_PlayerController::SwapCharacter(int32 SlotIndex)
+{
+	if (!HunCharacterPartyMembers.IsValidIndex(SlotIndex) || SlotIndex == CurrentPartyMemberSlot)
+		return;
+
+	AHun_Character* PrevCharacter = HunCharacterPartyMembers[CurrentPartyMemberSlot];
+	AHun_Character* NextCharacter = HunCharacterPartyMembers[SlotIndex];
+
+	if (IsValid(PrevCharacter) && IsValid(NextCharacter))
+	{
+		FVector PrevLocation = PrevCharacter->GetActorLocation();
+		FRotator PrevRotation = PrevCharacter->GetActorRotation();
+
+		EjectionCharacter(PrevCharacter, true);
+
+		NextCharacter->SetActorLocationAndRotation(PrevLocation, PrevRotation);
+		EjectionCharacter(NextCharacter, false);
+
+		Possess(NextCharacter);
+
+		CurrentPartyMemberSlot = SlotIndex;
+
+		HUN_LOG(FColor::Blue, "캐릭터 교체 성공 현재 캐릭터 슬록 %d, 현재 조종 캐릭터이름 : %s", CurrentPartyMemberSlot, *NextCharacter->GetName());
+	}
+}
+
 void AHun_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
 	AddtoViewportHUD();
+	SetupPartyMember();
 }
 
 void AHun_PlayerController::Tick(float DeltaTime)
@@ -61,6 +91,10 @@ void AHun_PlayerController::SetupInputComponent()
 		PEI->BindAction(InputActions->Input_Ablity_A, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_A);
 		PEI->BindAction(InputActions->Input_Ablity_B, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_B);
 		PEI->BindAction(InputActions->Input_Ultimate, ETriggerEvent::Started, this, &ThisClass::Input_Ultimate);
+		
+		PEI->BindAction(InputActions->Input_Swap1, ETriggerEvent::Started, this, &ThisClass::Input_SwapCharacter1);
+		PEI->BindAction(InputActions->Input_Swap2, ETriggerEvent::Started, this, &ThisClass::Input_SwapCharacter2);
+		PEI->BindAction(InputActions->Input_Swap3, ETriggerEvent::Started, this, &ThisClass::Input_SwapCharacter3);
 	}
 }
 
@@ -138,6 +172,30 @@ void AHun_PlayerController::Input_Ultimate()
 	HunCharacter->Character_Ability(EHun_AbilityType::Ultimate);
 }
 
+void AHun_PlayerController::Input_SwapCharacter1()
+{
+	if (!IsValid(HunCharacter))
+		return;
+
+	SwapCharacter(0);
+}
+
+void AHun_PlayerController::Input_SwapCharacter2()
+{
+	if (!IsValid(HunCharacter))
+		return;
+
+	SwapCharacter(1);
+}
+
+void AHun_PlayerController::Input_SwapCharacter3()
+{
+	if (!IsValid(HunCharacter))
+		return;
+
+	SwapCharacter(2);
+}
+
 void AHun_PlayerController::AddtoViewportHUD()
 {
 	if (MainHUDWidget)
@@ -148,5 +206,60 @@ void AHun_PlayerController::AddtoViewportHUD()
 		{
 			MainHUD->AddToViewport();
 		}
+	}
+}
+
+void AHun_PlayerController::SetupPartyMember()
+{
+	FVector CharacterSpawnLocation = FVector::ZeroVector;
+	FRotator CharacterSpawnRotation = FRotator::ZeroRotator;
+
+	if (AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass()))
+	{
+		CharacterSpawnLocation = PlayerStart->GetActorLocation();
+		CharacterSpawnRotation = PlayerStart->GetActorRotation();
+	}
+	
+	for (int32 i = 0; i < HunCaracterPartyClasses.Num(); i++)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		AHun_Character* SpawnedCharacter = GetWorld()->SpawnActor<AHun_Character>(
+			HunCaracterPartyClasses[i],
+			CharacterSpawnLocation,
+			CharacterSpawnRotation,
+			SpawnParams);
+
+		if (IsValid(SpawnedCharacter))
+		{
+			HunCharacterPartyMembers.Add(SpawnedCharacter);
+
+			if (i == 0)
+			{
+				Possess(SpawnedCharacter);
+				CurrentPartyMemberSlot = 0;
+			}
+			else
+			{
+				EjectionCharacter(SpawnedCharacter, true);
+			}
+		}
+	}
+}
+
+void AHun_PlayerController::EjectionCharacter(AHun_Character* InHunCharacter, bool Ejection)
+{
+	if (Ejection)
+	{
+		InHunCharacter->SetActorHiddenInGame(true);
+		InHunCharacter->SetActorEnableCollision(false);
+		InHunCharacter->SetActorTickEnabled(false);
+	}
+	else
+	{
+		InHunCharacter->SetActorHiddenInGame(false);
+		InHunCharacter->SetActorEnableCollision(true);
+		InHunCharacter->SetActorTickEnabled(true);
 	}
 }
