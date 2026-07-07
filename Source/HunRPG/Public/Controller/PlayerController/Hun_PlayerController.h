@@ -37,6 +37,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "HunParty|Party")
 	void SwapCharacter(int32 SlotIndex);
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunParty|UI")
+	TSubclassOf<UWidget_HunHUD> Widget_HunHUD;
+
+	UPROPERTY()
+	UWidget_HunHUD* MainHUD;
+
+	void UpdateWidgetBinding(const AHun_Character* TargetCharacter) const;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
@@ -72,8 +80,7 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|UI")
 	TSubclassOf<UWidget_HunHUD> MainHUDWidget;
-
-	void AddtoViewportHUD();
+	
 	void SetupPartyMember();
 	static void EjectionCharacter(AHun_Character* HunCharacter, bool Ejection);
 };

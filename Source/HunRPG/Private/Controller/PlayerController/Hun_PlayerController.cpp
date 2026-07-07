@@ -8,9 +8,13 @@
 #include "EnhancedInputSubsystems.h"
 #include "HunRPG_DebugHelper.h"
 #include "InputAction.h"
+#include "Components/Hun_CombatComponent.h"
+#include "Components/Hun_MoveComponent.h"
 #include "GameFramework/PlayerStart.h"
 #include "Interface/Hun_CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Widget/Widget_HunPlayerHPBar.h"
+#include "Widget/WIdget_HunStaminaGauge.h"
 
 AHun_PlayerController::AHun_PlayerController()
 {
@@ -22,11 +26,11 @@ FGenericTeamId AHun_PlayerController::GetGenericTeamId() const
 	return TeamId;
 }
 
-void AHun_PlayerController::SwapCharacter(int32 SlotIndex)
+void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 {
 	if (!HunCharacterPartyMembers.IsValidIndex(SlotIndex) || SlotIndex == CurrentPartyMemberSlot)
 		return;
-
+	
 	AHun_Character* PrevCharacter = HunCharacterPartyMembers[CurrentPartyMemberSlot];
 	AHun_Character* NextCharacter = HunCharacterPartyMembers[SlotIndex];
 
@@ -41,6 +45,11 @@ void AHun_PlayerController::SwapCharacter(int32 SlotIndex)
 		EjectionCharacter(NextCharacter, false);
 
 		Possess(NextCharacter);
+		HunCharacter = NextCharacter;
+		
+		SetViewTargetWithBlend(NextCharacter);
+
+		UpdateWidgetBinding(NextCharacter);
 
 		CurrentPartyMemberSlot = SlotIndex;
 
@@ -48,11 +57,31 @@ void AHun_PlayerController::SwapCharacter(int32 SlotIndex)
 	}
 }
 
+void AHun_PlayerController::UpdateWidgetBinding(const AHun_Character* TargetCharacter) const
+{
+	if (IsValid(MainHUD) && IsValid(TargetCharacter))
+	{
+		UHun_CombatComponent* CombatComponent = TargetCharacter->FindComponentByClass<UHun_CombatComponent>();
+		UHun_MoveComponent* MoveComponent = TargetCharacter->FindComponentByClass<UHun_MoveComponent>();
+
+		if (IsValid(CombatComponent) && MainHUD->PlayerStatusWidget)
+		{
+			MainHUD->PlayerStatusWidget->BindCombatComponent(CombatComponent);
+			HUN_LOG(FColor::Blue, "체력 UI 바인딩 완료");
+		}
+
+		if (IsValid(MoveComponent) && MainHUD->StaminaGauge)
+		{
+			MainHUD->StaminaGauge->BindMoveComponent(MoveComponent);
+			HUN_LOG(FColor::Blue, "스테미나 UI 바인딩 완료");
+		}
+	}
+}
+
 void AHun_PlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	AddtoViewportHUD();
+	
 	SetupPartyMember();
 }
 
@@ -196,19 +225,6 @@ void AHun_PlayerController::Input_SwapCharacter3()
 	SwapCharacter(2);
 }
 
-void AHun_PlayerController::AddtoViewportHUD()
-{
-	if (MainHUDWidget)
-	{
-		UWidget_HunHUD* MainHUD = CreateWidget<UWidget_HunHUD>(GetWorld(), MainHUDWidget);
-		
-		if (IsValid(MainHUD))
-		{
-			MainHUD->AddToViewport();
-		}
-	}
-}
-
 void AHun_PlayerController::SetupPartyMember()
 {
 	FVector CharacterSpawnLocation = FVector::ZeroVector;
@@ -219,6 +235,8 @@ void AHun_PlayerController::SetupPartyMember()
 		CharacterSpawnLocation = PlayerStart->GetActorLocation();
 		CharacterSpawnRotation = PlayerStart->GetActorRotation();
 	}
+
+	AHun_Character* FirstMember = nullptr;
 	
 	for (int32 i = 0; i < HunCaracterPartyClasses.Num(); i++)
 	{
@@ -237,13 +255,26 @@ void AHun_PlayerController::SetupPartyMember()
 
 			if (i == 0)
 			{
-				Possess(SpawnedCharacter);
+				FirstMember = SpawnedCharacter;
+				Possess(FirstMember);
+				SetViewTargetWithBlend(FirstMember);
+				HunCharacter = SpawnedCharacter;
 				CurrentPartyMemberSlot = 0;
 			}
 			else
 			{
 				EjectionCharacter(SpawnedCharacter, true);
 			}
+		}
+	}
+
+	if (IsValid(Widget_HunHUD))
+	{
+		MainHUD = CreateWidget<UWidget_HunHUD>(GetWorld(), Widget_HunHUD);
+		if (IsValid(MainHUD))
+		{
+			MainHUD->AddToViewport();
+			UpdateWidgetBinding(FirstMember);
 		}
 	}
 }
@@ -255,11 +286,13 @@ void AHun_PlayerController::EjectionCharacter(AHun_Character* InHunCharacter, bo
 		InHunCharacter->SetActorHiddenInGame(true);
 		InHunCharacter->SetActorEnableCollision(false);
 		InHunCharacter->SetActorTickEnabled(false);
+		InHunCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_None);
 	}
 	else
 	{
 		InHunCharacter->SetActorHiddenInGame(false);
 		InHunCharacter->SetActorEnableCollision(true);
 		InHunCharacter->SetActorTickEnabled(true);
+		InHunCharacter->GetCharacterMovement()->SetMovementMode(EMovementMode::MOVE_Walking);
 	}
 }
