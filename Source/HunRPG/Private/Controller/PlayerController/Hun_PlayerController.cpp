@@ -34,6 +34,9 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 	AHun_Character* PrevCharacter = HunCharacterPartyMembers[CurrentPartyMemberSlot];
 	AHun_Character* NextCharacter = HunCharacterPartyMembers[SlotIndex];
 
+	if (!IsValid(PrevCharacter)) HUN_LOG(FColor::Red, "PrevCharacter가 비어있음 이전 슬롯 : %d", CurrentPartyMemberSlot);
+	if (!IsValid(NextCharacter)) HUN_LOG(FColor::Red, "NextCharacter가 비어있음 불러올 슬롯 : %d", SlotIndex);
+
 	if (IsValid(PrevCharacter) && IsValid(NextCharacter))
 	{
 		FVector PrevLocation = PrevCharacter->GetActorLocation();
@@ -251,7 +254,9 @@ void AHun_PlayerController::SetupPartyMember()
 
 		if (IsValid(SpawnedCharacter))
 		{
-			HunCharacterPartyMembers.Add(SpawnedCharacter);
+			int32 AddedIndex = HunCharacterPartyMembers.Add(SpawnedCharacter);
+
+			HUN_LOG(FColor::Red, "HunCharacterPartyMembers[%d] : %s", AddedIndex, *HunCharacterPartyMembers[AddedIndex]->GetName());
 
 			if (i == 0)
 			{
@@ -266,6 +271,11 @@ void AHun_PlayerController::SetupPartyMember()
 				EjectionCharacter(SpawnedCharacter, true);
 			}
 		}
+	}
+
+	for (int32 i = 0; i < HunCharacterPartyMembers.Num(); i++)
+	{
+		//HUN_LOG(FColor::Red, "HunCharacterPartyMembers[%d] : %s", i, *HunCharacterPartyMembers[i]->GetName());
 	}
 
 	if (IsValid(Widget_HunHUD))
