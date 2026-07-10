@@ -69,6 +69,17 @@ void UWIdget_HunStaminaGauge::BindMoveComponent(UHun_MoveComponent* MovementComp
 	}
 }
 
+void UWIdget_HunStaminaGauge::UnbindMoveComponent(UHun_MoveComponent* MovementComponent)
+{
+	if (MovementComponent)
+	{
+		TargetCharacter = MovementComponent->GetOwner();
+		
+		MovementComponent->OnStaminaUpdate.RemoveDynamic(this, &UWIdget_HunStaminaGauge::OnStaminaUpdated);
+		OnStaminaUpdated(MovementComponent->CurrentStamina, MovementComponent->MaxStamina);
+	}
+}
+
 void UWIdget_HunStaminaGauge::SetStaminaGauge()
 {
 	if (IsValid(DynamicRoundGaugeMaterial))

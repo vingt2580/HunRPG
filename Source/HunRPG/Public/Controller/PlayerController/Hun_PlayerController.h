@@ -43,7 +43,7 @@ public:
 	UPROPERTY()
 	UWidget_HunHUD* MainHUD;
 
-	void UpdateWidgetBinding(const AHun_Character* TargetCharacter) const;
+	void UpdateWidgetBinding(const AHun_Character* PrevCharacter, const AHun_Character* TargetCharacter) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,6 +65,7 @@ public:
 	void Input_Dash();
 	void Input_CameraLook(const FInputActionValue& ActionValue);
 	void Input_Attack();
+	void Input_Lockon();
 	void Reset_MoveSpeed();
 
 	void Input_Ablity_A();

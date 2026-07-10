@@ -33,8 +33,19 @@ void UWidget_HunHPBar::UpdateHPBar(float CurrentHP, float MaxHP)
 void UWidget_HunHPBar::BindCombatComponent(UHun_CombatComponent* CombatComponent)
 {
 	if (CombatComponent)
-	{
+	{		
 		CombatComponent->OnHPChange.AddDynamic(this, &UWidget_HunHPBar::UpdateHPBar);
 		UpdateHPBar(CombatComponent->CurrentHealthPoint, CombatComponent->MaxHealthPoint);
+	}
+}
+
+void UWidget_HunHPBar::UnbindCombatComponent(UHun_CombatComponent* CombatComponent)
+{
+	if (IsValid(CombatComponent))
+	{
+		if (CombatComponent->OnHPChange.IsBound())
+		{
+			CombatComponent->OnHPChange.RemoveDynamic(this, &UWidget_HunHPBar::UpdateHPBar);
+		}
 	}
 }

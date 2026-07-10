@@ -39,6 +39,7 @@ public:
 	void OnStaminaUpdated(float CurrentStamina, float MaxStamina);
 
 	void BindMoveComponent(UHun_MoveComponent* MovementComponent);
+	void UnbindMoveComponent(UHun_MoveComponent* MovementComponent);
 
 private:
 	void SetStaminaGauge();

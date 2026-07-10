@@ -31,6 +31,9 @@ public:
 	class UInputAction* Input_Attack;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UInputAction* Input_LockOn;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	class UInputAction* Input_Ablity_A;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)

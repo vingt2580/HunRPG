@@ -56,7 +56,7 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 		
 		SetViewTargetWithBlend(NextCharacter);
 
-		UpdateWidgetBinding(NextCharacter);
+		UpdateWidgetBinding(PrevCharacter, NextCharacter);
 
 		CurrentPartyMemberSlot = SlotIndex;
 
@@ -64,9 +64,32 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 	}
 }
 
-void AHun_PlayerController::UpdateWidgetBinding(const AHun_Character* TargetCharacter) const
+void AHun_PlayerController::UpdateWidgetBinding(const AHun_Character* PrevCharacter, const AHun_Character* TargetCharacter) const
 {
-	if (IsValid(MainHUD) && IsValid(TargetCharacter))
+	if (IsValid(MainHUD) == false)
+	{
+		return;
+	}
+
+	if (IsValid(PrevCharacter))
+	{
+		UHun_CombatComponent* CombatComponent = PrevCharacter->FindComponentByClass<UHun_CombatComponent>();
+		UHun_MoveComponent* MoveComponent = PrevCharacter->FindComponentByClass<UHun_MoveComponent>();
+
+		if (IsValid(CombatComponent) && MainHUD->PlayerStatusWidget)
+		{
+			MainHUD->PlayerStatusWidget->UnbindCombatComponent(CombatComponent);
+			HUN_LOG(FColor::Blue, "체력 UI 언바인딩 완료");
+		}
+
+		if (IsValid(MoveComponent) && MainHUD->StaminaGauge)
+		{
+			MainHUD->StaminaGauge->UnbindMoveComponent(MoveComponent);
+			HUN_LOG(FColor::Blue, "스테미나 UI 언바인딩 완료");
+		}
+	}
+	
+	if (IsValid(TargetCharacter))
 	{
 		UHun_CombatComponent* CombatComponent = TargetCharacter->FindComponentByClass<UHun_CombatComponent>();
 		UHun_MoveComponent* MoveComponent = TargetCharacter->FindComponentByClass<UHun_MoveComponent>();
@@ -124,6 +147,7 @@ void AHun_PlayerController::SetupInputComponent()
 		PEI->BindAction(InputActions->Input_Dash, ETriggerEvent::Started, this, &ThisClass::Input_Dash);
 		PEI->BindAction(InputActions->Input_Look, ETriggerEvent::Triggered ,this, &ThisClass::Input_CameraLook);
 		PEI->BindAction(InputActions->Input_Attack, ETriggerEvent::Started, this, &ThisClass::Input_Attack);
+		PEI->BindAction(InputActions->Input_LockOn, ETriggerEvent::Started, this, &ThisClass::Input_Lockon);
 		PEI->BindAction(InputActions->Input_Ablity_A, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_A);
 		PEI->BindAction(InputActions->Input_Ablity_B, ETriggerEvent::Started, this, &ThisClass::Input_Ablity_B);
 		PEI->BindAction(InputActions->Input_Ultimate, ETriggerEvent::Started, this, &ThisClass::Input_Ultimate);
@@ -174,6 +198,11 @@ void AHun_PlayerController::Input_Attack()
 		return;
 	
 	HunCharacter->Character_Attack();
+}
+
+void AHun_PlayerController::Input_Lockon()
+{
+	
 }
 
 void AHun_PlayerController::Reset_MoveSpeed()
@@ -288,7 +317,7 @@ void AHun_PlayerController::SetupPartyMember()
 		if (IsValid(MainHUD))
 		{
 			MainHUD->AddToViewport();
-			UpdateWidgetBinding(FirstMember);
+			UpdateWidgetBinding(nullptr,FirstMember);
 		}
 	}
 }

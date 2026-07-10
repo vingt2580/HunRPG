@@ -36,4 +36,5 @@ public:
 	void UpdateHPBar(float CurrentHP, float MaxHP);
 
 	void BindCombatComponent(UHun_CombatComponent* CombatComponent);
+	void UnbindCombatComponent(UHun_CombatComponent* CombatComponent);
 };
