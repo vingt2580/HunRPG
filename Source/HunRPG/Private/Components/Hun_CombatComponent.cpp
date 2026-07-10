@@ -260,11 +260,9 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 	AActor* OwnerActor = GetOwnerCharacter();
 	if (!IsValid(OwnerActor))
 	return;
-
+	
 	FVector OriginForward = ActiveRot.Vector();
 	TArray<FOverlapResult> OverlapResults;
-
-	TSet<AActor*> HitResults;
 
 	FCollisionObjectQueryParams ObjectQueryParams;
 	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
@@ -297,6 +295,7 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 
 	if (bHit)
 	{
+		TSet<AActor*> HitResults;
 		int32 HitCount = 0;
 		
 		for (const FOverlapResult& OverlapResult : OverlapResults)

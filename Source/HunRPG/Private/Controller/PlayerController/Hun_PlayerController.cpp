@@ -42,9 +42,13 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 		FVector PrevLocation = PrevCharacter->GetActorLocation();
 		FRotator PrevRotation = PrevCharacter->GetActorRotation();
 
+		FVector CameraPrevLocation = PrevCharacter->CameraBoom->GetComponentLocation();
+		FRotator CameraPrevRotation = PrevCharacter->CameraBoom->GetComponentRotation();
+
 		EjectionCharacter(PrevCharacter, true);
 
 		NextCharacter->SetActorLocationAndRotation(PrevLocation, PrevRotation);
+		NextCharacter->CameraBoom->SetWorldLocationAndRotation(CameraPrevLocation, CameraPrevRotation);
 		EjectionCharacter(NextCharacter, false);
 
 		Possess(NextCharacter);
