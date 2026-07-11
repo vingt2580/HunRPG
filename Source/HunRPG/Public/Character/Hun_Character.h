@@ -45,9 +45,12 @@ public:
 	void Character_Attack();
 	void Character_Ability(EHun_AbilityType AbilityType);
 
+	UFUNCTION()
+	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	USpringArmComponent* CameraBoom;
+	TObjectPtr<USpringArmComponent> CameraBoom;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FollowCamera;
 #pragma endregion

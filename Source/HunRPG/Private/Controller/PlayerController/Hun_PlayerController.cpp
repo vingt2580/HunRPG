@@ -39,22 +39,25 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 
 	if (IsValid(PrevCharacter) && IsValid(NextCharacter))
 	{
-		FVector PrevLocation = PrevCharacter->GetActorLocation();
-		FRotator PrevRotation = PrevCharacter->GetActorRotation();
+		const FVector PrevLocation = PrevCharacter->GetActorLocation();
+		const FRotator PrevRotation = PrevCharacter->GetActorRotation();
 
-		FVector CameraPrevLocation = PrevCharacter->CameraBoom->GetComponentLocation();
-		FRotator CameraPrevRotation = PrevCharacter->CameraBoom->GetComponentRotation();
+		const FRotator PrevControlRotation = PrevCharacter->GetControlRotation();
+
+		float PrevCameraDistance = PrevCharacter->GetCameraBoom()->TargetArmLength; 
 
 		EjectionCharacter(PrevCharacter, true);
 
 		NextCharacter->SetActorLocationAndRotation(PrevLocation, PrevRotation);
-		NextCharacter->CameraBoom->SetWorldLocationAndRotation(CameraPrevLocation, CameraPrevRotation);
 		EjectionCharacter(NextCharacter, false);
 
 		Possess(NextCharacter);
 		HunCharacter = NextCharacter;
 		
 		SetViewTargetWithBlend(NextCharacter);
+		SetControlRotation(PrevControlRotation);
+
+		NextCharacter->GetCameraBoom()->TargetArmLength = PrevCameraDistance;
 
 		UpdateWidgetBinding(PrevCharacter, NextCharacter);
 
