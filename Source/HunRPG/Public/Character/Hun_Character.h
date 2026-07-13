@@ -34,6 +34,23 @@ class HUNRPG_API AHun_Character : public AHun_MobBase
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	
+	AActor* FindLockOnTarget() const;
+
+	void DeadZoneLockOn(float DeltaTime);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|LockOn")
+	bool bIsLockedOn;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|LockOn")
+	TObjectPtr<AActor> CurrentLockOnTarget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|LockOn")
+	float LockOnRadius = 1500.f;
+
+	float DeadZoneYaw = 15.f;
+	float DeadzonePitch = 10.f;
 
 public:
 	
@@ -44,6 +61,8 @@ public:
 	void Character_Look(FVector2D LookAxisVector);
 	void Character_Attack();
 	void Character_Ability(EHun_AbilityType AbilityType);
+
+	void ToggleLockOn();
 
 	UFUNCTION()
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }

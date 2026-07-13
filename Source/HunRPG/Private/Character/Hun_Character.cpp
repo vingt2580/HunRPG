@@ -8,17 +8,20 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/Hun_ActorComponent.h"
+#include "Engine/OverlapResult.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/Hun_CombatInterface.h"
 
 #include "Interface/Hun_MovementInterface.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 // Sets default values
 AHun_Character::AHun_Character()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
 	
@@ -35,12 +38,143 @@ AHun_Character::AHun_Character()
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
+
+	bIsLockedOn = false;
+	CurrentLockOnTarget = nullptr;
 }
 
 void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
 
+}
+
+void AHun_Character::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	DeadZoneLockOn(DeltaTime);
+}
+
+void AHun_Character::ToggleLockOn()
+{
+	if (bIsLockedOn)
+	{
+		bIsLockedOn = false;
+		CurrentLockOnTarget = nullptr;
+		HUN_LOG(FColor::Red, "락온 해제");
+	}
+	else
+	{
+		AActor* FindedTarget = FindLockOnTarget();
+		if (IsValid(FindedTarget))
+		{
+			CurrentLockOnTarget = FindedTarget;
+			bIsLockedOn = true;
+			HUN_LOG(FColor::Red, "락온 성공 : %s", *CurrentLockOnTarget.GetName());
+		}
+	}
+}
+
+AActor* AHun_Character::FindLockOnTarget() const
+{
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionObjectQueryParams ObjectQueryParams;
+
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActor(this);
+
+	bool bLockOnTarget = GetWorld()->OverlapMultiByObjectType(
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,ObjectQueryParams,
+		FCollisionShape::MakeSphere(LockOnRadius),
+		CollisionQueryParams);
+
+	if (!bLockOnTarget)
+		return nullptr;
+
+	AActor* BestTarget = nullptr;
+	float ClosestDistance = LockOnRadius;
+
+	for (FOverlapResult& Result : OverlapResults)
+	{
+		AActor* LockonActor = Result.GetActor();
+		if (!LockonActor)
+			continue;
+
+		FVector DirectiontoTarget = (LockonActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
+		float DotProduct =FVector::DotProduct(DirectiontoTarget,DirectiontoTarget);
+
+		if (DotProduct > 0.f)
+		{
+			float Distance = FVector::Dist(GetActorLocation(), LockonActor->GetActorLocation());
+
+			if (Distance < ClosestDistance)
+			{
+				ClosestDistance = Distance;
+				BestTarget = LockonActor;
+			}
+		}
+	}
+
+	return BestTarget;
+}
+
+void AHun_Character::DeadZoneLockOn(const float DeltaTime)
+{
+	if (bIsLockedOn && IsValid(CurrentLockOnTarget))
+	{
+		APlayerController* PC = Cast<APlayerController>(GetController());
+		if (IsValid(PC))
+		{
+			FRotator CurrentCameraRot = PC->GetControlRotation();
+			FVector TargetLocation = CurrentLockOnTarget->GetActorLocation();
+
+			FRotator LookAtRot = UKismetMathLibrary::FindLookAtRotation(PC->PlayerCameraManager->GetCameraLocation(), TargetLocation);
+			FRotator DeltaRot = UKismetMathLibrary::NormalizedDeltaRotator(LookAtRot, CurrentCameraRot);
+
+			float TargetYaw = CurrentCameraRot.Yaw;
+			float TargetPitch = CurrentCameraRot.Pitch;
+
+			if (FMath::Abs(DeltaRot.Yaw) > DeadZoneYaw)
+			{
+				float ExcessYaw = 0.f;
+				if (DeltaRot.Yaw > 0)
+					ExcessYaw = DeltaRot.Yaw - DeadZoneYaw;
+				else
+					ExcessYaw = DeltaRot.Yaw + DeadZoneYaw;
+
+				TargetYaw += ExcessYaw;
+			}
+
+			if (FMath::Abs(DeltaRot.Pitch) > DeadzonePitch)
+			{
+				float ExcessPitch = 0.f;
+				if (DeltaRot.Pitch > 0)
+					ExcessPitch = DeltaRot.Pitch - DeadzonePitch;
+				else
+					ExcessPitch = DeltaRot.Pitch + DeadzonePitch;
+
+				TargetPitch += ExcessPitch;
+			}
+
+			FRotator FinalTargetRot = FRotator(TargetPitch, TargetYaw, 0.f);
+			FRotator SmoothRot = FMath::RInterpTo(CurrentCameraRot, FinalTargetRot, DeltaTime, 5.f);
+
+			PC->SetControlRotation(SmoothRot);
+		}
+
+		float Distance = FVector::Dist(GetActorLocation(), CurrentLockOnTarget->GetActorLocation());
+		if (Distance > LockOnRadius * 1.5f)
+			ToggleLockOn();
+	}
+	else if (bIsLockedOn && !IsValid(CurrentLockOnTarget))
+	{
+		ToggleLockOn();
+	}
 }
 
 void AHun_Character::Character_Move(FVector2D ActionValue)
@@ -84,13 +218,10 @@ void AHun_Character::Character_Look(FVector2d LookAxisVector)
 	if (!IsValid(Controller))
 		return;
 
+	if (bIsLockedOn)
+		return;
+	
 	float Sensitivity = 1.0f;
-
-	if (ComponentsData)
-	{
-		//Sensitivity = MobData->MovementValue.LookSensitivity;
-		//이걸 어디에 넣을지 고민
-	}
 	
 	AddControllerYawInput(LookAxisVector.X * Sensitivity);
 	AddControllerPitchInput(LookAxisVector.Y * -Sensitivity);

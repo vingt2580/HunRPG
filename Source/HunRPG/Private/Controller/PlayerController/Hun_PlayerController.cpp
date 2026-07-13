@@ -205,7 +205,10 @@ void AHun_PlayerController::Input_Attack()
 
 void AHun_PlayerController::Input_Lockon()
 {
-	
+	if (!IsValid(HunCharacter))
+		return;
+
+	HunCharacter->ToggleLockOn();
 }
 
 void AHun_PlayerController::Reset_MoveSpeed()
