@@ -133,6 +133,13 @@ void UHun_CombatComponent::StartComboAttack(FVector Direction)
 	
 	//FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
 	OwnerCharacter->GetCharacterMovement()->AddImpulse(Direction * GetMobData()->CombatValue.AttackMoveImpulse, true);
+	FRotator CurrentRotation = OwnerCharacter->GetActorRotation();
+	FRotator TargetRotation = Direction.Rotation();
+
+	float InterpSpeed = 100.f;
+	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation,GetWorld()->DeltaTimeSeconds,InterpSpeed);
+
+	OwnerCharacter->SetActorRotation(NewRotation);
 	
 	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, GetMobData()->CombatValue.MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));
