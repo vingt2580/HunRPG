@@ -59,6 +59,8 @@ public:
 	bool IsLockedOn() const { return bIsLockedOn; }
 	AActor* GetLockOnTarget() const { return CurrentLockOnTarget; }
 
+	FVector EnemyDirection;
+
 	void ForceSetLockOnTarget(AActor* NewLockOnTarget);
 	void ClearLockOnTarget();
 

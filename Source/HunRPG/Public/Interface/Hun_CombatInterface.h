@@ -23,7 +23,7 @@ class HUNRPG_API IHun_CombatInterface : public IHun_Interface
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
-	void AttackInput_interface();
+	void AttackInput_interface(AActor* AttackDir);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	void ActiveAbility_Interface(EHun_AbilityType AbilityType);
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
@@ -34,7 +34,7 @@ public:
 	 * Implementation	
 	 */
 
-	virtual void AttackInput_interface_Implementation();
+	virtual void AttackInput_interface_Implementation(AActor* AttackDir);
 	virtual void ActiveAbility_Interface_Implementation(EHun_AbilityType AbilityType);
 	virtual float HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser) = 0;

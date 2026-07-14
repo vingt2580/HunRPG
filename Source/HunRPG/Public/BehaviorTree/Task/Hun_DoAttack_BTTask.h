@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/Hun_CheckingDisrtance_BTService.h"
 #include "Hun_DoAttack_BTTask.generated.h"
 
 /**

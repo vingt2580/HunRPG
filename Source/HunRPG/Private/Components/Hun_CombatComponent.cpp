@@ -24,15 +24,23 @@ UHun_CombatComponent::UHun_CombatComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-void UHun_CombatComponent::AttackInput_interface_Implementation()
+void UHun_CombatComponent::AttackInput_interface_Implementation(AActor* AttackDir)
 {
 	if (!OwnerCharacter || !StateComponent)
 		return;
 
 	if (IsAttacking)
 		return;
-
-	StartComboAttack();
+	
+	if (IsValid(AttackDir))
+	{
+		FVector Direction = (AttackDir->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+		StartComboAttack(Direction);
+	}
+	else
+	{
+		StartComboAttack(FVector::ZeroVector);
+	}
 }
 
 float UHun_CombatComponent::HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent,
@@ -116,15 +124,15 @@ bool UHun_CombatComponent::CanAttack()
 	return true;
 }
 
-void UHun_CombatComponent::StartComboAttack()
+void UHun_CombatComponent::StartComboAttack(FVector Direction)
 {
 	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
 
 	if (!AnimInstance || !GetMobData()->CombatValue.ComboMontage)
 		return;
 	
-	FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
-	OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * GetMobData()->CombatValue.AttackMoveImpulse, true);
+	//FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
+	OwnerCharacter->GetCharacterMovement()->AddImpulse(Direction * GetMobData()->CombatValue.AttackMoveImpulse, true);
 	
 	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, GetMobData()->CombatValue.MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));

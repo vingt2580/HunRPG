@@ -115,6 +115,8 @@ AActor* AHun_Character::FindLockOnTarget() const
 	AActor* BestTarget = nullptr;
 	float ClosestDistance = LockOnRadius;
 
+	FVector CameraForward = GetController()->GetControlRotation().Vector();
+
 	for (FOverlapResult& Result : OverlapResults)
 	{
 		AActor* LockonActor = Result.GetActor();
@@ -122,7 +124,7 @@ AActor* AHun_Character::FindLockOnTarget() const
 			continue;
 
 		FVector DirectiontoTarget = (LockonActor->GetActorLocation() - GetActorLocation()).GetSafeNormal();
-		float DotProduct =FVector::DotProduct(DirectiontoTarget,DirectiontoTarget);
+		float DotProduct =FVector::DotProduct(CameraForward,DirectiontoTarget);
 
 		if (DotProduct > 0.f)
 		{
@@ -248,7 +250,7 @@ void AHun_Character::Character_Attack()
 	if (!IsValid(CachedCombatComponent))
 		return;
 	
-	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent);
+	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent, FindLockOnTarget());
 }
 
 void AHun_Character::Character_Ability(EHun_AbilityType AbilityType)

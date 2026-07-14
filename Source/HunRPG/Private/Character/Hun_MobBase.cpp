@@ -76,13 +76,11 @@ void AHun_MobBase::PostInitializeComponents()
 			if (!IsValid(CachedMovementComponent) && NewComponent->Implements<UHun_MovementInterface>())
 			{
 				CachedMovementComponent = NewComponent;
-				HUN_LOG(FColor::Green,"Successfully cached movement component");
 			}
 
 			if (!IsValid(CachedCombatComponent) && NewComponent->Implements<UHun_CombatInterface>())
 			{
 				CachedCombatComponent = NewComponent;
-				HUN_LOG(FColor::Green, "Successfully cached combat component");
 			}
 		}
 	}

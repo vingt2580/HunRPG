@@ -3,7 +3,7 @@
 
 #include "System/HunRPG_StateTypes.h"
 
-void IHun_CombatInterface::AttackInput_interface_Implementation()
+void IHun_CombatInterface::AttackInput_interface_Implementation(AActor* AttackDir)
 {
 }
 

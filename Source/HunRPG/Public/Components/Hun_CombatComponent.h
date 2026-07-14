@@ -26,7 +26,7 @@ class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_
 	UHun_CombatComponent();
 	
 public:
-	virtual void AttackInput_interface_Implementation() override;
+	virtual void AttackInput_interface_Implementation(AActor* AttackDir) override;
 	virtual float HunTakeDamage_interface_Implementation(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void ActiveAbility_Interface_Implementation(EHun_AbilityType AbilityType) override;
 
@@ -73,7 +73,7 @@ public:
 	bool IsHit;
 
 	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
-	void StartComboAttack();
+	void StartComboAttack(FVector Direction);
 	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void HitAttack();
