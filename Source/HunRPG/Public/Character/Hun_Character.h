@@ -13,17 +13,7 @@
 #include "GameFramework/Character.h"
 
 #include "Hun_Character.generated.h"
-
 enum class EHun_AbilityType : uint8;
-
-UCLASS()
-class HUNRPG_API UHunTestClass : public UObject
-{
-	GENERATED_BODY()
-
-public:
-	int A = 10;
-};
 
 UCLASS()
 class HUNRPG_API AHun_Character : public AHun_MobBase
@@ -53,7 +43,6 @@ protected:
 	float DeadzonePitch = 10.f;
 
 public:
-	
 	void Character_Move(FVector2D ActionValue);
 	void Character_ResetMove();
 	void Character_Jump();
@@ -66,6 +55,12 @@ public:
 
 	UFUNCTION()
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
+	bool IsLockedOn() const { return bIsLockedOn; }
+	AActor* GetLockOnTarget() const { return CurrentLockOnTarget; }
+
+	void ForceSetLockOnTarget(AActor* NewLockOnTarget);
+	void ClearLockOnTarget();
 
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))

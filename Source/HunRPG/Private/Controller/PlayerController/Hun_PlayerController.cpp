@@ -39,6 +39,11 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 
 	if (IsValid(PrevCharacter) && IsValid(NextCharacter))
 	{
+		bool bLockedOn = PrevCharacter->IsLockedOn();
+		AActor* SaveLockOnTarget = PrevCharacter->GetLockOnTarget();
+
+		PrevCharacter->ClearLockOnTarget();
+		
 		const FVector PrevLocation = PrevCharacter->GetActorLocation();
 		const FRotator PrevRotation = PrevCharacter->GetActorRotation();
 
@@ -56,11 +61,14 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 		
 		SetViewTargetWithBlend(NextCharacter);
 		SetControlRotation(PrevControlRotation);
-
 		NextCharacter->GetCameraBoom()->TargetArmLength = PrevCameraDistance;
 
-		UpdateWidgetBinding(PrevCharacter, NextCharacter);
+		if (bLockedOn && IsValid(SaveLockOnTarget))
+		{
+			NextCharacter->ForceSetLockOnTarget(SaveLockOnTarget);
+		}
 
+		UpdateWidgetBinding(PrevCharacter, NextCharacter);
 		CurrentPartyMemberSlot = SlotIndex;
 
 		HUN_LOG(FColor::Blue, "캐릭터 교체 성공 현재 캐릭터 슬록 %d, 현재 조종 캐릭터이름 : %s", CurrentPartyMemberSlot, *NextCharacter->GetName());

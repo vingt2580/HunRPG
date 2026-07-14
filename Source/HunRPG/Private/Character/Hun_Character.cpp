@@ -3,6 +3,7 @@
 
 #include <rapidjson/document.h>
 
+#include "AutomationTestExcludelist.h"
 #include "HunRPG_DebugHelper.h"
 
 #include "Camera/CameraComponent.h"
@@ -74,6 +75,21 @@ void AHun_Character::ToggleLockOn()
 			HUN_LOG(FColor::Red, "락온 성공 : %s", *CurrentLockOnTarget.GetName());
 		}
 	}
+}
+
+void AHun_Character::ForceSetLockOnTarget(AActor* NewLockOnTarget)
+{
+	if (IsValid(NewLockOnTarget))
+	{
+		CurrentLockOnTarget = NewLockOnTarget;
+		bIsLockedOn = true;
+	}
+}
+
+void AHun_Character::ClearLockOnTarget()
+{
+	bIsLockedOn = false;
+	CurrentLockOnTarget = nullptr;
 }
 
 AActor* AHun_Character::FindLockOnTarget() const
