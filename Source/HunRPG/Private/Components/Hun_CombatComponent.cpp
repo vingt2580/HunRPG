@@ -424,10 +424,10 @@ void UHun_CombatComponent::CheckHitAngle(AActor* DamageCauser)
 		FVector OwnerLocation = OwnerCharacter->GetActorLocation();
 		FVector HitLocation = DamageCauser->GetActorLocation();
 		
-		FVector HitDirection = (HitLocation- OwnerLocation).GetSafeNormal();
+		FVector HitDirection = (HitLocation - OwnerLocation).GetSafeNormal();
 
 		FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
-		FVector RightVector = DamageCauser->GetActorRightVector();
+		FVector RightVector = OwnerCharacter->GetActorRightVector();
 		
 		float ForwardDot = FVector::DotProduct(ForwardVector, HitDirection);
 		float RightDot = FVector::DotProduct(RightVector, HitDirection);
