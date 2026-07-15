@@ -24,22 +24,6 @@ AHun_MonsterAIController::AHun_MonsterAIController(const FObjectInitializer& Obj
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AHun_MonsterAIController::OnTargetPerceptionUpdated);
-
-	SetGenericTeamId(FGenericTeamId(1));
-}
-
-ETeamAttitude::Type AHun_MonsterAIController::GetTeamAttitudeTowards(const AActor& Other) const
-{
-	const APawn* PawnToCheck = Cast<const APawn>(&Other);
-
-	const IGenericTeamAgentInterface* OtherTeamAgent = Cast<const IGenericTeamAgentInterface>(PawnToCheck->GetController());
-
-	if (OtherTeamAgent && OtherTeamAgent->GetGenericTeamId() < GetGenericTeamId())
-	{
-		return  ETeamAttitude::Hostile;
-	}
-
-	return ETeamAttitude::Friendly;
 }
 
 void AHun_MonsterAIController::BeginPlay()

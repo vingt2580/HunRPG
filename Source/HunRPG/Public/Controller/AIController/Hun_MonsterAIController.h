@@ -17,8 +17,6 @@ class HUNRPG_API AHun_MonsterAIController : public AAIController
 public:
 	AHun_MonsterAIController(const FObjectInitializer& ObjectInitializer);
 
-	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
-
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category = "HunRPG|AI")
 	class UBehaviorTree* BehaviorTree;
 

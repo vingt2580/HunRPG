@@ -112,7 +112,7 @@ void UHun_CombatComponent::TickComponent(float DeltaTime, ELevelTick TickType,
 	}
 }
 
-bool UHun_CombatComponent::CanAttack()
+bool UHun_CombatComponent::CanAttack() const
 {
 	EHunRPG_ActionState CurrentState = StateComponent->GetState();
 
@@ -131,15 +131,22 @@ void UHun_CombatComponent::StartComboAttack(FVector Direction)
 	if (!AnimInstance || !GetMobData()->CombatValue.ComboMontage)
 		return;
 	
-	//FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
-	OwnerCharacter->GetCharacterMovement()->AddImpulse(Direction * GetMobData()->CombatValue.AttackMoveImpulse, true);
-	FRotator CurrentRotation = OwnerCharacter->GetActorRotation();
-	FRotator TargetRotation = Direction.Rotation();
+	if (Direction != FVector::ZeroVector)
+	{
+		FRotator CurrentRotation = OwnerCharacter->GetActorRotation();
+		FRotator TargetRotation = Direction.Rotation();
 
-	float InterpSpeed = 100.f;
-	FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation,GetWorld()->DeltaTimeSeconds,InterpSpeed);
+		float InterpSpeed = 100.f;
+		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation,GetWorld()->DeltaTimeSeconds,InterpSpeed);
 
-	OwnerCharacter->SetActorRotation(NewRotation);
+		OwnerCharacter->SetActorRotation(NewRotation);
+		OwnerCharacter->GetCharacterMovement()->AddImpulse(Direction * GetMobData()->CombatValue.AttackMoveImpulse, true);
+	}
+	else
+	{
+		FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
+		OwnerCharacter->GetCharacterMovement()->AddImpulse(ForwardVector * GetMobData()->CombatValue.AttackMoveImpulse, true);
+	}
 	
 	CurrentComboCount = FMath::Clamp(CurrentComboCount + 1, 1, GetMobData()->CombatValue.MaxComboCount);
 	FName SectionName = FName(*FString::Printf(TEXT("Attack%d"), CurrentComboCount));
@@ -150,18 +157,9 @@ void UHun_CombatComponent::StartComboAttack(FVector Direction)
 	AnimInstance->Montage_Play(GetMobData()->CombatValue.ComboMontage, 1.0f);
 	AnimInstance->Montage_JumpToSection(SectionName, GetMobData()->CombatValue.ComboMontage);
 }
-
-void UHun_CombatComponent::HitAttack()
-{
-	if (!IsValid(OwnerCharacter))
-		return;
-	
-}
-
 void UHun_CombatComponent::OnSaveCombo()
 {
 	IsAttacking = false;
-	//HUN_LOG(FColor::Green, "End Attacking");
 }
 
 void UHun_CombatComponent::OnResetCombo()
@@ -421,12 +419,18 @@ void UHun_CombatComponent::PlayDeathAnimation()
 
 void UHun_CombatComponent::CheckHitAngle(AActor* DamageCauser)
 {
-	if (CurrentHealthPoint > 0.0f && DamageCauser)
+	if (IsAlive() && IsValid(DamageCauser) && IsValid(OwnerCharacter))
 	{
-		FVector HitDirection = (DamageCauser->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
+		FVector OwnerLocation = OwnerCharacter->GetActorLocation();
+		FVector HitLocation = DamageCauser->GetActorLocation();
 		
-		float ForwardDot = FVector::DotProduct(OwnerCharacter->GetActorLocation(), HitDirection);
-		float RightDot = FVector::DotProduct(OwnerCharacter->GetActorLocation(), HitDirection);
+		FVector HitDirection = (HitLocation- OwnerLocation).GetSafeNormal();
+
+		FVector ForwardVector = OwnerCharacter->GetActorForwardVector();
+		FVector RightVector = DamageCauser->GetActorRightVector();
+		
+		float ForwardDot = FVector::DotProduct(ForwardVector, HitDirection);
+		float RightDot = FVector::DotProduct(RightVector, HitDirection);
 		
 		HitAngle = FMath::RadiansToDegrees(FMath::Atan2(RightDot, ForwardDot));
 
@@ -438,7 +442,7 @@ float UHun_CombatComponent::ApplyDamage(float TakenDamage)
 {
 	AActor* OwnerActor = GetOwner();
 	
-	if (CurrentHealthPoint <= 0.0f && !IsValid(OwnerActor))
+	if (!IsAlive() || !IsValid(OwnerActor))
 		return 0.0f;
 
 	float ActualDamage = TakenDamage; //여기서 방어도 스탯 공식 적용하면 될듯

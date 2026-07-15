@@ -64,7 +64,7 @@ private:
 	UPROPERTY()
 	TObjectPtr<UAnimMontage> ComboMontage;
 	
-	bool CanAttack();
+	bool CanAttack() const;
 
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Combat")
@@ -75,8 +75,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="HunRPG|Combat")
 	void StartComboAttack(FVector Direction);
 	
-	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
-	void HitAttack();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void OnSaveCombo();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
