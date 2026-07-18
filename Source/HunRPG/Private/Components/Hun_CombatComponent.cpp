@@ -13,6 +13,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/DamageEvents.h"
 #include "DrawDebugHelpers.h"
+#include "Character/Hun_Character.h"
 #include "Kismet/GameplayStatics.h"
 
 #define COLLISIONCHANNEL_MONSTER ECC_EngineTraceChannel1
@@ -34,6 +35,9 @@ void UHun_CombatComponent::AttackInput_interface_Implementation(AActor* AttackDi
 	
 	if (IsValid(AttackDir))
 	{
+		if (GetMobData()->CombatType == EHunRPG_CombatType::Ranged)
+			RangeHitActor = AttackDir;
+		
 		FVector Direction = (AttackDir->GetActorLocation() - OwnerCharacter->GetActorLocation()).GetSafeNormal();
 		StartComboAttack(Direction);
 	}
@@ -136,7 +140,7 @@ void UHun_CombatComponent::StartComboAttack(FVector Direction)
 		FRotator CurrentRotation = OwnerCharacter->GetActorRotation();
 		FRotator TargetRotation = Direction.Rotation();
 
-		float InterpSpeed = 100.f;
+		float InterpSpeed = 1000.f;
 		FRotator NewRotation = FMath::RInterpTo(CurrentRotation, TargetRotation,GetWorld()->DeltaTimeSeconds,InterpSpeed);
 
 		OwnerCharacter->SetActorRotation(NewRotation);
@@ -268,6 +272,23 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 	WeaponEndPoint = CurrentEndLoc;
 }
 
+void UHun_CombatComponent::RangeAttack()
+{
+	if (GetMobData()->CombatType == EHunRPG_CombatType::Ranged)
+	{
+		AHun_Character* Hun_Character = Cast<AHun_Character>(OwnerCharacter);
+		if (!IsValid(Hun_Character))
+			return;
+
+		UGameplayStatics::ApplyDamage(
+			RangeHitActor,
+			GetMobData()->CombatValue.BaseDamage,
+			OwnerCharacter->GetController(),
+			OwnerCharacter,
+			UDamageType::StaticClass());
+	}
+}
+
 void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, const FVector& ActivePoint, const FRotator& ActiveRot)
 {
 	AActor* OwnerActor = GetOwnerCharacter();
@@ -350,7 +371,7 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 				switch (Effect)
 				{
 					case EHun_AbilityEffect::None: break;
-					case EHun_AbilityEffect::Brun: break;
+					case EHun_AbilityEffect::Burn: break;
 					case EHun_AbilityEffect::Stun: break;
 				}
 			}

@@ -37,7 +37,7 @@ protected:
 	TObjectPtr<AActor> CurrentLockOnTarget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|LockOn")
-	float LockOnRadius = 1500.f;
+	float LockOnRadius = 1000.f;
 
 	float DeadZoneYaw = 15.f;
 	float DeadzonePitch = 10.f;

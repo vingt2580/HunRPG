@@ -19,6 +19,13 @@ enum class EHunRPG_ActionState : uint8
 	Dead
 };
 
+UENUM(BlueprintType)
+enum class EHunRPG_CombatType : uint8
+{
+	Melee	UMETA(DisplayName = "근접"),
+	Ranged	UMETA(DisplayName = "원거리")
+};
+
 USTRUCT(BlueprintType)
 struct FHun_ActionValue
 {

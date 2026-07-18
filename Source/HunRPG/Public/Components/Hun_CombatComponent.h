@@ -58,6 +58,8 @@ private:
 	
 	UPROPERTY()
 	TArray<AActor*> AlreadyHitActors;
+	UPROPERTY()
+	AActor* RangeHitActor;
 	
 	UPROPERTY()
 	TObjectPtr<UHun_StateComponent> StateComponent;
@@ -85,6 +87,9 @@ public:
 	void OffTrace_Attack();
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void AttackWeaponTracing(USkeletalMeshComponent* MeshComponent);
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void RangeAttack();
+	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	bool IsAlive() const { return CurrentHealthPoint > 0.0f; }
 	

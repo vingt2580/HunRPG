@@ -249,8 +249,11 @@ void AHun_Character::Character_Attack()
 {
 	if (!IsValid(CachedCombatComponent))
 		return;
-	
-	IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent, FindLockOnTarget());
+
+	if (bIsLockedOn)
+		IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent, CurrentLockOnTarget);
+	else
+		IHun_CombatInterface::Execute_AttackInput_interface(CachedCombatComponent, FindLockOnTarget());
 }
 
 void AHun_Character::Character_Ability(EHun_AbilityType AbilityType)

@@ -16,7 +16,7 @@ enum class EHun_AbilityEffect : uint8
 {
 	None UMETA(DisplayName = "물리"),
 	Stun UMETA(DisplayName = "기절"),
-	Brun UMETA(DisplayName = "화상")
+	Burn UMETA(DisplayName = "화상")
 };
 
 USTRUCT(BlueprintType)
