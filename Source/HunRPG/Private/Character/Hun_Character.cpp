@@ -1,9 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Character/Hun_Character.h"
-
-#include <rapidjson/document.h>
-
-#include "AutomationTestExcludelist.h"
 #include "HunRPG_DebugHelper.h"
 
 #include "Camera/CameraComponent.h"
@@ -11,12 +7,11 @@
 #include "Components/Hun_ActorComponent.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
 #include "Interface/Hun_CombatInterface.h"
 
 #include "Interface/Hun_MovementInterface.h"
-#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "System/HunCollisionChannels.h"
 
 
 // Sets default values
@@ -25,6 +20,8 @@ AHun_Character::AHun_Character()
 	PrimaryActorTick.bCanEverTick = true;
 	
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.f);
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_Pawn);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;

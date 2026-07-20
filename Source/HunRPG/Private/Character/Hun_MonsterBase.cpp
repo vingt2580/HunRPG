@@ -2,11 +2,14 @@
 
 
 #include "Character/Hun_MonsterBase.h"
-
 #include "Components/Hun_CombatComponent.h"
+#include "Widget/Widget_HunMonsterHPBar.h"
+#include "HunRPG/Public/System/HunCollisionChannels.h"
+
+#include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Widget/Widget_HunMonsterHPBar.h"
+
 
 void AHun_MonsterBase::BeginPlay()
 {
@@ -18,6 +21,9 @@ void AHun_MonsterBase::BeginPlay()
 AHun_MonsterBase::AHun_MonsterBase()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	GetCapsuleComponent()->SetCollisionObjectType(ECC_HunMonster);
+	GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 	
 	Widget_MonsterHPBar = CreateDefaultSubobject<UWidgetComponent>(TEXT("Widget_MonsterHPBar"));
 

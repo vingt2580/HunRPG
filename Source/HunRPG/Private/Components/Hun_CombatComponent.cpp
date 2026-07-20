@@ -4,6 +4,7 @@
 #include "HunRPG/Public/Components/Hun_StateComponent.h"
 #include "HunRPG/Public/Data/Hun_CharacterData.h"
 #include "HunRPG_DebugHelper.h"
+#include "HunRPG/Public/System/HunCollisionChannels.h"
 
 #include "Animation/AnimInstance.h"
 #include "Components/CapsuleComponent.h"
@@ -15,8 +16,6 @@
 #include "DrawDebugHelpers.h"
 #include "Character/Hun_Character.h"
 #include "Kismet/GameplayStatics.h"
-
-#define COLLISIONCHANNEL_MONSTER ECC_EngineTraceChannel1
 
 struct FDamageEvent;
 
@@ -244,7 +243,7 @@ void UHun_CombatComponent::AttackWeaponTracing(USkeletalMeshComponent* MeshCompo
 			HitResult,
 			Trace.StartPoint,
 			Trace.EndPoint,
-			ECC_Pawn,
+			ECC_HunMonster,
 			Params
 		);
 
@@ -299,7 +298,8 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 	TArray<FOverlapResult> OverlapResults;
 
 	FCollisionObjectQueryParams ObjectQueryParams;
-	ObjectQueryParams.AddObjectTypesToQuery(ECC_Pawn);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_HunMonster);
+	ObjectQueryParams.AddObjectTypesToQuery(ECC_HunCharacter);
 
 	FCollisionQueryParams CollisionParams;
 	CollisionParams.AddIgnoredActor(OwnerActor);

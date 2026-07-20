@@ -1,6 +1,6 @@
 #include "Character/Hun_BossMonsterBase.h"
-
 #include "HunRPG_DebugHelper.h"
+#include "HunRPG/Public/System/HunCollisionChannels.h"
 
 
 AHun_BossMonsterBase::AHun_BossMonsterBase()
@@ -14,7 +14,7 @@ AHun_BossMonsterBase::AHun_BossMonsterBase()
 	DetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 	DetectionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 
-	DetectionSphere->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Overlap);
+	DetectionSphere->SetCollisionResponseToChannel(ECC_HunCharacter, ECR_Overlap);
 }
 
 void AHun_BossMonsterBase::BeginPlay()
