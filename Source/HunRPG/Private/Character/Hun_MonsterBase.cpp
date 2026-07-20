@@ -27,6 +27,7 @@ AHun_MonsterBase::AHun_MonsterBase()
 	Widget_MonsterHPBar->SetRelativeScale3D(FVector(0.1f,0.1f,0.1f));
 	
 	Widget_MonsterHPBar->SetDrawSize(HPBarDrawSize);
+	
 }
 
 void AHun_MonsterBase::BindStatusBar()
