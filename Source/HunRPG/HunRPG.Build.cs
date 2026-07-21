@@ -18,7 +18,9 @@ public class HunRPG : ModuleRules
 			"AIModule",
 			"UMG",       
 			"Slate",     
-			"SlateCore"
+			"SlateCore",
+			"LevelSequence",
+			"MovieScene"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

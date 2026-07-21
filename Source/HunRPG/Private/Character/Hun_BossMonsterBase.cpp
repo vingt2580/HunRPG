@@ -52,7 +52,7 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 		if (!bIsCombat)
 		{
 			bIsCombat = true;
-
+			
 			PlayEnterAnimation();
 			
 			HUN_LOG(FColor::Red, "보스구역 진입 진입 캐릭터 %s", *OtherActor->GetName());
