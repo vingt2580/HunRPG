@@ -31,6 +31,8 @@ void UHun_CombatComponent::AttackInput_interface_Implementation(AActor* AttackDi
 
 	if (IsAttacking)
 		return;
+
+	RangeHitActor = nullptr;
 	
 	if (IsValid(AttackDir))
 	{

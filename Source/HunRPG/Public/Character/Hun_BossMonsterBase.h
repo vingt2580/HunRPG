@@ -15,12 +15,19 @@ class HUNRPG_API AHun_BossMonsterBase : public AHun_MonsterBase
 public:
 	AHun_BossMonsterBase();
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
+	bool bIsCombat = false;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
 	USphereComponent* DetectionSphere;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
+	UAnimMontage* BossEnterAnimMontage;
+
+	void PlayEnterAnimation();
 
 	UFUNCTION()
 	void OnDetectionOverlap(
@@ -33,5 +40,4 @@ protected:
 
 private:
 	float RecognitionRadius = 1500.f;
-	bool bIsCombat = false;
 };

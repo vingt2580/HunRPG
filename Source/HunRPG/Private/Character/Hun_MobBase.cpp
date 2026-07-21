@@ -54,6 +54,9 @@ void AHun_MobBase::BeginPlay()
 float AHun_MobBase::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser)
 {
+	if (!IsValid(CachedCombatComponent))
+		return 0.f;
+	
 	float InDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 	
 	return IHun_CombatInterface::Execute_HunTakeDamage_interface(CachedCombatComponent, InDamage,DamageEvent, EventInstigator, DamageCauser);

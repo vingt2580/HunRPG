@@ -32,15 +32,29 @@ void AHun_BossMonsterBase::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AHun_BossMonsterBase::PlayEnterAnimation()
 {
-	if (OtherActor && OtherActor != nullptr)
+	if (bIsCombat)
+	{
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		if (!AnimInstance)
+			return;
+		
+		AnimInstance->Montage_Play(BossEnterAnimMontage, 1.0f);
+	}
+}
+
+void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedComponent, AActor* OtherActor,
+                                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (OtherActor)
 	{
 		if (!bIsCombat)
 		{
 			bIsCombat = true;
 
+			PlayEnterAnimation();
+			
 			HUN_LOG(FColor::Red, "보스구역 진입 진입 캐릭터 %s", *OtherActor->GetName());
 			DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		}
