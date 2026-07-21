@@ -5,11 +5,13 @@
 
 #include "Components/Hun_CombatComponent.h"
 #include "Components/Hun_MoveComponent.h"
+#include "Widget/Widget_HunBossMonsterHPBar.h"
 #include "Widget/Widget_HunPlayerHPBar.h"
 #include "Widget/WIdget_HunStaminaGauge.h"
 
 void UWidget_HunHUD::NativeConstruct()
 {
 	Super::NativeConstruct();
-	
+
+	BossMonsterHPBar->SetVisibility(ESlateVisibility::Hidden);
 }

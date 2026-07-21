@@ -1,6 +1,8 @@
 #include "Character/Hun_BossMonsterBase.h"
 #include "HunRPG_DebugHelper.h"
+#include "Controller/PlayerController/Hun_PlayerController.h"
 #include "HunRPG/Public/System/HunCollisionChannels.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AHun_BossMonsterBase::AHun_BossMonsterBase()
@@ -52,6 +54,15 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 		if (!bIsCombat)
 		{
 			bIsCombat = true;
+
+			APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+			if (!PC)
+				return;
+			AHun_PlayerController* HunPC = Cast<AHun_PlayerController>(PC);
+			if (!HunPC)
+				return;
+
+			HunPC->UpdateWidgetMonster(this);
 			
 			PlayEnterAnimation();
 			

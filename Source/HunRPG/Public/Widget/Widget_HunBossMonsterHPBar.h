@@ -14,6 +14,7 @@ class HUNRPG_API UWidget_HunBossMonsterHPBar : public UWidget_HunHPBar
 {
 	GENERATED_BODY()
 
+public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* BossMainNameText;
 };

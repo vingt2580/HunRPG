@@ -6,6 +6,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "GameFramework/PlayerController.h"
 #include "InputActionValue.h"
+#include "Character/Hun_MonsterBase.h"
 
 #include "System/Input/Hun_InputConfigData.h"
 #include "Widget/Widget_HunHUD.h"
@@ -75,6 +76,8 @@ public:
 	void Input_SwapCharacter1();
 	void Input_SwapCharacter2();
 	void Input_SwapCharacter3();
+
+	void UpdateWidgetMonster(AHun_MonsterBase* Monster);
 
 private:
 	FGenericTeamId TeamId;

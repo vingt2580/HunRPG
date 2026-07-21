@@ -10,9 +10,12 @@
 #include "InputAction.h"
 #include "Components/Hun_CombatComponent.h"
 #include "Components/Hun_MoveComponent.h"
+#include "Components/TextBlock.h"
+#include "Data/Hun_CharacterData.h"
 #include "GameFramework/PlayerStart.h"
 #include "Interface/Hun_CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
+#include "Widget/Widget_HunBossMonsterHPBar.h"
 #include "Widget/Widget_HunPlayerHPBar.h"
 #include "Widget/WIdget_HunStaminaGauge.h"
 
@@ -134,11 +137,6 @@ void AHun_PlayerController::Tick(float DeltaTime)
 void AHun_PlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
-	//HunCharacter = GetPawn<AHun_Character>();
-
-	//if (!IsValid(HunCharacter))
-		//return;
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
 
@@ -273,6 +271,21 @@ void AHun_PlayerController::Input_SwapCharacter3()
 		return;
 
 	SwapCharacter(2);
+}
+
+void AHun_PlayerController::UpdateWidgetMonster(AHun_MonsterBase* Monster)
+{
+	if (!IsValid(Monster))
+		return;
+
+	UHun_CombatComponent* MonsterCombatComponent = Monster->GetComponentByClass<UHun_CombatComponent>();
+	
+	if (IsValid(MonsterCombatComponent) && MainHUD->BossMonsterHPBar)
+	{
+		MainHUD->BossMonsterHPBar->BindCombatComponent(MonsterCombatComponent);
+		MainHUD->BossMonsterHPBar->SetVisibility(ESlateVisibility::Visible);
+		MainHUD->BossMonsterHPBar->BossMainNameText->SetText(FText::FromString(MonsterCombatComponent->GetMobData()->Name));
+	}
 }
 
 void AHun_PlayerController::SetupPartyMember()
