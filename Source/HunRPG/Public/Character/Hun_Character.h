@@ -64,6 +64,14 @@ public:
 	void ForceSetLockOnTarget(AActor* NewLockOnTarget);
 	void ClearLockOnTarget();
 
+private:
+	UPROPERTY()
+	FTimerHandle DashCooldownTimerHandle;
+	
+	bool bIsCooldown = false;
+
+	void ResetDashCooldown();
+
 #pragma region Components
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	TObjectPtr<USpringArmComponent> CameraBoom;

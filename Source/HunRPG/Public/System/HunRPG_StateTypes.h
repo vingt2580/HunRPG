@@ -37,8 +37,10 @@ struct FHun_ActionValue
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float RunSpeed = 900.f;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dash")
 	float DashLength = 2000.f;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Dash")
+	float DashCoolDown = 2.f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	float LookSensitivity = 0.5;

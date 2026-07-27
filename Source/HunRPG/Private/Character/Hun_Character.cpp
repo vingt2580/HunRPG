@@ -5,6 +5,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/Hun_ActorComponent.h"
+#include "Data/Hun_CharacterData.h"
 #include "Engine/OverlapResult.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Interface/Hun_CombatInterface.h"
@@ -224,8 +225,24 @@ void AHun_Character::Character_Dash()
 	if (!IsValid(CachedMovementComponent))
 		return;
 
+	if (bIsCooldown)
+		return;
+
+	bIsCooldown = true;
+	GetWorld()->GetTimerManager().SetTimer(
+		DashCooldownTimerHandle,
+		this,
+		&AHun_Character::ResetDashCooldown,
+		CharacterData->MovementValue.DashCoolDown,
+		false);
+
 	IHun_MovementInterface::Execute_DashInput_Interface(CachedMovementComponent);
 	IHun_MovementInterface::Execute_ApplyStateSpeed_Interface(CachedMovementComponent, EHunRPG_ActionState::Running);
+}
+
+void AHun_Character::ResetDashCooldown()
+{
+	bIsCooldown = false;
 }
 
 void AHun_Character::Character_Look(FVector2d LookAxisVector)
