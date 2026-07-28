@@ -229,6 +229,7 @@ void AHun_Character::Character_Dash()
 		return;
 
 	bIsCooldown = true;
+	
 	GetWorld()->GetTimerManager().SetTimer(
 		DashCooldownTimerHandle,
 		this,

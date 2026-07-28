@@ -22,6 +22,7 @@ class HUNRPG_API UWidget_HunHPBar : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+public:
 	UPROPERTY(meta = (BindWidget))
 	UProgressBar* HPProgressBar;
 
@@ -30,8 +31,7 @@ protected:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MaxHPTextBlock;
-
-public:
+	
 	UFUNCTION()
 	void UpdateHPBar(float CurrentHP, float MaxHP);
 

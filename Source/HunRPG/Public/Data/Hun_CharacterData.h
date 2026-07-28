@@ -18,6 +18,9 @@ class HUNRPG_API UHun_CharacterData : public UDataAsset
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Name")
 	FString Name = "CharacterName";
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|Image")
+	UTexture2D* ProfileImage = nullptr;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Stat")
 	int MaxHealthPoint = 100;
