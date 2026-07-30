@@ -1,5 +1,6 @@
 #include "Character/Hun_BossMonsterBase.h"
 #include "HunRPG_DebugHelper.h"
+#include "Controller/AIController/Hun_BossMonsterAIController.h"
 #include "Controller/PlayerController/Hun_PlayerController.h"
 #include "HunRPG/Public/System/HunCollisionChannels.h"
 #include "Kismet/GameplayStatics.h"
@@ -68,6 +69,10 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 			
 			HUN_LOG(FColor::Red, "보스구역 진입 진입 캐릭터 %s", *OtherActor->GetName());
 			DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+			AHun_BossMonsterAIController* BossAIPC = Cast<AHun_BossMonsterAIController>(GetController());
+			if (IsValid(BossAIPC))
+				BossAIPC->StartBossCombat(OtherActor);
 		}
 	}
 }

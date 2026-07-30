@@ -4,6 +4,7 @@
 #include "Controller/AIController/Hun_MonsterAIController.h"
 
 #include "HunRPG_DebugHelper.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/Hun_Character.h"
 #include "Navigation/CrowdFollowingComponent.h"
@@ -66,7 +67,7 @@ void AHun_MonsterAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	if (!BehaviorTree)
+	if (!IsValid(BehaviorTree))
 		return;
 	
 	RunBehaviorTree(BehaviorTree);
