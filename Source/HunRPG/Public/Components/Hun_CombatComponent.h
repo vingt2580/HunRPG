@@ -17,6 +17,7 @@ struct FHun_TraceLine
 };
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnHPChangeDelegate, float, CurrentHP, float, MaxHP);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPatternFinishedDelegate);
 
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class HUNRPG_API UHun_CombatComponent : public UHun_ActorComponent, public IHun_CombatInterface
@@ -89,6 +90,25 @@ public:
 	void AttackWeaponTracing(USkeletalMeshComponent* MeshComponent);
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	void RangeAttack();
+
+	/*
+	 * 보스 전용
+	 */
+	
+	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
+	void ExecutePattern(UAnimMontage* PatternMontage);
+	UFUNCTION()
+	void OnPatternMontageEnded(UAnimMontage* PatternMontage, bool bInterrupted);
+
+	UPROPERTY()
+	FOnPatternFinishedDelegate OnPatternFinished;
+
+	UPROPERTY()
+	UAnimMontage* CurrentPatternMontage;
+
+	/*
+	 * 
+	 */
 	
 	UFUNCTION(BlueprintCallable, Category = "HunRPG|Combat")
 	bool IsAlive() const { return CurrentHealthPoint > 0.0f; }

@@ -30,7 +30,7 @@ public:
 	float HunTakeDamage_interface(float DamageAmount, struct FDamageEvent const& DamageEvent,
 	class AController* EventInstigator, AActor* DamageCauser);
 
-	/**
+	/** 
 	 * Implementation	
 	 */
 

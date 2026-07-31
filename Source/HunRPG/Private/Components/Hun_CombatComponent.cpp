@@ -14,6 +14,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Engine/DamageEvents.h"
 #include "DrawDebugHelpers.h"
+#include "Character/Hun_BossMonsterBase.h"
 #include "Character/Hun_Character.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -287,6 +288,40 @@ void UHun_CombatComponent::RangeAttack()
 			OwnerCharacter->GetController(),
 			OwnerCharacter,
 			UDamageType::StaticClass());
+	}
+}
+
+void UHun_CombatComponent::ExecutePattern(UAnimMontage* PatternMontage)
+{
+	AHun_BossMonsterBase* OwnerBoss = Cast<AHun_BossMonsterBase>(OwnerCharacter);
+	
+	if (!IsValid(PatternMontage) && !IsValid(OwnerBoss))
+		return;
+
+	CurrentPatternMontage = PatternMontage;
+
+	OwnerBoss->PlayAnimMontage(CurrentPatternMontage);
+
+	UAnimInstance* AnimInstance = OwnerCharacter->GetMesh()->GetAnimInstance();
+
+	if (IsValid(AnimInstance) && !AnimInstance->OnMontageEnded.Contains(this, FName("OnMontageEnded")))
+	{
+		AnimInstance->OnMontageEnded.AddUniqueDynamic(this, &UHun_CombatComponent::OnPatternMontageEnded);
+	}
+	else
+	{
+		OnPatternFinished.Broadcast();
+	}
+}
+
+void UHun_CombatComponent::OnPatternMontageEnded(UAnimMontage* PatternMontage, bool bInterrupted)
+{
+	if (PatternMontage == CurrentPatternMontage)
+	{
+		OnPatternFinished.Broadcast();
+		CurrentPatternMontage = nullptr;
+
+		HUN_LOG(FColor::Yellow, "Pattern Ended");
 	}
 }
 

@@ -3,6 +3,7 @@
 #include "Controller/AIController/Hun_BossMonsterAIController.h"
 #include "Controller/PlayerController/Hun_PlayerController.h"
 #include "HunRPG/Public/System/HunCollisionChannels.h"
+#include "Interface/Hun_CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 
