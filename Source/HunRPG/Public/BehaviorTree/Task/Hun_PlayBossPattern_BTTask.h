@@ -20,6 +20,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Pattern")
 	UAnimMontage* BossPatternMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|Pattern")
+	float BossPatternCoolDown = 0.f;
+
+	bool bIsCoolDown = false;
+
 protected:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& Comp, uint8* NodeMemory) override;
 
@@ -27,5 +32,12 @@ protected:
 	void OnPatternFinished();
 
 private:
+	UPROPERTY()
 	UBehaviorTreeComponent* CachedOwnerComp;
+	UPROPERTY()
+	FTimerHandle BossPatternTimerHandle;
+
+	EBTNodeResult::Type PlayPattern(UBehaviorTreeComponent& Comp);
+
+	void ResetBossPatternCoolDown();
 };

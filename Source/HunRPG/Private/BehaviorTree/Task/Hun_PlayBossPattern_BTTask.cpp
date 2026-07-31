@@ -14,6 +14,36 @@ UHun_PlayBossPattern_BTTask::UHun_PlayBossPattern_BTTask()
 
 EBTNodeResult::Type UHun_PlayBossPattern_BTTask::ExecuteTask(UBehaviorTreeComponent& Comp, uint8* NodeMemory)
 {
+	if (bIsCoolDown)
+		return EBTNodeResult::Failed;
+
+	bIsCoolDown = true;
+	GetWorld()->GetTimerManager().SetTimer(
+		BossPatternTimerHandle,
+		this,
+		&ThisClass::ResetBossPatternCoolDown,
+		BossPatternCoolDown,
+		false);
+
+	return PlayPattern(Comp);
+}
+
+void UHun_PlayBossPattern_BTTask::ResetBossPatternCoolDown()
+{
+	bIsCoolDown = false;
+}
+
+
+void UHun_PlayBossPattern_BTTask::OnPatternFinished()
+{
+	if (IsValid(CachedOwnerComp))
+	{
+		FinishLatentTask(*CachedOwnerComp, EBTNodeResult::Succeeded);
+	}
+}
+
+EBTNodeResult::Type UHun_PlayBossPattern_BTTask::PlayPattern(UBehaviorTreeComponent& Comp)
+{
 	CachedOwnerComp = &Comp;
 	AAIController* AIController = Comp.GetAIOwner();
 
@@ -32,14 +62,5 @@ EBTNodeResult::Type UHun_PlayBossPattern_BTTask::ExecuteTask(UBehaviorTreeCompon
 			}
 		}
 	}
-
 	return EBTNodeResult::Failed;
-}
-
-void UHun_PlayBossPattern_BTTask::OnPatternFinished()
-{
-	if (IsValid(CachedOwnerComp))
-	{
-		FinishLatentTask(*CachedOwnerComp, EBTNodeResult::Succeeded);
-	}
 }
