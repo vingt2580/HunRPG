@@ -64,6 +64,8 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 			if (!HunPC)
 				return;
 
+			CombatTarget = OtherActor;
+
 			HunPC->UpdateWidgetMonster(this);
 			
 			PlayEnterAnimation();
@@ -73,7 +75,7 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 
 			AHun_BossMonsterAIController* BossAIPC = Cast<AHun_BossMonsterAIController>(GetController());
 			if (IsValid(BossAIPC))
-				BossAIPC->StartBossCombat(OtherActor);
+				BossAIPC->StartBossCombat(CombatTarget);
 		}
 	}
 }

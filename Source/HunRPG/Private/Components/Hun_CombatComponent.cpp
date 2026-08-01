@@ -295,7 +295,7 @@ void UHun_CombatComponent::ExecutePattern(UAnimMontage* PatternMontage)
 {
 	AHun_BossMonsterBase* OwnerBoss = Cast<AHun_BossMonsterBase>(OwnerCharacter);
 	
-	if (!IsValid(PatternMontage) && !IsValid(OwnerBoss))
+	if (!IsValid(PatternMontage) || !IsValid(OwnerBoss))
 		return;
 
 	CurrentPatternMontage = PatternMontage;
