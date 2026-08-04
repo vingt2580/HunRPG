@@ -16,6 +16,8 @@ class HUNRPG_API AHun_Grux : public AHun_BossMonsterBase
 public:
 	UFUNCTION(Category="HunRPG|Pattern")
 	void ExecuteLeapAttack_BossPattern();
+	UFUNCTION(Category="HunRPG|Pattern")
+	void ExecuteLAndingShockwave();
 
 	virtual void Tick(float DeltaTime) override;
 

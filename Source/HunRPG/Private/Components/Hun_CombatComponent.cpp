@@ -373,7 +373,7 @@ void UHun_CombatComponent::ExecuteAbility(const FHun_AbilityInfo& AbilityInfo, c
 		{
 			AActor* HitActor = OverlapResult.GetActor();
 
-			if (!HitActor || HitResults.Contains(HitActor))
+			if (!IsValid(HitActor) || HitResults.Contains(HitActor))
 				continue;
 			
 			if (AbilityInfo.Shape == EHun_AbilityShape::Cone)

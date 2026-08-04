@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/Hun_MobBase.h"
+#include "Components/CapsuleComponent.h"
 
 void UHun_AnimNotify_PatternEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
@@ -16,14 +17,18 @@ void UHun_AnimNotify_PatternEnd::Notify(USkeletalMeshComponent* MeshComp, UAnimS
 	if (MeshComp && Owner)
 	{
 		AHun_MobBase* OwnerMob = Cast<AHun_MobBase>(Owner);
-		AAIController* AIController = Cast<AAIController>(OwnerMob->GetController());
-
-		if (IsValid(AIController))
+		if (IsValid(OwnerMob))
 		{
+			AAIController* AIController = Cast<AAIController>(OwnerMob->GetController());
+			
+			if (!IsValid(AIController)) return;
+			
 			UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent();
 			
 			if (IsValid(BlackboardComp))
 			{
+				UCapsuleComponent* MobCollision = OwnerMob->GetCapsuleComponent();
+				MobCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 				BlackboardComp->SetValueAsBool(FName(FName("IsPatterning")), false);
 			}
 		}
