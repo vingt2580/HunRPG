@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimNotifies/AnimNotify.h"
-#include "Hun_AnimNOtify_Grux_LeapShockWave.generated.h"
+#include "Hun_AnimNotify_Grux_LeapShockWave.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class HUNRPG_API UHun_AnimNOtify_Grux_LeapShockWave : public UAnimNotify
+class HUNRPG_API UHun_AnimNotify_Grux_LeapShockWave : public UAnimNotify
 {
 	GENERATED_BODY()
 

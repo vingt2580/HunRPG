@@ -17,7 +17,7 @@ public:
 	UFUNCTION(Category="HunRPG|Pattern")
 	void ExecuteLeapAttack_BossPattern();
 	UFUNCTION(Category="HunRPG|Pattern")
-	void ExecuteLAndingShockwave();
+	void ExecuteLandingShockwave();
 
 	virtual void Tick(float DeltaTime) override;
 

@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/AnimNotify/Boss/Hun_AnimNOtify_Grux_LeapShockWave.h"
+#include "Character/AnimNotify/Boss/Hun_AnimNotify_Grux_LeapShockWave.h"
 
 #include "HunRPG_DebugHelper.h"
 #include "Character/Hun_Grux.h"
 
-void UHun_AnimNOtify_Grux_LeapShockWave::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+void UHun_AnimNotify_Grux_LeapShockWave::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::Notify(MeshComp, Animation);
 

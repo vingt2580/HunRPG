@@ -45,7 +45,7 @@ void AHun_Grux::ExecuteLeapAttack_BossPattern()
 	}
 }
 
-void AHun_Grux::ExecuteLAndingShockwave()
+void AHun_Grux::ExecuteLandingShockwave()
 {
 	float ShockwaveRadius = 800.0f;
 	float ShockwaveDamage = 20.0f;
