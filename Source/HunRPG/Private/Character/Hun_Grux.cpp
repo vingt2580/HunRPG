@@ -4,6 +4,7 @@
 #include "Character/Hun_Grux.h"
 
 #include "HunRPG_DebugHelper.h"
+#include "Actor/Hun_ChainExplosion_Projectile.h"
 #include "Character/Hun_Character.h"
 #include "Engine/DamageEvents.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -15,42 +16,41 @@
 
 void AHun_Grux::ExecuteLeapAttack_BossPattern()
 {
-	if (!IsValid(CombatTarget))
+	if (!IsValid(CombatTargetPC))
 		return;
 
 	if (bIsLeaping)
 		return;
 
-	FVector StartLocation = GetActorLocation();
-	FVector EndLocation = CombatTarget->GetActorLocation();
-	FVector LaunchVelocity;
-
-	float LeapHighValue = 0.5f;
-
-	bool bSucces = UGameplayStatics::SuggestProjectileVelocity_CustomArc(
-		this,
-		LaunchVelocity,
-		StartLocation,
-		EndLocation,
-		GetWorld()->GetGravityZ(),
-		LeapHighValue);
-
-	if (bSucces)
+	if (APawn* TargetPawn = CombatTargetPC->GetPawn())
 	{
-		bIsLeaping = true;
-		HUN_LOG(FColor::Blue, "bIsLeaping True");
-		LaunchCharacter(LaunchVelocity, true, true);
+		FVector StartLocation = GetActorLocation();
+		FVector EndLocation = TargetPawn->GetActorLocation();
+		FVector LaunchVelocity;
 
-		GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+		float LeapHighValue = 0.5f;
+
+		bool bSucces = UGameplayStatics::SuggestProjectileVelocity_CustomArc(
+			this,
+			LaunchVelocity,
+			StartLocation,
+			EndLocation,
+			GetWorld()->GetGravityZ(),
+			LeapHighValue);
+
+		if (bSucces)
+		{
+			bIsLeaping = true;
+			HUN_LOG(FColor::Blue, "bIsLeaping True");
+			LaunchCharacter(LaunchVelocity, true, true);
+
+			GetCharacterMovement()->SetMovementMode(MOVE_Falling);
+		}
 	}
 }
 
 void AHun_Grux::ExecuteLandingShockwave()
 {
-	float ShockwaveRadius = 800.0f;
-	float ShockwaveDamage = 20.0f;
-	float KnockbackPower = 1500.0f;
-
 	FVector BossLocation = GetActorLocation();
 
 	TArray<FOverlapResult> OverlapResults;
@@ -101,6 +101,25 @@ void AHun_Grux::ExecuteLandingShockwave()
 		}
 	}
 	DrawDebugSphere(GetWorld(), BossLocation, ShockwaveRadius, 24, FColor::Red, false, 2.0f);
+}
+
+void AHun_Grux::ExecuteChainExplosion()
+{
+	if (!IsValid(ChainExplosionClass))
+		return;
+
+	FVector StartLocation = GetActorLocation() +  (GetActorForwardVector() * 150.f);
+	StartLocation.Z -= 180.f;
+
+	AHun_ChainExplosion_Projectile* ChainExplosion = GetWorld()->SpawnActor<AHun_ChainExplosion_Projectile>(ChainExplosionClass, StartLocation, GetActorRotation());
+
+	if (IsValid(ChainExplosion))
+	{
+		ChainExplosion->SetInstigator(this);
+
+		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
+		ChainExplosion->DesignateAtTarget(PC);
+	}
 }
 
 void AHun_Grux::Tick(float DeltaTime)

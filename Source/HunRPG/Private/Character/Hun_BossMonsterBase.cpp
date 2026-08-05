@@ -58,24 +58,30 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 			bIsCombat = true;
 
 			APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
-			if (!PC)
+			if (!IsValid(PC))
 				return;
 			AHun_PlayerController* HunPC = Cast<AHun_PlayerController>(PC);
 			if (!HunPC)
 				return;
 
-			CombatTarget = OtherActor;
-
-			HunPC->UpdateWidgetMonster(this);
+			if (APawn* TargetPawn = Cast<APawn>(OtherActor))
+			{
+				CombatTargetPC = Cast<AHun_PlayerController>(TargetPawn->GetController());
+				
+				if (IsValid(CombatTargetPC))
+				{
+					HunPC->UpdateWidgetMonster(this);
 			
-			PlayEnterAnimation();
+					PlayEnterAnimation();
 			
-			HUN_LOG(FColor::Red, "보스구역 진입 진입 캐릭터 %s", *OtherActor->GetName());
-			DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+					HUN_LOG(FColor::Red, "보스구역 진입 진입 캐릭터 %s", *OtherActor->GetName());
+					DetectionSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-			AHun_BossMonsterAIController* BossAIPC = Cast<AHun_BossMonsterAIController>(GetController());
-			if (IsValid(BossAIPC))
-				BossAIPC->StartBossCombat(CombatTarget);
+					AHun_BossMonsterAIController* BossAIPC = Cast<AHun_BossMonsterAIController>(GetController());
+					if (IsValid(BossAIPC))
+						BossAIPC->StartBossCombat(CombatTargetPC->GetPawn());
+				}
+			}
 		}
 	}
 }

@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Hun_MonsterBase.h"
 #include "Components/SphereComponent.h"
+#include "Controller/PlayerController/Hun_PlayerController.h"
 #include "Hun_BossMonsterBase.generated.h"
 
 UCLASS()
@@ -18,7 +19,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
 	bool bIsCombat = false;
 
-	AActor* CombatTarget;
+	AHun_PlayerController* CombatTargetPC;
 
 protected:
 	virtual void BeginPlay() override;

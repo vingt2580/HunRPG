@@ -1,12 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Character/AnimNotify/Boss/Hun_AnimNotify_Grux_LeapShockWave.h"
+#include "Character/AnimNotify/Boss/Hun_AnimNotify_ChainExplosion.h"
 
 #include "HunRPG_DebugHelper.h"
 #include "Character/Hun_Grux.h"
 
-void UHun_AnimNotify_Grux_LeapShockWave::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
+class AHun_Grux;
+
+void UHun_AnimNotify_ChainExplosion::Notify(USkeletalMeshComponent* MeshComp, UAnimSequenceBase* Animation)
 {
 	Super::Notify(MeshComp, Animation);
 
@@ -15,9 +17,9 @@ void UHun_AnimNotify_Grux_LeapShockWave::Notify(USkeletalMeshComponent* MeshComp
 		AHun_Grux* Grux = Cast<AHun_Grux>(MeshComp->GetOwner());
 		if (IsValid(Grux))
 		{
-			Grux->ExecuteLandingShockwave();
+			Grux->ExecuteChainExplosion();
 
-			HUN_LOG(FColor::Red, "쇼크웨이브");
+			HUN_LOG(FColor::Red, "체인익스플로젼");
 		}
 	}
 }
