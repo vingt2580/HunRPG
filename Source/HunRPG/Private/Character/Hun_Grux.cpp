@@ -119,6 +119,7 @@ void AHun_Grux::ExecuteChainExplosion()
 
 		APlayerController* PC = UGameplayStatics::GetPlayerController(this, 0);
 		ChainExplosion->DesignateAtTarget(PC);
+		ChainExplosion->MaxExplosionsCount = 0;
 	}
 }
 

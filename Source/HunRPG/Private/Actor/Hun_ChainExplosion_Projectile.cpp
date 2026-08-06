@@ -92,6 +92,12 @@ void AHun_ChainExplosion_Projectile::PlayGroundEffect()
 {
 	FVector GroundLocation = GetActorLocation();
 
+	if (MaxExplosionsCount >= 8)
+	{
+		Destroy();
+		return;
+	}
+
 	if (IsValid(HomingPC->GetPawn()))
 	{
 		ProjectileMovementComponent->HomingTargetComponent = HomingPC->GetPawn()->GetRootComponent();
@@ -99,23 +105,7 @@ void AHun_ChainExplosion_Projectile::PlayGroundEffect()
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), ChainExplosionParticle, GroundLocation, FRotator::ZeroRotator, FVector(3.f));
 
-	TArray<AActor*> IgnoreActors;
-
-	if (!IsValid(GetInstigator()))
-		return;
-
-	IgnoreActors.Add(this);
-
-	UGameplayStatics::ApplyRadialDamage(
-		this,
-		Damage,
-		GroundLocation,
-		200.f,
-		UDamageType::StaticClass(),
-		IgnoreActors,
-		this,
-		GetInstigatorController(),
-		false);
+	MaxExplosionsCount++;
 }
 
 void AHun_ChainExplosion_Projectile::OnTargetReached(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

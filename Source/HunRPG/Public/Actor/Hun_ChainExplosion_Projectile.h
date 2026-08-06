@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "HunRPG|ChainExplosion")
 	float FinalExplosionRadius = 300.f;
 
+	int32 MaxExplosionsCount = 0;
+
 protected:
 	virtual void BeginPlay() override;
 
