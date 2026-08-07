@@ -51,6 +51,9 @@ void UHun_CheckingDisrtance_BTService::TickNode(UBehaviorTreeComponent& OwnerCom
 			return;
 
 		UHun_CombatComponent* CombatComp = OwnerMob->FindComponentByClass<UHun_CombatComponent>();
+
+		if (!IsValid(CombatComp))
+			return;
 		
 		float CurrentHP = CombatComp->CurrentHealthPoint;
 		float MaxHP = CombatComp->GetMobData()->MaxHealthPoint;
