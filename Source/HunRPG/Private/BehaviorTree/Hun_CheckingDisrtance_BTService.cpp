@@ -56,7 +56,12 @@ void UHun_CheckingDisrtance_BTService::TickNode(UBehaviorTreeComponent& OwnerCom
 			return;
 		
 		float CurrentHP = CombatComp->CurrentHealthPoint;
-		float MaxHP = CombatComp->GetMobData()->MaxHealthPoint;
+
+		UHun_CharacterData* MobData =  CombatComp->GetMobData();
+		if (!IsValid(MobData))
+			return;
+		
+		float MaxHP = MobData->MaxHealthPoint;
 
 		float OwnerHPPercent = (MaxHP > 0.f) ? (CurrentHP/MaxHP) * 100.f : 0.f;
 		

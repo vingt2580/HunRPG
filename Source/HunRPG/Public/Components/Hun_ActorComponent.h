@@ -24,7 +24,7 @@ public:
 	UFUNCTION()
 	AHun_MobBase* GetOwnerCharacter() const { return OwnerCharacter; }
 	UFUNCTION()
-	UHun_CharacterData* GetMobData() const { return OwnerCharacter->CharacterData; }
+	UHun_CharacterData* GetMobData() const { return OwnerCharacter ? OwnerCharacter->CharacterData : nullptr; }
 	UFUNCTION()
 	UHun_AbilityData* GetAbility_A_Data() const { return  OwnerCharacter->Ability_A_Data; }
 	UFUNCTION()
