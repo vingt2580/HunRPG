@@ -1,5 +1,6 @@
 #include "Character/Hun_BossMonsterBase.h"
 #include "HunRPG_DebugHelper.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Controller/AIController/Hun_BossMonsterAIController.h"
 #include "Controller/PlayerController/Hun_PlayerController.h"
 #include "HunRPG/Public/System/HunCollisionChannels.h"
@@ -19,6 +20,21 @@ AHun_BossMonsterBase::AHun_BossMonsterBase()
 	DetectionSphere->SetCollisionResponseToAllChannels(ECR_Ignore);
 
 	DetectionSphere->SetCollisionResponseToChannel(ECC_HunCharacter, ECR_Overlap);
+}
+
+void AHun_BossMonsterBase::ExecuteChangePhase(int32 Phase)
+{
+	AHun_BossMonsterAIController* AIController = Cast<AHun_BossMonsterAIController>(GetController());
+	
+	if (!IsValid(AIController))
+		return;
+	
+	UBlackboardComponent* BlackboardComp = AIController->GetBlackboardComponent();
+
+	if (!IsValid(BlackboardComp))
+		return;
+
+	BlackboardComp->SetValueAsInt(FName("Phase"), Phase);
 }
 
 void AHun_BossMonsterBase::BeginPlay()

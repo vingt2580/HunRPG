@@ -16,6 +16,9 @@ class HUNRPG_API AHun_BossMonsterBase : public AHun_MonsterBase
 public:
 	AHun_BossMonsterBase();
 
+	UFUNCTION(Category="HunRPG|Boss")
+	void ExecuteChangePhase(int32 Phase);
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
 	bool bIsCombat = false;
 

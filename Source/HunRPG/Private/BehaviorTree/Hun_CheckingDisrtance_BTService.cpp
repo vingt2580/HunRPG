@@ -6,6 +6,9 @@
 #include "HunRPG_DebugHelper.h"
 #include "AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Character/Hun_BossMonsterBase.h"
+#include "Components/Hun_CombatComponent.h"
+#include "Data/Hun_CharacterData.h"
 
 UHun_CheckingDisrtance_BTService::UHun_CheckingDisrtance_BTService()
 {
@@ -42,16 +45,16 @@ void UHun_CheckingDisrtance_BTService::TickNode(UBehaviorTreeComponent& OwnerCom
 		}
 		BlackboardComponent->SetValueAsBool(IsFoundTarget.SelectedKeyName, true);
 		BlackboardComponent->SetValueAsFloat(DistanceKey.SelectedKeyName, Distance);
+
+		AHun_MobBase* OwnerMob = Cast<AHun_MobBase>(AIController->GetPawn());
+		if (!IsValid(OwnerMob))
+			return;
+
+		float CurrentHP = OwnerMob->FindComponentByClass<UHun_CombatComponent>()->CurrentHealthPoint;
+		float MaxHP = OwnerMob->CharacterData->MaxHealthPoint;
+
+		float OwnerHPPercent = (MaxHP > 0.f) ? (CurrentHP/MaxHP) * 100.f : 0.f;
 		
-		if (!BlackboardComponent->GetValueAsBool(IsSkillReady.SelectedKeyName) && Distance < 100.0f)
-		{
-			float Remaining = BlackboardComponent->GetValueAsFloat(SkillCooldown.SelectedKeyName) - DeltaSeconds;
-			if (Remaining <= 0.f)
-			{
-				Remaining = 0.f;
-				BlackboardComponent->SetValueAsBool(IsSkillReady.SelectedKeyName, true);
-			}
-			BlackboardComponent->SetValueAsFloat(SkillCooldown.SelectedKeyName, Remaining);
-		}
+		BlackboardComponent->SetValueAsFloat(BossHPPercent.SelectedKeyName, OwnerHPPercent);
 	}
 }

@@ -28,11 +28,8 @@ public:
 	FBlackboardKeySelector DistanceKey;
 
 	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
-	FBlackboardKeySelector IsFoundTarget;
-	
-	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
-	FBlackboardKeySelector IsSkillReady;
+	FBlackboardKeySelector BossHPPercent;
 
 	UPROPERTY(EditAnywhere, Category = "HunRPG|AI_BT")
-	FBlackboardKeySelector SkillCooldown;
+	FBlackboardKeySelector IsFoundTarget;
 };
