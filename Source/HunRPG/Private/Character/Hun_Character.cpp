@@ -3,6 +3,7 @@
 #include "HunRPG_DebugHelper.h"
 
 #include "Camera/CameraComponent.h"
+#include "Character/Hun_BossMonsterBase.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/Hun_ActorComponent.h"
 #include "Data/Hun_CharacterData.h"
@@ -11,6 +12,7 @@
 #include "Interface/Hun_CombatInterface.h"
 
 #include "Interface/Hun_MovementInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "System/HunCollisionChannels.h"
 
@@ -30,14 +32,22 @@ AHun_Character::AHun_Character()
 
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>("CameraBoom");
 	CameraBoom->SetupAttachment(GetRootComponent());
-	CameraBoom->TargetArmLength = 400.0f;
-	CameraBoom->SocketOffset = FVector(0.0f,0.0, 80.0f);
 	CameraBoom->bUsePawnControlRotation = true;
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>("FollowCamera");
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	FollowCamera->bUsePawnControlRotation = true;
 
+	NormalCameraSettings.TargetArmLength = 400.0f;
+	NormalCameraSettings.FOV = 90.0f;
+	NormalCameraSettings.SocketOffset = FVector(0.0f, 0.0f, 100.0f);
+
+	BossCameraSettings.TargetArmLength = 700.0f;    
+	BossCameraSettings.FOV = 105.0f;        
+	BossCameraSettings.SocketOffset = FVector(0.0f, 0.0f, 150.0f);
+
+	CurrentCameraSettings = NormalCameraSettings;
+	
 	bIsLockedOn = false;
 	CurrentLockOnTarget = nullptr;
 }
@@ -46,6 +56,16 @@ void AHun_Character::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CameraBoom->TargetArmLength = CurrentCameraSettings.TargetArmLength;
+	CameraBoom->SocketOffset = CurrentCameraSettings.SocketOffset;
+	FollowCamera->FieldOfView = CurrentCameraSettings.FOV;
+
+	AHun_BossMonsterBase* BossMonster = Cast<AHun_BossMonsterBase>(UGameplayStatics::GetActorOfClass(GetWorld(), AHun_BossMonsterBase::StaticClass()));
+
+	if (IsValid(BossMonster))
+	{
+		BossMonster->OnBossCombat.AddUObject(this, &ThisClass::SetCameraMode);
+	}
 }
 
 void AHun_Character::Tick(float DeltaTime)
@@ -72,6 +92,43 @@ void AHun_Character::ToggleLockOn()
 			bIsLockedOn = true;
 			HUN_LOG(FColor::Red, "락온 성공 : %s", *CurrentLockOnTarget.GetName());
 		}
+	}
+}
+
+void AHun_Character::SetCameraMode(bool bIsBossCombat)
+{
+	if (bIsBossCombat)
+	{
+		CurrentCameraSettings = BossCameraSettings;
+	}
+	else
+	{
+		CurrentCameraSettings = NormalCameraSettings;
+	}
+
+	GetWorldTimerManager().ClearTimer(CameraTransitionTimerHandle);
+
+	GetWorldTimerManager().SetTimer(CameraTransitionTimerHandle, this, &ThisClass::UpdateCameraSettings, GetWorld()->GetDeltaSeconds(), true);
+}
+
+void AHun_Character::UpdateCameraSettings() const
+{
+	if (!IsValid(CameraBoom) || !IsValid(FollowCamera))
+		return;
+
+	float DeltaTime = GetWorld()->GetDeltaSeconds();
+
+	float InterpSpeed = 2.f;
+
+	CameraBoom->TargetArmLength = FMath::FInterpTo(CameraBoom->TargetArmLength, CurrentCameraSettings.TargetArmLength, DeltaTime, InterpSpeed);
+	CameraBoom->SocketOffset = FMath::VInterpTo(CameraBoom->SocketOffset, CurrentCameraSettings.SocketOffset, DeltaTime, InterpSpeed);
+	FollowCamera->FieldOfView = FMath::FInterpTo(FollowCamera->FieldOfView, CurrentCameraSettings.FOV, DeltaTime, InterpSpeed);
+
+	if (FMath::IsNearlyEqual(CameraBoom->TargetArmLength, CurrentCameraSettings.TargetArmLength, 1.0f))
+	{
+		CameraBoom->TargetArmLength = CurrentCameraSettings.TargetArmLength;
+		CameraBoom->SocketOffset = CurrentCameraSettings.SocketOffset;
+		FollowCamera->FieldOfView = CurrentCameraSettings.FOV;
 	}
 }
 

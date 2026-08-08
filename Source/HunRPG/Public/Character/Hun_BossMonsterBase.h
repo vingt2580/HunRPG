@@ -8,6 +8,8 @@
 #include "Controller/PlayerController/Hun_PlayerController.h"
 #include "Hun_BossMonsterBase.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnBossCombat, bool)
+
 UCLASS()
 class HUNRPG_API AHun_BossMonsterBase : public AHun_MonsterBase
 {
@@ -22,7 +24,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HunRPG|Boss")
 	bool bIsCombat = false;
 
+	UPROPERTY()
 	AHun_PlayerController* CombatTargetPC;
+
+	FOnBossCombat OnBossCombat;
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,4 +51,5 @@ protected:
 
 private:
 	float RecognitionRadius = 1500.f;
+	
 };

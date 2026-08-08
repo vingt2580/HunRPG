@@ -96,6 +96,8 @@ void AHun_BossMonsterBase::OnDetectionOverlap(UPrimitiveComponent* OverLappedCom
 					AHun_BossMonsterAIController* BossAIPC = Cast<AHun_BossMonsterAIController>(GetController());
 					if (IsValid(BossAIPC))
 						BossAIPC->StartBossCombat(CombatTargetPC->GetPawn());
+
+					OnBossCombat.Broadcast(bIsCombat);
 				}
 			}
 		}

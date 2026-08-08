@@ -15,6 +15,21 @@
 #include "Hun_Character.generated.h"
 enum class EHun_AbilityType : uint8;
 
+USTRUCT(BlueprintType)
+struct FHunCameraSettings
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float TargetArmLength;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	float FOV;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	FVector SocketOffset;
+};
+
 UCLASS()
 class HUNRPG_API AHun_Character : public AHun_MobBase
 {
@@ -52,6 +67,15 @@ public:
 	void Character_Ability(EHun_AbilityType AbilityType);
 
 	void ToggleLockOn();
+	
+	void SetCameraMode(bool bIsBossCombat);
+	void UpdateCameraSettings() const;
+
+	FHunCameraSettings NormalCameraSettings;
+	FHunCameraSettings BossCameraSettings;
+	FHunCameraSettings CurrentCameraSettings;
+
+	FTimerHandle CameraTransitionTimerHandle;
 
 	UFUNCTION()
 	USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
