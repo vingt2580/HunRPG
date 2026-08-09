@@ -18,6 +18,8 @@
 class FinputActionValue;
 class AHun_Character;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnSwapTargetPlayer, AHun_Character*);
+
 UCLASS()
 class HUNRPG_API AHun_PlayerController : public APlayerController, public IGenericTeamAgentInterface
 {
@@ -25,7 +27,6 @@ class HUNRPG_API AHun_PlayerController : public APlayerController, public IGener
 
 public:
 	AHun_PlayerController();
-	virtual FGenericTeamId GetGenericTeamId() const;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunParty|Party")
 	TArray<TSubclassOf<AHun_Character>> HunCaracterPartyClasses;
@@ -45,6 +46,8 @@ public:
 	UWidget_HunHUD* MainHUD;
 
 	void UpdateWidgetBinding(const AHun_Character* PrevCharacter, const AHun_Character* TargetCharacter) const;
+
+	FOnSwapTargetPlayer OnSwapTargetPlayer;
 
 protected:
 	virtual void BeginPlay() override;
@@ -80,7 +83,6 @@ public:
 	void UpdateWidgetMonster(AHun_MonsterBase* Monster);
 
 private:
-	FGenericTeamId TeamId;
 
 	UPROPERTY(EditDefaultsOnly, Category = "HunRPG|UI")
 	TSubclassOf<UWidget_HunHUD> MainHUDWidget;

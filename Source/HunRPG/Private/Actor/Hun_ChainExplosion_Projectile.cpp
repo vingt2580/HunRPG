@@ -92,7 +92,7 @@ void AHun_ChainExplosion_Projectile::PlayGroundEffect()
 {
 	FVector GroundLocation = GetActorLocation();
 
-	if (MaxExplosionsCount >= 8)
+	if (MaxExplosionsCount >= 4)
 	{
 		Destroy();
 		return;

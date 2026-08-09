@@ -4,17 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Hun_MonsterBaseAIController.h"
 #include "Character/Hun_Character.h"
 #include "Hun_BossMonsterAIController.generated.h"
 
 UCLASS()
-class HUNRPG_API AHun_BossMonsterAIController : public AAIController
+class HUNRPG_API AHun_BossMonsterAIController : public AHun_MonsterBaseAIController
 {
 	GENERATED_BODY()
 
 public:
-	AHun_BossMonsterAIController(const FObjectInitializer& ObjectInitializer);
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "HunRPG|AI")
 	class UBehaviorTree* BossBehaviorTree;
 

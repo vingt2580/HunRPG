@@ -7,11 +7,6 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-AHun_BossMonsterAIController::AHun_BossMonsterAIController(const FObjectInitializer& ObjectInitializer)
-	:Super(ObjectInitializer)
-{
-}
-
 void AHun_BossMonsterAIController::StartBossCombat(AActor* TargetPlayer)
 {
 	UBlackboardComponent* BBComp = GetBlackboardComponent();
@@ -21,6 +16,8 @@ void AHun_BossMonsterAIController::StartBossCombat(AActor* TargetPlayer)
 
 	BBComp->SetValueAsObject(TEXT("TargetPlayer"), TargetPlayer);
 	BBComp->SetValueAsBool(TEXT("IsCombat"),true);
+
+	bIsGetTarget = true;
 
 	HUN_LOG(FColor::Green, "보스 AI: 타겟확인 전투시작");
 }

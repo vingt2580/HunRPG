@@ -21,12 +21,7 @@
 
 AHun_PlayerController::AHun_PlayerController()
 {
-	TeamId = FGenericTeamId(0);
-}
-
-FGenericTeamId AHun_PlayerController::GetGenericTeamId() const
-{
-	return TeamId;
+	
 }
 
 void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
@@ -73,6 +68,8 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 
 		UpdateWidgetBinding(PrevCharacter, NextCharacter);
 		CurrentPartyMemberSlot = SlotIndex;
+
+		OnSwapTargetPlayer.Broadcast(HunCharacterPartyMembers[CurrentPartyMemberSlot]);
 
 		HUN_LOG(FColor::Blue, "캐릭터 교체 성공 현재 캐릭터 슬록 %d, 현재 조종 캐릭터이름 : %s", CurrentPartyMemberSlot, *NextCharacter->GetName());
 	}

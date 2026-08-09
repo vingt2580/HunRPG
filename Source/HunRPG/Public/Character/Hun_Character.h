@@ -69,7 +69,7 @@ public:
 	void ToggleLockOn();
 	
 	void SetCameraMode(bool bIsBossCombat);
-	void UpdateCameraSettings() const;
+	void UpdateCameraSettings();
 
 	FHunCameraSettings NormalCameraSettings;
 	FHunCameraSettings BossCameraSettings;

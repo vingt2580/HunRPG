@@ -111,7 +111,7 @@ void AHun_Character::SetCameraMode(bool bIsBossCombat)
 	GetWorldTimerManager().SetTimer(CameraTransitionTimerHandle, this, &ThisClass::UpdateCameraSettings, GetWorld()->GetDeltaSeconds(), true);
 }
 
-void AHun_Character::UpdateCameraSettings() const
+void AHun_Character::UpdateCameraSettings()
 {
 	if (!IsValid(CameraBoom) || !IsValid(FollowCamera))
 		return;
@@ -129,6 +129,8 @@ void AHun_Character::UpdateCameraSettings() const
 		CameraBoom->TargetArmLength = CurrentCameraSettings.TargetArmLength;
 		CameraBoom->SocketOffset = CurrentCameraSettings.SocketOffset;
 		FollowCamera->FieldOfView = CurrentCameraSettings.FOV;
+
+		GetWorldTimerManager().ClearTimer(CameraTransitionTimerHandle);
 	}
 }
 

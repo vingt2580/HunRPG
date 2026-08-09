@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Character/Hun_Character.h"
+#include "HunRPG/Public/Controller/AIController/Hun_MonsterBaseAIController.h"
 #include "Navigation/CrowdFollowingComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
@@ -91,12 +92,14 @@ void AHun_MonsterAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimu
 	if (Stimulus.WasSuccessfullySensed() && Actor)
 	{
 		HUN_LOG(FColor::Red, "AIController Found!");
-		BBComponent->SetValueAsObject(TEXT("TargetActor"), TargetCharacter);
+		bIsGetTarget = true;
+		BBComponent->SetValueAsObject(TEXT("TargetPlayer"), TargetCharacter);
 	}
 	else
 	{
 		HUN_LOG(FColor::Red, "AIController Not Found!");
-		BBComponent->SetValueAsObject(TEXT("TargetActor"), nullptr);
+		bIsGetTarget = false;
+		BBComponent->SetValueAsObject(TEXT("TargetPlayer"), nullptr);
 	}
 }
 
