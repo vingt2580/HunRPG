@@ -234,7 +234,7 @@ void AHun_Grux::Landed(const FHitResult& Hit)
 	}
 }
 
-void AHun_Grux::ChangeStqmpedKnockupMontage()
+void AHun_Grux::ChangeStqmpedKnockupMontage() const
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	if (IsValid(AnimInstance))

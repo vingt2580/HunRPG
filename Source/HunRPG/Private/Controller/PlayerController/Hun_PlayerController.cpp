@@ -37,6 +37,14 @@ void AHun_PlayerController::SwapCharacter(const int32 SlotIndex)
 
 	if (IsValid(PrevCharacter) && IsValid(NextCharacter))
 	{
+		UHun_MoveComponent* PrevCharacterMoveComp = PrevCharacter->FindComponentByClass<UHun_MoveComponent>();
+		UHun_MoveComponent* NextCharacterMoveComp = NextCharacter->FindComponentByClass<UHun_MoveComponent>();
+
+		if (IsValid(PrevCharacterMoveComp) && IsValid(NextCharacterMoveComp))
+		{
+			NextCharacterMoveComp->CurrentStamina = PrevCharacterMoveComp->CurrentStamina;
+		}
+		
 		bool bLockedOn = PrevCharacter->IsLockedOn();
 		AActor* SaveLockOnTarget = PrevCharacter->GetLockOnTarget();
 
@@ -328,11 +336,6 @@ void AHun_PlayerController::SetupPartyMember()
 				EjectionCharacter(SpawnedCharacter, true);
 			}
 		}
-	}
-
-	for (int32 i = 0; i < HunCharacterPartyMembers.Num(); i++)
-	{
-		//HUN_LOG(FColor::Red, "HunCharacterPartyMembers[%d] : %s", i, *HunCharacterPartyMembers[i]->GetName());
 	}
 
 	if (IsValid(Widget_HunHUD))

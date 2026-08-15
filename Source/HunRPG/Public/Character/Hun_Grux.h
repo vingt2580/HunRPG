@@ -40,7 +40,7 @@ public:
 private:
 	virtual void Landed(const FHitResult& Hit) override;
 
-	void ChangeStqmpedKnockupMontage();
+	void ChangeStqmpedKnockupMontage() const;
 
 #pragma region SkillValue //여긴 추후 리펙토링때 데이터에셋으로 분리할 예정
 	/**
