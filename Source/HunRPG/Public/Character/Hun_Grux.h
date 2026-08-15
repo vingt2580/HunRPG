@@ -21,6 +21,10 @@ public:
 	void ExecuteLandingShockwave();
 	UFUNCTION(Category="HunRPG|Pattern")
 	void ExecuteChainExplosion();
+	UFUNCTION(Category="HunRPG|Pattern")
+	void ExecuteStampedStart();
+	UFUNCTION(Category="HunRPG|Pattern")
+	void ExecuteStampedKnockup();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG|ChainExplosion")
 	TSubclassOf<class AHun_ChainExplosion_Projectile> ChainExplosionClass;
@@ -29,12 +33,14 @@ public:
 
 	UPROPERTY()
 	FOnGruxLeapEndDelegate OnGruxLeapEnd;
-
-	UPROPERTY()
+	
 	bool bIsLeaping = false;
+	bool bIsStampeding = false;
 
 private:
 	virtual void Landed(const FHitResult& Hit) override;
+
+	void ChangeStqmpedKnockupMontage();
 
 #pragma region SkillValue //여긴 추후 리펙토링때 데이터에셋으로 분리할 예정
 	/**
@@ -43,5 +49,10 @@ private:
 	float ShockwaveRadius = 800.0f;
 	float ShockwaveDamage = 20.0f;
 	float KnockbackPower = 1500.0f;
+
+	float StampedDamage = 20.f;
+	float StampedRadius = 100.f;
+	float StampedHeight = 200.f;
+	float KnockUpPower = 800.f;
 #pragma endregion
 };

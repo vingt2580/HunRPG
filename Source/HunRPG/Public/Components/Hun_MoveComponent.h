@@ -17,6 +17,7 @@ class HUNRPG_API UHun_MoveComponent : public UHun_ActorComponent, public IHun_Mo
 	GENERATED_BODY()
 
 	UHun_MoveComponent();
+public:
 
 	virtual void MovementInput_Interface_Implementation(FVector2D MoveVector) override;
 
