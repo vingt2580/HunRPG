@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Hun_BossMonsterBase.h"
 #include "HunRPG/Public/Actor/Hun_ChainExplosion_Projectile.h"
+#include "HunRPG/Public/Actor/Hun_Tornado_Projectile.h"
 #include "Hun_Grux.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnGruxLeapEndDelegate);
@@ -25,9 +26,13 @@ public:
 	void ExecuteStampedStart();
 	UFUNCTION(Category="HunRPG|Pattern")
 	void ExecuteStampedKnockup();
+	UFUNCTION(Category="HunRPG|Pattern")
+	void ExecuteTornado();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG|ChainExplosion")
 	TSubclassOf<class AHun_ChainExplosion_Projectile> ChainExplosionClass;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HunRPG|Tornado")
+	TSubclassOf<class AHun_Tornado_Projectile> TornadoClass;
 
 	virtual void Tick(float DeltaTime) override;
 

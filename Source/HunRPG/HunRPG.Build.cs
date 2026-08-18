@@ -20,7 +20,8 @@ public class HunRPG : ModuleRules
 			"Slate",     
 			"SlateCore",
 			"LevelSequence",
-			"MovieScene"
+			"MovieScene",
+			"Niagara"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });

@@ -143,7 +143,7 @@ void AHun_Grux::ExecuteStampedStart()
 
 void AHun_Grux::ExecuteStampedKnockup()
 {
-	FVector HitLocation = GetActorLocation() +  (GetActorForwardVector() * 500.f);
+	FVector HitLocation = GetActorLocation() + (GetActorForwardVector() * 500.f);
 
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionObjectQueryParams OverlapObjectQueryParams;
@@ -189,6 +189,35 @@ void AHun_Grux::ExecuteStampedKnockup()
 		}
 	}
 	DrawDebugCapsule(GetWorld(), HitLocation, StampedHeight, StampedRadius, FQuat::Identity, FColor::Red, false, 2.0f);
+}
+
+void AHun_Grux::ExecuteTornado()
+{
+	if (!IsValid(CombatTargetPC) || !IsValid(TornadoClass))
+		return;
+
+	AActor* Target = CombatTargetPC->GetPawn();
+	FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 500.f);
+	FVector BossRigt = GetActorRightVector();
+
+	FVector LeftLocation = SpawnLocation - (BossRigt * 100.f);
+	FVector RightLocation = SpawnLocation + (BossRigt * 100.f);
+
+	AHun_Tornado_Projectile* LeftTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, SpawnLocation, GetActorRotation());
+	if (IsValid(LeftTornado))
+	{
+		LeftTornado->SetInstigator(this);
+		LeftTornado->FireTornado(Target,LeftLocation, true);
+	}
+
+	AHun_Tornado_Projectile* RightTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, SpawnLocation, GetActorRotation());
+	if (IsValid(RightTornado))
+	{
+		RightTornado->SetInstigator(this);
+		RightTornado->FireTornado(Target,RightLocation, false);
+	}
+
+	//지금 토네이도가 소환이 이상하게 됨 TODO: 겹쳐있을때 소환이 안되는건가?
 }
 
 void AHun_Grux::Tick(float DeltaTime)
