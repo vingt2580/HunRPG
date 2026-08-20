@@ -26,6 +26,8 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	USphereComponent* CollisionComponent;
@@ -34,7 +36,7 @@ private:
 	UProjectileMovementComponent* ProjectileMovementComponent;
 	
 	UFUNCTION()
-	void ActivateHoming();
+	void ToggleHoming(bool bTooggle);
 	
 	UFUNCTION()
 	void OnTargetHit(
@@ -45,8 +47,14 @@ private:
 		bool bFromSweep,
 		const FHitResult& SweepResult);
 
-	FTimerHandle HomingTimer;
+	FTimerHandle ActiveHomingTimerHandle;
+	FTimerHandle InActiveHomingTimerHandle;
+
+	FTimerDelegate ActiveHomingTimerDelegate;
+	FTimerDelegate InActiveHomingTimerDelegate;
 
 	UPROPERTY()
 	AActor* HomingTarget;
+
+	float FixedZVector;
 };

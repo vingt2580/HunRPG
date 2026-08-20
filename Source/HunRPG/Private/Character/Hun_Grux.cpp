@@ -198,26 +198,34 @@ void AHun_Grux::ExecuteTornado()
 
 	AActor* Target = CombatTargetPC->GetPawn();
 	FVector SpawnLocation = GetActorLocation() + (GetActorForwardVector() * 500.f);
-	FVector BossRigt = GetActorRightVector();
+	SpawnLocation.Z -= 100.f;
+	FVector BossRight = GetActorRightVector();
 
-	FVector LeftLocation = SpawnLocation - (BossRigt * 100.f);
-	FVector RightLocation = SpawnLocation + (BossRigt * 100.f);
+	FVector LeftLocation = SpawnLocation - (BossRight * 100.f);
+	FVector RightLocation = SpawnLocation + (BossRight * 100.f);
 
-	AHun_Tornado_Projectile* LeftTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, SpawnLocation, GetActorRotation());
+	FActorSpawnParameters Params;
+	Params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+	Params.Instigator = this;
+	Params.Owner      = this;
+
+	AHun_Tornado_Projectile* LeftTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, LeftLocation, GetActorRotation(), Params);
 	if (IsValid(LeftTornado))
 	{
 		LeftTornado->SetInstigator(this);
-		LeftTornado->FireTornado(Target,LeftLocation, true);
+		LeftTornado->FireTornado(Target,GetActorForwardVector(), true);
+		HUN_LOG(FColor::Red, "LeftTornado created");
 	}
 
-	AHun_Tornado_Projectile* RightTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, SpawnLocation, GetActorRotation());
+	AHun_Tornado_Projectile* RightTornado = GetWorld()->SpawnActor<AHun_Tornado_Projectile>(TornadoClass, RightLocation, GetActorRotation(), Params);
+	HUN_LOG(FColor::Yellow, "Right ptr: %s", RightTornado ? TEXT("VALID") : TEXT("NULL"));
+	
 	if (IsValid(RightTornado))
 	{
 		RightTornado->SetInstigator(this);
-		RightTornado->FireTornado(Target,RightLocation, false);
+		RightTornado->FireTornado(Target,GetActorForwardVector(), false);
+		HUN_LOG(FColor::Red, "RightTornado created");
 	}
-
-	//지금 토네이도가 소환이 이상하게 됨 TODO: 겹쳐있을때 소환이 안되는건가?
 }
 
 void AHun_Grux::Tick(float DeltaTime)
